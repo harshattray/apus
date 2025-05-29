@@ -5,6 +5,7 @@ import apusLogo from '/apus.svg';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [activeTab, setActiveTab] = useState<'line' | 'bar'>('line');
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -174,197 +175,236 @@ function App() {
         </section>
 
         <section>
-          <h2 className={`text-lg font-medium mb-6 ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>Chart Examples</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className={`text-lg font-medium ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>Chart Examples</h2>
+            <div className={`inline-flex rounded-lg p-1 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+              <button
+                onClick={() => setActiveTab('line')}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                  activeTab === 'line'
+                    ? isDarkMode
+                      ? 'bg-slate-700 text-white'
+                      : 'bg-white text-slate-900 shadow-sm'
+                    : isDarkMode
+                    ? 'text-slate-400 hover:text-slate-200'
+                    : 'text-white'
+                }`}
+              >
+                Line Charts
+              </button>
+              <button
+                onClick={() => setActiveTab('bar')}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                  activeTab === 'bar'
+                    ? isDarkMode
+                      ? 'bg-slate-700 text-white'
+                      : 'bg-white text-slate-900 shadow-sm'
+                    : isDarkMode
+                    ? 'text-slate-400 hover:text-slate-200'
+                    : 'text-white'
+                }`}
+              >
+                Bar Charts
+              </button>
+            </div>
+          </div>
+
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Default Bar Chart</h3>
-              <BarChart data={barChartData1} width={400} height={300} />
-            </div>
+            {activeTab === 'line' ? (
+              <>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Multi-series Line Chart</h3>
+                  <LineChart 
+                    data={multiLineData} 
+                    width={400} 
+                    height={300}
+                    showGridLines={true}
+                    lineColors={['#3b82f6', '#f59e0b']}
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Customized Bar Chart</h3>
-              <BarChart 
-                data={barChartData2} 
-                width={400} 
-                height={300} 
-                color={['#3b82f6', '#10b981', '#f59e0b']}
-                margin={{ top: 30, right: 30, bottom: 50, left: 50 }}
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Basic Line Chart</h3>
+                  <LineChart 
+                    data={lineChartData1} 
+                    width={400} 
+                    height={300} 
+                    areaColor="rgba(59, 130, 246, 0.1)" 
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Bar Chart (Axis Styling)</h3>
-              <BarChart 
-                data={barChartData1} 
-                width={400} 
-                height={300} 
-                showXAxis={false} 
-                yAxisTicks={3} 
-                yAxisTextColor={isDarkMode ? '#94a3b8' : '#334155'}
-                axisLineColor={isDarkMode ? '#475569' : '#e2e8f0'}
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Gradient Line Chart</h3>
+                  <LineChart 
+                    data={lineChartData2} 
+                    width={400} 
+                    height={300} 
+                    areaGradientColors={['rgba(59, 130, 246, 0.2)', 'rgba(59, 130, 246, 0)']}
+                    showGridLines={true}
+                    yAxisTicks={7}
+                    tooltipBackgroundColor="rgba(30, 41, 59, 0.9)"
+                    tooltipTextColor="#fff"
+                    tooltipPadding="8px"
+                    tooltipBorderRadius="6px"
+                    tooltipFontSize="13px"
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Bar Chart (Tooltip Styling)</h3>
-              <BarChart 
-                data={barChartData2} 
-                width={400} 
-                height={300} 
-                tooltipBackgroundColor={isDarkMode ? '#f87171' : '#ef4444'}
-                tooltipTextColor={'#ffffff'}
-                tooltipPadding={'6px 10px'}
-                tooltipBorderRadius={'3px'}
-                tooltipFontSize={'11px'}
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Minimal Line Chart</h3>
+                  <LineChart 
+                    data={lineChartData1} 
+                    width={400} 
+                    height={300} 
+                    areaColor="rgba(245, 158, 11, 0.1)" 
+                    lineColors={'#f59e0b'}
+                    showXAxis={false}
+                    showYAxis={false}
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Bar Chart (Gradient)</h3>
-              <BarChart 
-                data={barChartData1} 
-                width={400} 
-                height={300} 
-                gradientColors={['#3b82f6', '#60a5fa', '#1d4ed8']}
-                showGridLines={true}
-                yAxisTicks={4}
-                axisLineColor={isDarkMode ? '#475569' : '#e2e8f0'}
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Multi-series with Points</h3>
+                  <LineChart 
+                    data={multiLineData} 
+                    width={400} 
+                    height={300} 
+                    lineColors={['#3b82f6', '#10b981']}
+                    pointColor="#fff"
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Multi-series Line Chart</h3>
-              <LineChart 
-                data={multiLineData} 
-                width={400} 
-                height={300}
-                showGridLines={true}
-                lineColors={['#3b82f6', '#f59e0b']}
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Gradient Line</h3>
+                  <LineChart 
+                    data={gradientLineData} 
+                    width={400} 
+                    height={300} 
+                    lineGradientColors={['#3b82f6', '#6366f1']}
+                    areaColor="rgba(99, 102, 241, 0.1)"
+                    pointColor="#6366f1"
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Basic Line Chart</h3>
-              <LineChart 
-                data={lineChartData1} 
-                width={400} 
-                height={300} 
-                areaColor="rgba(59, 130, 246, 0.1)" 
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Multi-series without Area</h3>
+                  <LineChart 
+                    data={multiLineNoAreaData} 
+                    width={400} 
+                    height={300} 
+                    showArea={false}
+                    lineColors={['#3b82f6', '#f59e0b']}
+                    pointColor="#fff"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Default Bar Chart</h3>
+                  <BarChart data={barChartData1} width={400} height={300} />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Gradient Line Chart</h3>
-              <LineChart 
-                data={lineChartData2} 
-                width={400} 
-                height={300} 
-                areaGradientColors={['rgba(59, 130, 246, 0.2)', 'rgba(59, 130, 246, 0)']}
-                showGridLines={true}
-                yAxisTicks={7}
-                tooltipBackgroundColor="rgba(30, 41, 59, 0.9)"
-                tooltipTextColor="#fff"
-                tooltipPadding="8px"
-                tooltipBorderRadius="6px"
-                tooltipFontSize="13px"
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Customized Bar Chart</h3>
+                  <BarChart 
+                    data={barChartData2} 
+                    width={400} 
+                    height={300} 
+                    color={['#3b82f6', '#10b981', '#f59e0b']}
+                    margin={{ top: 30, right: 30, bottom: 50, left: 50 }}
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Minimal Line Chart</h3>
-              <LineChart 
-                data={lineChartData1} 
-                width={400} 
-                height={300} 
-                areaColor="rgba(245, 158, 11, 0.1)" 
-                lineColors={'#f59e0b'}
-                showXAxis={false}
-                showYAxis={false}
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Bar Chart (Axis Styling)</h3>
+                  <BarChart 
+                    data={barChartData1} 
+                    width={400} 
+                    height={300} 
+                    showXAxis={false} 
+                    yAxisTicks={3} 
+                    yAxisTextColor={isDarkMode ? '#94a3b8' : '#334155'}
+                    axisLineColor={isDarkMode ? '#475569' : '#e2e8f0'}
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Multi-series with Points</h3>
-              <LineChart 
-                data={multiLineData} 
-                width={400} 
-                height={300} 
-                lineColors={['#3b82f6', '#10b981']}
-                pointColor="#fff"
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Bar Chart (Tooltip Styling)</h3>
+                  <BarChart 
+                    data={barChartData2} 
+                    width={400} 
+                    height={300} 
+                    tooltipBackgroundColor={isDarkMode ? '#f87171' : '#ef4444'}
+                    tooltipTextColor={'#ffffff'}
+                    tooltipPadding={'6px 10px'}
+                    tooltipBorderRadius={'3px'}
+                    tooltipFontSize={'11px'}
+                  />
+                </div>
 
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Gradient Line</h3>
-              <LineChart 
-                data={gradientLineData} 
-                width={400} 
-                height={300} 
-                lineGradientColors={['#3b82f6', '#6366f1']}
-                areaColor="rgba(99, 102, 241, 0.1)"
-                pointColor="#6366f1"
-              />
-            </div>
-
-            <div className={`rounded-xl p-6 border transition-colors duration-200 ${
-              isDarkMode 
-                ? 'bg-slate-900/50 border-slate-800' 
-                : 'bg-slate-50 border-slate-200'
-            }`}>
-              <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Multi-series without Area</h3>
-              <LineChart 
-                data={multiLineNoAreaData} 
-                width={400} 
-                height={300} 
-                showArea={false}
-                lineColors={['#3b82f6', '#f59e0b']}
-                pointColor="#fff"
-              />
-            </div>
+                <div className={`rounded-xl p-6 border transition-colors duration-200 ${
+                  isDarkMode 
+                    ? 'bg-slate-900/50 border-slate-800' 
+                    : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <h3 className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Bar Chart (Gradient)</h3>
+                  <BarChart 
+                    data={barChartData1} 
+                    width={400} 
+                    height={300} 
+                    gradientColors={['#3b82f6', '#60a5fa', '#1d4ed8']}
+                    showGridLines={true}
+                    yAxisTicks={4}
+                    axisLineColor={isDarkMode ? '#475569' : '#e2e8f0'}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </section>
       </main>
