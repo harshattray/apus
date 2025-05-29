@@ -1,10 +1,12 @@
 # Apus - React Chart Library
 
+A powerful and customizable chart library for React applications, built with D3.js and TypeScript.
+
+
 <div align="center">
-  <img src="public/apus.svg" alt="Apus Logo" width="200"/>
+  <img src="https://raw.githubusercontent.com/harshattray/apus/main/public/apus.svg" alt="Apus Logo" width="200"/>
 </div>
 
-A powerful and customizable chart library for React applications, built with D3.js and TypeScript.
 
 ## Features
 
@@ -17,13 +19,13 @@ A powerful and customizable chart library for React applications, built with D3.
 
 ## Screenshots
 
-![Interactive Line Chart with Multiple Datasets](screens/sc1.png)
+![Interactive Line Chart with Multiple Datasets](https://raw.githubusercontent.com/harshattray/apus/main/screens/sc1.png)
 *Interactive Line Chart with Multiple Datasets*
 
-![Customizable Bar Chart with Tooltips](screens/sc2.png)
+![Customizable Bar Chart with Tooltips](https://raw.githubusercontent.com/harshattray/apus/main/screens/sc2.png)
 *Customizable Bar Chart with Tooltips*
 
-![Advanced Scatter Plot with Regression Line](screens/sc3.png)
+![Advanced Scatter Plot with Regression Line](https://raw.githubusercontent.com/harshattray/apus/main/screens/sc3.png)
 *Advanced Scatter Plot with Regression Line*
 
 ## Installation
