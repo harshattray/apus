@@ -29,7 +29,10 @@ export default defineConfig(() => {
       outDir: 'dist/demo',
       emptyOutDir: true,
       rollupOptions: {
-        input: resolve(__dirname, 'src/main.tsx'), // Entry point for the demo app
+        input: {
+          main: resolve(__dirname, 'src/main.tsx'),
+          index: resolve(__dirname, 'index.html'),
+        },
         output: {
           // Customize output if needed, but default should be fine
         },
