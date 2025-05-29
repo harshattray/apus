@@ -48,29 +48,6 @@ This library requires the following peer dependencies:
 }
 ```
 
-## Quick Start
-
-```tsx
-import { Chart } from 'apus';
-
-function App() {
-  const data = [
-    { x: 1, y: 10 },
-    { x: 2, y: 20 },
-    { x: 3, y: 15 },
-    // ... more data points
-  ];
-
-  return (
-    <Chart
-      data={data}
-      width={600}
-      height={400}
-      // Add more props as needed
-    />
-  );
-}
-```
 
 ## Available Chart Types
 
