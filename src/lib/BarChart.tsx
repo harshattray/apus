@@ -5,7 +5,7 @@ export type BarChartProps = {
   data: { label: string; value: number }[];
   width: number;
   height: number;
-  color?: string;
+  color?: string | string[]; // Allow single color or array of colors
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
@@ -59,7 +59,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data, width, height, color =
       .attr('y', (d) => y(d.value))
       .attr('width', x.bandwidth())
       .attr('height', (d) => innerHeight - y(d.value))
-      .attr('fill', color);
+      .attr('fill', (d, i) => (Array.isArray(color) ? color[i % color.length] : color)); // Use color array or single color
   }, [data, width, height, color, margin]);
 
   return <svg ref={ref} width={width} height={height} />;
