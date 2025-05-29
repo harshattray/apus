@@ -1,37 +1,65 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite';
+import { defineConfig, UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/lib/index.ts'),
-      name: 'ChartLib',
-      fileName: 'index',
-      formats: ['es'],
+// https://vitejs.dev/config/
+export default defineConfig(() => {
+  // Environment variable to differentiate between library and demo build
+  const isDemoBuild = process.env.VITE_APP_BUILD === 'demo';
+
+  const baseConfig: UserConfig = {
+    plugins: [react()],
+    resolve: {
+      alias: {
+        src: resolve(__dirname, './src'),
+      },
     },
-    rollupOptions: {
-      external: ['react', 'react-dom', 'd3'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          d3: 'd3',
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: './src/setupTests.ts',
+    },
+  };
+
+  // Configuration for building the demo application
+  const demoConfig: UserConfig = {
+    ...baseConfig,
+    build: {
+      outDir: 'dist/demo',
+      emptyOutDir: true,
+      rollupOptions: {
+        input: resolve(__dirname, 'src/main.tsx'), // Entry point for the demo app
+        output: {
+          // Customize output if needed, but default should be fine
         },
       },
     },
-  },
-  resolve: {
-    alias: {
-      src: resolve(__dirname, './src'),
+  };
+
+  // Configuration for building the library
+  const libraryConfig: UserConfig = {
+    ...baseConfig,
+    build: {
+      lib: {
+        entry: resolve(__dirname, 'src/lib/index.ts'),
+        name: 'ChartLib',
+        fileName: 'index',
+        formats: ['es'],
+      },
+      rollupOptions: {
+        external: ['react', 'react-dom', 'd3'], // Externalize peer dependencies
+        output: {
+          globals: {
+            react: 'React',
+            'react-dom': 'ReactDOM',
+            d3: 'd3',
+          },
+        },
+      },
     },
-  },
-  test: {
-    environment: 'jsdom',
-    globals: true, // Optional: to use Vitest globals like expect, vi without importing
-    setupFiles: './src/setupTests.ts', // Optional: if you have a test setup file
-  },
+  };
+
+  // Return the appropriate configuration based on the environment variable
+  return isDemoBuild ? demoConfig : libraryConfig;
 });
