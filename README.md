@@ -29,11 +29,11 @@ A powerful and customizable chart library for React applications, built with D3.
 ## Installation
 
 ```bash
-npm install apus
+npm install apus # Replace 'apus' with your actual package name if different
 # or
-yarn add apus
+yarn add apus # Replace 'apus' with your actual package name if different
 # or
-pnpm add apus
+pnpm add apus # Replace 'apus' with your actual package name if different
 ```
 
 ## Peer Dependencies
@@ -51,135 +51,156 @@ This library requires the following peer dependencies:
 ## Available Chart Types
 
 ### 1. Line Chart
+
 ```tsx
-import { LineChart } from 'apus';
+import { LineChart } from 'apus'; // Adjust import path if needed
+
+const lineChartData = [
+  {
+    name: 'Series 1',
+    values: [
+      { label: 'Jan', value: 30 },
+      { label: 'Feb', value: 40 },
+      { label: 'Mar', value: 35 },
+    ],
+  },
+  {
+    name: 'Series 2',
+    values: [
+      { label: 'Jan', value: 50 },
+      { label: 'Feb', value: 60 },
+      { label: 'Mar', value: 55 },
+    ],
+  },
+];
 
 <LineChart
-  data={data}
+  data={lineChartData}
   width={600}
   height={400}
-  xAxis={{ title: 'Time' }}
-  yAxis={{ title: 'Value' }}
-  curve="monotoneX"
+  lineColors={['#1f77b4', '#ff7f0e']} // Different color for each line series
+  showArea={true}
+  areaColor="rgba(70, 130, 180, 0.1)" // A light blue area fill
+  pointColor="#88b0de" // Color for data points
+  showGridLines={true}
+  responsive={true}
+  ariaLabel="Sales trend over months"
 />
 ```
 
 ### 2. Bar Chart
+
 ```tsx
-import { BarChart } from 'apus';
+import { BarChart } from 'apus'; // Adjust import path if needed
+
+const barChartData = [
+  { label: 'Category A', value: 10 },
+  { label: 'Category B', value: 20 },
+  { label: 'Category C', value: 15 },
+];
 
 <BarChart
-  data={data}
+  data={barChartData}
   width={600}
   height={400}
-  orientation="vertical"
-  padding={0.2}
+  color="#6a93d1" // Single color for all bars
+  // or use an array for multiple colors: color={['#ff0000', '#00ff00', '#0000ff']}
+  showGridLines={true}
+  xAxisTextColor="#333333"
+  yAxisTextColor="#333333"
+  responsive={true}
+  ariaLabel="Comparison of categories"
 />
 ```
 
-## Configuration Options
+## Component Props
 
-### Common Props
-All chart components accept these common props:
+Below are the props available for each chart component.
 
-```typescript
-interface ChartProps {
-  data: Array<DataPoint>;
-  width: number;
-  height: number;
-  margin?: {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-  };
-  theme?: 'light' | 'dark';
-  responsive?: boolean;
-}
-```
+### `LineChartProps`
 
-### Axis Configuration
-```typescript
-interface AxisConfig {
-  title?: string;
-  tickFormat?: (value: number) => string;
-  tickCount?: number;
-  showGrid?: boolean;
-  gridColor?: string;
-}
-```
+| Prop                   | Type                                                                 | Default Value                         | Description                                                                                                |
+|------------------------|----------------------------------------------------------------------|---------------------------------------|------------------------------------------------------------------------------------------------------------|
+| `ariaLabel`            | `string`                                                             | `'Line chart'`                        | Optional ARIA label for accessibility.                                                                     |
+| `data`                 | `{ name: string; values: { label: string \| number; value: number }[] }[]` | `[]`                                  | Array of data series. Each series has a name and an array of values (label-value pairs).                   |
+| `width`                | `number`                                                             | `600`                                 | Width of the chart.                                                                                        |
+| `height`               | `number`                                                             | `400`                                 | Height of the chart.                                                                                       |
+| `lineColors`           | `string \| string[]`                                               | (D3 default scheme)                   | Color(s) for the lines. Can be a single string or an array for multiple series.                            |
+| `areaColor`            | `string`                                                             | `'rgba(70, 130, 180, 0.3)'`           | Fill color for the area under the line. Used if `showArea` is true and `areaGradientColors` is not set.    |
+| `pointColor`           | `string`                                                             | `'#88b0de'`                           | Color for the data points.                                                                                 |
+| `margin`               | `{ top: number; right: number; bottom: number; left: number }`      | `{ top: 20, right: 30, bottom: 30, left: 40 }` | Margins around the chart plotting area.                                                                    |
+| `yAxisTicks`           | `number`                                                             | `5`                                   | Suggested number of ticks on the Y-axis.                                                                   |
+| `showXAxis`            | `boolean`                                                            | `true`                                | Whether to display the X-axis.                                                                             |
+| `showYAxis`            | `boolean`                                                            | `true`                                | Whether to display the Y-axis.                                                                             |
+| `showGridLines`        | `boolean`                                                            | `false`                               | Whether to display grid lines.                                                                             |
+| `tooltipBackgroundColor` | `string`                                                             | `'#333333'`                           | Background color for the tooltip.                                                                          |
+| `tooltipTextColor`     | `string`                                                             | `'#ffffff'`                           | Text color for the tooltip.                                                                                |
+| `tooltipPadding`       | `string`                                                             | `'8px'`                               | Padding for the tooltip.                                                                                   |
+| `tooltipBorderRadius`  | `string`                                                             | `'4px'`                               | Border radius for the tooltip.                                                                             |
+| `tooltipFontSize`      | `string`                                                             | `'12px'`                              | Font size for the tooltip.                                                                                 |
+| `areaGradientColors`   | `string[]`                                                           | `undefined`                           | Array of colors for area gradient (e.g., `['#startColor', '#endColor']`). Overrides `areaColor` if provided. |
+| `lineGradientColors`   | `string[]`                                                           | `undefined`                           | Array of colors for line gradient (e.g., `['#startColor', '#endColor']`). Overrides `lineColors` if provided. |
+| `showArea`             | `boolean`                                                            | `true`                                | Whether to display the area under the line.                                                                |
+| `responsive`           | `boolean`                                                            | `true`                                | Whether the chart should be responsive to its container's width.                                           |
 
-### Animation Options
-```typescript
-interface AnimationConfig {
-  duration?: number;
-  easing?: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
-  delay?: number;
-}
-```
+### `BarChartProps`
+
+| Prop                   | Type                                                         | Default Value                      | Description                                                                                             |
+|------------------------|--------------------------------------------------------------|------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `ariaLabel`            | `string`                                                     | `'Bar chart'`                      | Optional ARIA label for accessibility.                                                                  |
+| `data`                 | `{ label: string; value: number }[]`                         | `[]`                               | Array of data points (label-value pairs).                                                               |
+| `width`                | `number`                                                     | `600`                              | Width of the chart.                                                                                     |
+| `height`               | `number`                                                     | `400`                              | Height of the chart.                                                                                    |
+| `color`                | `string \| string[]`                                       | `'#6a93d1'`                        | Color(s) for the bars. Can be a single string or an array for multiple bars (colors will cycle).        |
+| `gradientColors`       | `string[]`                                                   | `undefined`                        | Array of colors for bar gradient (e.g., `['#startColor', '#endColor']`). Overrides `color` if provided.    |
+| `margin`               | `{ top: number; right: number; bottom: number; left: number }` | `{ top: 20, right: 30, bottom: 30, left: 40 }` | Margins around the chart plotting area.                                                                 |
+| `responsive`           | `boolean`                                                    | `true`                             | Whether the chart should be responsive to its container's width.                                        |
+| `showXAxis`            | `boolean`                                                    | `true`                             | Whether to display the X-axis.                                                                          |
+| `showYAxis`            | `boolean`                                                    | `true`                             | Whether to display the Y-axis.                                                                          |
+| `showGridLines`        | `boolean`                                                    | `false`                            | Whether to display grid lines.                                                                          |
+| `xAxisTextColor`       | `string`                                                     | `'#cccccc'`                        | Color for X-axis tick labels.                                                                           |
+| `yAxisTextColor`       | `string`                                                     | `'#cccccc'`                        | Color for Y-axis tick labels.                                                                           |
+| `axisLineColor`        | `string`                                                     | `'#cccccc'`                        | Color for axis lines.                                                                                   |
+| `yAxisTicks`           | `number`                                                     | `5`                                | Suggested number of ticks on the Y-axis.                                                                |
+| `tooltipBackgroundColor` | `string`                                                     | `'rgba(0, 0, 0, 0.7)'`             | Background color for the tooltip.                                                                       |
+| `tooltipTextColor`     | `string`                                                     | `'white'`                          | Text color for the tooltip.                                                                             |
+| `tooltipPadding`       | `string`                                                     | `'8px'`                            | Padding for the tooltip.                                                                                |
+| `tooltipBorderRadius`  | `string`                                                     | `'4px'`                            | Border radius for the tooltip.                                                                          |
+| `tooltipFontSize`      | `string`                                                     | `'12px'`                           | Font size for the tooltip.                                                                              |
 
 ## Advanced Usage Examples
 
-### 1. Custom Styling
+### 1. Custom Styling with Gradients (Line Chart)
+
 ```tsx
 <LineChart
-  data={data}
-  width={600}
-  height={400}
-  style={{
-    lineColor: '#FF5733',
-    lineWidth: 2,
-    areaColor: 'rgba(255, 87, 51, 0.2)',
-  }}
+  data={lineChartData} // Assuming lineChartData is defined as in the example above
+  width={800}
+  height={500}
+  lineGradientColors={['#FF5733', '#C70039']} // Apply a gradient to the line
+  areaGradientColors={['rgba(255, 87, 51, 0.4)', 'rgba(199, 0, 57, 0.1)']} // Apply a gradient to the area
+  showArea={true}
+  pointColor="#FFC300"
+  tooltipBackgroundColor="#2C3E50"
+  tooltipTextColor="#ECF0F1"
+  yAxisTicks={10} // More ticks on Y-axis
 />
 ```
 
-### 2. Interactive Features
+### 2. Custom Styling with Multiple Colors (Bar Chart)
+
 ```tsx
 <BarChart
-  data={data}
-  width={600}
-  height={400}
-  interactive={true}
-  onBarClick={(data) => console.log('Clicked:', data)}
-  tooltip={(data) => `Value: ${data.value}`}
+  data={barChartData} // Assuming barChartData is defined as in the example above
+  width={700}
+  height={450}
+  color={['#FFC300', '#FF5733', '#C70039', '#900C3F', '#581845']} // Colors will cycle for bars
+  showGridLines={true}
+  axisLineColor="#BDC3C7"
+  xAxisTextColor="#2C3E50"
+  yAxisTextColor="#2C3E50"
+  margin={{ top: 30, right: 40, bottom: 50, left: 60 }} // Custom margins
 />
-```
-
-### 3. Multiple Datasets
-```tsx
-<LineChart
-  datasets={[
-    { data: dataset1, color: '#FF5733', label: 'Series 1' },
-    { data: dataset2, color: '#33FF57', label: 'Series 2' },
-  ]}
-  width={600}
-  height={400}
-  legend={true}
-/>
-```
-
-## API Documentation
-
-### Chart Components
-
-#### LineChart
-```typescript
-interface LineChartProps extends ChartProps {
-  curve?: 'linear' | 'monotoneX' | 'monotoneY' | 'natural';
-  showArea?: boolean;
-  showPoints?: boolean;
-  pointSize?: number;
-}
-```
-
-#### BarChart
-```typescript
-interface BarChartProps extends ChartProps {
-  orientation?: 'vertical' | 'horizontal';
-  padding?: number;
-  cornerRadius?: number;
-}
 ```
 
 ## Development
@@ -209,9 +230,11 @@ npm run build
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
+Make sure to update tests as appropriate.
+
 ## License
 
-MIT © Harsha Attray
+[MIT](LICENSE) 
 
 ## Support
 
