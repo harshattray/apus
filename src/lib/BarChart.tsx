@@ -1,3 +1,8 @@
+/**
+ * @file BarChart.tsx
+ * @description This file contains the BarChart component, a React component for rendering bar charts using D3.js.
+ * @author Harsha Attray
+ */
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 

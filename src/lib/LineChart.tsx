@@ -1,3 +1,8 @@
+/**
+ * @file LineChart.tsx
+ * @description This file contains the LineChart component, a React component for rendering line charts using D3.js.
+ * @author Harsha Attray
+ */
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 import type { ScalePoint } from 'd3-scale';

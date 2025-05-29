@@ -29,11 +29,11 @@ A powerful and customizable chart library for React applications, built with D3.
 ## Installation
 
 ```bash
-npm install apus # Replace 'apus' with your actual package name if different
+npm install apus 
 # or
-yarn add apus # Replace 'apus' with your actual package name if different
+yarn add apus
 # or
-pnpm add apus # Replace 'apus' with your actual package name if different
+pnpm add apus 
 ```
 
 ## Peer Dependencies
@@ -53,7 +53,7 @@ This library requires the following peer dependencies:
 ### 1. Line Chart
 
 ```tsx
-import { LineChart } from 'apus'; // Adjust import path if needed
+import { LineChart } from 'apus'; 
 
 const lineChartData = [
   {
@@ -91,7 +91,7 @@ const lineChartData = [
 ### 2. Bar Chart
 
 ```tsx
-import { BarChart } from 'apus'; // Adjust import path if needed
+import { BarChart } from 'apus'; 
 
 const barChartData = [
   { label: 'Category A', value: 10 },
