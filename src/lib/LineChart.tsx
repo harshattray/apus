@@ -5,7 +5,7 @@ export type LineChartProps = {
   data: { name: string; values: { label: string | number; value: number }[] }[];
   width: number;
   height: number;
-  lineColors?: string | string[]; // Allow single color (using a scale) or array of colors
+  lineColors?: string | string[]; 
   areaColor?: string;
   pointColor?: string;
   margin?: { top: number; right: number; bottom: number; left: number };
@@ -19,6 +19,8 @@ export type LineChartProps = {
   tooltipBorderRadius?: string;
   tooltipFontSize?: string;
   areaGradientColors?: string[];
+  lineGradientColors?: string[]; 
+  showArea?: boolean; 
 };
 
 export const LineChart: React.FC<LineChartProps> = ({
@@ -39,6 +41,8 @@ export const LineChart: React.FC<LineChartProps> = ({
   tooltipBorderRadius = '4px',
   tooltipFontSize = '12px',
   areaGradientColors,
+  lineGradientColors, 
+  showArea = true,
 }) => {
   const ref = useRef<SVGSVGElement | null>(null);
 
@@ -106,6 +110,24 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('stop-color', (d) => d);
     }
 
+    // Define line gradient if colors are provided
+    if (lineGradientColors && lineGradientColors.length > 1) {
+      const lineGradient = svg.append('defs')
+        .append('linearGradient')
+        .attr('id', 'lineGradient')
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '0%')
+        .attr('y2', '100%'); 
+
+      lineGradient.selectAll('stop')
+        .data(lineGradientColors)
+        .enter()
+        .append('stop')
+        .attr('offset', (d, i) => `${i / (lineGradientColors.length - 1) * 100}%`)
+        .attr('stop-color', (d) => d);
+    }
+
     // Add grid lines if enabled
     if (showGridLines) {
       g.append('g')
@@ -115,14 +137,16 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('stroke', '#444444');
     }
 
-    // Append the area paths (one for each series)
-    g.selectAll('.area')
-      .data(data)
-      .enter()
-      .append('path')
-      .attr('class', 'area')
-      .attr('fill', (d, i) => (i === 0 && areaGradientColors && areaGradientColors.length > 1) ? 'url(#areaGradient)' : areaColor)
-      .attr('d', (d) => area(d.values));
+    // Append the area paths (one for each series) if showArea is true
+    if (showArea) {
+      g.selectAll('.area')
+        .data(data)
+        .enter()
+        .append('path')
+        .attr('class', 'area')
+        .attr('fill', (d, i) => (i === 0 && areaGradientColors && areaGradientColors.length > 1) ? 'url(#areaGradient)' : areaColor)
+        .attr('d', (d) => area(d.values));
+    }
 
     // Append the line paths (one for each series)
     g.selectAll('.line')
@@ -131,7 +155,7 @@ export const LineChart: React.FC<LineChartProps> = ({
       .append('path')
       .attr('class', 'line')
       .attr('fill', 'none')
-      .attr('stroke', (d) => colorScale(d.name))
+      .attr('stroke', lineGradientColors && lineGradientColors.length > 1 ? 'url(#lineGradient)' : (d) => colorScale(d.name))
       .attr('stroke-width', 2)
       .attr('d', (d) => line(d.values));
 
@@ -203,7 +227,7 @@ export const LineChart: React.FC<LineChartProps> = ({
       tooltip.remove();
     };
 
-  }, [data, width, height, lineColors, areaColor, pointColor, margin, yAxisTicks, showXAxis, showYAxis, showGridLines, tooltipBackgroundColor, tooltipTextColor, tooltipPadding, tooltipBorderRadius, tooltipFontSize, areaGradientColors]);
+  }, [data, width, height, lineColors, areaColor, pointColor, margin, yAxisTicks, showXAxis, showYAxis, showGridLines, tooltipBackgroundColor, tooltipTextColor, tooltipPadding, tooltipBorderRadius, tooltipFontSize, areaGradientColors, lineGradientColors, showArea]);
 
   return <svg ref={ref} width={width} height={height} />;
 }; 

@@ -66,6 +66,43 @@ function App() {
     },
   ];
 
+  const multiLineNoAreaData = [
+    {
+      name: 'Series A',
+      values: [
+        { label: 'Jan', value: 30 },
+        { label: 'Feb', value: 45 },
+        { label: 'Mar', value: 40 },
+        { label: 'Apr', value: 55 },
+        { label: 'May', value: 50 },
+      ],
+    },
+    {
+      name: 'Series B',
+      values: [
+        { label: 'Jan', value: 60 },
+        { label: 'Feb', value: 50 },
+        { label: 'Mar', value: 65 },
+        { label: 'Apr', value: 70 },
+        { label: 'May', value: 68 },
+      ],
+    },
+  ];
+
+  const gradientLineData = [
+    {
+      name: 'Gradient Series',
+      values: [
+        { label: 'Jan', value: 10 },
+        { label: 'Feb', value: 40 },
+        { label: 'Mar', value: 20 },
+        { label: 'Apr', value: 60 },
+        { label: 'May', value: 30 },
+        { label: 'Jun', value: 70 },
+      ],
+    },
+  ];
+
   return (
     <div className="App">
       <h1>Chart Library Demo</h1>
@@ -123,6 +160,28 @@ function App() {
             width={400} 
             height={300} 
             lineColors={['#ff6666', '#66cc66']}
+            pointColor="#ffffff"
+          />
+        </div>
+         <div className="chart">
+          <h2>Line Chart Example 5 (Gradient Line)</h2>
+          <LineChart 
+            data={gradientLineData} 
+            width={400} 
+            height={300} 
+            lineGradientColors={['#e0aaff', '#88b0de']}
+            areaColor="rgba(140, 92, 185, 0.2)"
+            pointColor="#e0aaff"
+          />
+        </div>
+         <div className="chart">
+          <h2>Line Chart Example 6 (Multi-series, No Area)</h2>
+          <LineChart 
+            data={multiLineNoAreaData} 
+            width={400} 
+            height={300} 
+            showArea={false}
+            lineColors={['#88b0de', '#ff9900']}
             pointColor="#ffffff"
           />
         </div>
