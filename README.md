@@ -48,7 +48,6 @@ This library requires the following peer dependencies:
 }
 ```
 
-
 ## Available Chart Types
 
 ### 1. Line Chart
@@ -75,19 +74,6 @@ import { BarChart } from 'apus';
   height={400}
   orientation="vertical"
   padding={0.2}
-/>
-```
-
-### 3. Scatter Plot
-```tsx
-import { ScatterPlot } from 'apus';
-
-<ScatterPlot
-  data={data}
-  width={600}
-  height={400}
-  pointSize={5}
-  pointColor="steelblue"
 />
 ```
 
@@ -193,32 +179,6 @@ interface BarChartProps extends ChartProps {
   orientation?: 'vertical' | 'horizontal';
   padding?: number;
   cornerRadius?: number;
-}
-```
-
-#### ScatterPlot
-```typescript
-interface ScatterPlotProps extends ChartProps {
-  pointSize?: number;
-  pointColor?: string;
-  showRegression?: boolean;
-}
-```
-
-### Utility Functions
-
-```typescript
-// Format numbers with commas
-formatNumber(value: number): string
-
-// Generate color scales
-createColorScale(domain: number[], range: string[]): (value: number) => string
-
-// Calculate statistics
-calculateStats(data: number[]): {
-  mean: number;
-  median: number;
-  standardDeviation: number;
 }
 ```
 
