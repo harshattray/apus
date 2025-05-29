@@ -1,6 +1,6 @@
 import { BarChart, LineChart } from 'src/lib'
 import '../App.css'
-import React, { useState } from 'react';
+import React from 'react';
 
 function App() {
   const barChartData1 = [
@@ -104,25 +104,6 @@ function App() {
     },
   ];
 
-  // State to hold selected data labels from the brush
-  const [selectedLabels, setSelectedLabels] = useState<(string | number)[]>([]);
-
-  // Handler for the brush end event
-  const handleBrushEnd = (labels: (string | number)[]) => {
-    setSelectedLabels(labels);
-  };
-
-  // Find the full data points for the selected labels from multiLineData
-  const selectedDataPoints = selectedLabels.map((label: string | number) => {
-      // Find the first occurrence of the label across all series in multiLineData
-      let foundPoint: { label: string | number; value: number } | undefined;
-      for (const series of multiLineData) {
-          foundPoint = series.values.find((point: { label: string | number; value: number }) => String(point.label) === String(label));
-          if (foundPoint) break; // Stop searching once found
-      }
-      return foundPoint;
-  }).filter((point): point is { label: string | number; value: number } => point !== undefined);
-
   return (
     <div className="App">
       <h1>Chart Library Demo</h1>
@@ -136,7 +117,6 @@ function App() {
             responsive={true}
             lineColors={['#ff6666', '#66cc66']}
             showGridLines={true}
-            brushable={true}
           />
         </div>
         <div className="responsive-container" style={{ width: '100%', maxWidth: '600px', margin: '20px auto' }}>
@@ -164,31 +144,18 @@ function App() {
             margin={{ top: 30, right: 30, bottom: 50, left: 50 }}
           />
         </div>
+        {/* Multi-line Chart Example */}
         <div className="chart">
-          <h2>Line Chart Example (Brushable)</h2>
+          <h2>Line Chart Example (Multiple Lines)</h2>
           <LineChart 
             data={multiLineData} 
             width={400} 
-            height={300} 
-            brushable={true}
+            height={300}
             showGridLines={true}
+            showXAxis={true}
+            showYAxis={true}
             lineColors={['#aaccff', '#ff9900']}
-            onBrushEnd={handleBrushEnd}
           />
-          <div style={{ marginTop: '15px', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', backgroundColor: '#333' }}>
-            <h3>Selected Data Points:</h3>
-            {
-              selectedDataPoints.length > 0 ? (
-                <ul>
-                  {selectedDataPoints.map((point: { label: string | number; value: number }, index: number) => (
-                    <li key={index}>Label: {point?.label?.toString()}, Value: {point?.value}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Brush over the chart to select data.</p>
-              )
-            }
-          </div>
         </div>
         <div className="chart">
           <h2>Line Chart Example 1 (Default)</h2>

@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
-import type { D3BrushEvent } from 'd3-brush';
 import type { ScalePoint } from 'd3-scale';
 
 export type LineChartProps = {
@@ -24,8 +23,6 @@ export type LineChartProps = {
   lineGradientColors?: string[];
   showArea?: boolean;
   responsive?: boolean;
-  brushable?: boolean;
-  onBrushEnd?: (selectedLabels: (string | number)[]) => void;
 };
 
 export const LineChart: React.FC<LineChartProps> = ({
@@ -49,12 +46,9 @@ export const LineChart: React.FC<LineChartProps> = ({
   lineGradientColors,
   showArea = true,
   responsive = true,
-  brushable = false,
-  onBrushEnd,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const brushRef = useRef<SVGGElement | null>(null);
   const [dimensions, setDimensions] = useState({ width, height });
 
   useEffect(() => {
@@ -257,49 +251,12 @@ export const LineChart: React.FC<LineChartProps> = ({
         });
     });
 
-    if (brushable && showXAxis) {
-      const brush = d3.brushX()
-        .extent([[0, 0], [innerWidth, innerHeight]]);
-
-      const brushGroup = g.append('g')
-        .attr('class', 'brush')
-        .call(brush);
-        
-      brushGroup.select('.overlay')
-        .style('cursor', 'crosshair');
-
-      brushGroup.call(brush.on('end', brushed));
-      brushRef.current = brushGroup.node();
-
-      function brushed({ selection }: D3BrushEvent<SVGGElement, any>) {
-        if (selection === null) {
-          if (onBrushEnd) {
-            onBrushEnd([]);
-          }
-        } else {
-          const [x0, x1] = selection;
-          const selectedLabels = allLabels.filter(label => {
-            const bandCenter = x(label)! + x.bandwidth() / 2;
-            return bandCenter >= x0 && bandCenter <= x1;
-          });
-
-          if (onBrushEnd) {
-            const originalLabels = selectedLabels.map(label => {
-                const originalPoint = data.reduce((acc, series) => acc.concat(series.values), [] as { label: string | number; value: number }[]).find(d => String(d.label) === label);
-                return originalPoint ? originalPoint.label : label;
-            });
-            onBrushEnd(originalLabels);
-          }
-        }
-      }
-    }
-
     return () => {
       svg.selectAll('*').remove();
       tooltip.remove();
     };
 
-  }, [data, lineColors, areaColor, pointColor, margin, yAxisTicks, showXAxis, showYAxis, showGridLines, tooltipBackgroundColor, tooltipTextColor, tooltipPadding, tooltipBorderRadius, tooltipFontSize, areaGradientColors, lineGradientColors, showArea, brushable, onBrushEnd, dimensions]);
+  }, [data, lineColors, areaColor, pointColor, margin, yAxisTicks, showXAxis, showYAxis, showGridLines, tooltipBackgroundColor, tooltipTextColor, tooltipPadding, tooltipBorderRadius, tooltipFontSize, areaGradientColors, lineGradientColors, showArea, responsive, width, height, dimensions]);
 
   const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;
 
