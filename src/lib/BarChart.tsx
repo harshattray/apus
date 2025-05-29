@@ -1,25 +1,74 @@
 import * as d3 from 'd3';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export type BarChartProps = {
   data: { label: string; value: number }[];
-  width: number;
-  height: number;
+  width?: number; // Made optional
+  height?: number; // Made optional
   color?: string | string[]; // Allow single color or array of colors
   margin?: { top: number; right: number; bottom: number; left: number };
+  responsive?: boolean; // New prop for responsive behavior
 };
 
-export const BarChart: React.FC<BarChartProps> = ({ data, width, height, color = '#6a93d1', margin = { top: 20, right: 30, bottom: 30, left: 40 } }) => {
-  const ref = useRef<SVGSVGElement | null>(null);
+export const BarChart: React.FC<BarChartProps> = ({
+  data,
+  width = 600, // Default width
+  height = 400, // Default height
+  color = '#6a93d1',
+  margin = { top: 20, right: 30, bottom: 30, left: 40 },
+  responsive = true, // Default to responsive
+}) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const [dimensions, setDimensions] = useState({
+    width: responsive && containerRef.current ? containerRef.current.clientWidth : width,
+    height: responsive && containerRef.current ? (containerRef.current.clientWidth * (height / width)) : height, // Calculate initial height based on aspect ratio if responsive
+  });
 
   useEffect(() => {
-    if (!ref.current) return;
+    const currentContainer = containerRef.current;
 
-    const svg = d3.select(ref.current);
+    if (!responsive || !currentContainer) {
+      setDimensions({ width: width, height: height });
+      return;
+    }
+
+    // Initial dimensions calculation
+    setDimensions({
+        width: currentContainer.clientWidth,
+        height: currentContainer.clientWidth * (height / width), // Calculate height based on aspect ratio
+    });
+
+    const observer = new ResizeObserver((entries) => {
+      // We only expect one entry for our container
+      const { clientWidth } = entries[0].target as HTMLElement;
+      setDimensions({
+        width: clientWidth,
+        height: clientWidth * (height / width), // Calculate height based on aspect ratio
+      });
+    });
+
+    observer.observe(currentContainer);
+
+    // Clean up the observer
+    return () => {
+      observer.unobserve(currentContainer);
+    };
+  }, [responsive, width, height]); // Re-run effect if responsive, width, or height props change
+
+  useEffect(() => {
+    const { width: currentWidth, height: currentHeight } = dimensions;
+
+    if (!svgRef.current || !data || data.length === 0 || currentWidth <= 0 || currentHeight <= 0) return;
+
+    const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = currentWidth - margin.left - margin.right;
+    const innerHeight = currentHeight - margin.top - margin.bottom;
+
+    // Ensure inner dimensions are non-negative
+    if (innerWidth <= 0 || innerHeight <= 0) return;
 
     const x = d3
       .scaleBand()
@@ -59,8 +108,25 @@ export const BarChart: React.FC<BarChartProps> = ({ data, width, height, color =
       .attr('y', (d) => y(d.value))
       .attr('width', x.bandwidth())
       .attr('height', (d) => innerHeight - y(d.value))
-      .attr('fill', (d, i) => (Array.isArray(color) ? color[i % color.length] : color)); // Use color array or single color
-  }, [data, width, height, color, margin]);
+      .attr('fill', (d, i) => (Array.isArray(color) ? color[i % color.length] : color));
+  }, [data, color, margin, dimensions]); // Add dimensions as a dependency
 
-  return <svg ref={ref} width={width} height={height} />;
+  // Calculate padding bottom for aspect ratio
+  const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;
+
+  // Render a div with the ref that will be observed and an SVG inside
+  return (
+    <div ref={containerRef} style={{
+      position: responsive ? 'relative' : undefined,
+      width: responsive ? '100%' : width,
+      height: responsive ? '0' : height, // Set height to 0 for padding-bottom to work
+      paddingBottom: paddingBottom,
+    }}>
+      <svg ref={svgRef} style={{
+        position: responsive ? 'absolute' : undefined,
+        top: responsive ? 0 : undefined,
+        left: responsive ? 0 : undefined,
+      }} width={responsive ? '100%' : width} height={responsive ? '100%' : height}></svg>
+    </div>
+  );
 };

@@ -1,11 +1,13 @@
 import * as d3 from 'd3';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import type { D3BrushEvent } from 'd3-brush';
+import type { ScalePoint } from 'd3-scale';
 
 export type LineChartProps = {
   data: { name: string; values: { label: string | number; value: number }[] }[];
-  width: number;
-  height: number;
-  lineColors?: string | string[]; 
+  width?: number;
+  height?: number;
+  lineColors?: string | string[];
   areaColor?: string;
   pointColor?: string;
   margin?: { top: number; right: number; bottom: number; left: number };
@@ -19,15 +21,18 @@ export type LineChartProps = {
   tooltipBorderRadius?: string;
   tooltipFontSize?: string;
   areaGradientColors?: string[];
-  lineGradientColors?: string[]; 
-  showArea?: boolean; 
+  lineGradientColors?: string[];
+  showArea?: boolean;
+  responsive?: boolean;
+  brushable?: boolean;
+  onBrushEnd?: (selectedLabels: (string | number)[]) => void;
 };
 
 export const LineChart: React.FC<LineChartProps> = ({
   data,
-  width,
-  height,
-  lineColors, // Use lineColors prop
+  width = 600,
+  height = 400,
+  lineColors,
   areaColor = 'rgba(70, 130, 180, 0.3)',
   pointColor = '#88b0de',
   margin = { top: 20, right: 30, bottom: 30, left: 40 },
@@ -41,30 +46,69 @@ export const LineChart: React.FC<LineChartProps> = ({
   tooltipBorderRadius = '4px',
   tooltipFontSize = '12px',
   areaGradientColors,
-  lineGradientColors, 
+  lineGradientColors,
   showArea = true,
+  responsive = true,
+  brushable = false,
+  onBrushEnd,
 }) => {
-  const ref = useRef<SVGSVGElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const brushRef = useRef<SVGGElement | null>(null);
+  const [dimensions, setDimensions] = useState({ width, height });
 
   useEffect(() => {
-    if (!ref.current || !data || data.length === 0) return;
+    if (!responsive || !containerRef.current) {
+      setDimensions({ width, height });
+      return;
+    }
 
-    const svg = d3.select(ref.current);
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.clientWidth;
+        const aspectRatio = height / width;
+        const containerHeight = containerWidth * aspectRatio;
+        
+        setDimensions({
+          width: containerWidth,
+          height: containerHeight
+        });
+      }
+    };
+
+    updateDimensions();
+
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, [responsive, width, height]);
+
+  useEffect(() => {
+    const { width: currentWidth, height: currentHeight } = dimensions;
+
+    if (!svgRef.current || !data || data.length === 0 || currentWidth <= 0 || currentHeight <= 0) return;
+
+    const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = currentWidth - margin.left - margin.right;
+    const innerHeight = currentHeight - margin.top - margin.bottom;
 
-    // Determine the color scale or use provided colors
+    if (innerWidth <= 0 || innerHeight <= 0) return;
+
     const colorScale = Array.isArray(lineColors) 
       ? d3.scaleOrdinal<string, string>().domain(data.map(d => d.name)).range(lineColors) 
       : d3.scaleOrdinal(d3.schemeCategory10).domain(data.map(d => d.name));
 
-    // Extract all labels and all values to determine scales
     const allLabels = data.reduce((acc, series) => acc.concat(series.values.map(d => String(d.label))), [] as string[]);
     const allValues = data.reduce((acc, series) => acc.concat(series.values.map(d => d.value)), [] as number[]);
 
-    const x = d3
+    const x: ScalePoint<string> = d3
       .scalePoint()
       .domain(allLabels)
       .range([0, innerWidth])
@@ -82,8 +126,7 @@ export const LineChart: React.FC<LineChartProps> = ({
       .y((d) => y(d.value))
       .curve(d3.curveMonotoneX);
 
-    // Area generator (will apply to all series for now, can be refined)
-     const area = d3
+    const area = d3
       .area<{ label: string | number; value: number }>()
       .x((d) => x(String(d.label))!)
       .y0(innerHeight)
@@ -92,9 +135,8 @@ export const LineChart: React.FC<LineChartProps> = ({
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Define gradient if colors are provided (apply to the first series area)
     if (areaGradientColors && areaGradientColors.length > 1 && data.length > 0) {
-      const gradient = svg.append('defs')
+      const areaGradient = svg.append('defs')
         .append('linearGradient')
         .attr('id', 'areaGradient')
         .attr('x1', '0%')
@@ -102,7 +144,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('x2', '0%')
         .attr('y2', '100%');
 
-      gradient.selectAll('stop')
+      areaGradient.selectAll('stop')
         .data(areaGradientColors)
         .enter()
         .append('stop')
@@ -110,7 +152,6 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('stop-color', (d) => d);
     }
 
-    // Define line gradient if colors are provided
     if (lineGradientColors && lineGradientColors.length > 1) {
       const lineGradient = svg.append('defs')
         .append('linearGradient')
@@ -128,7 +169,6 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('stop-color', (d) => d);
     }
 
-    // Add grid lines if enabled
     if (showGridLines) {
       g.append('g')
         .attr('class', 'grid')
@@ -137,7 +177,6 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('stroke', '#444444');
     }
 
-    // Append the area paths (one for each series) if showArea is true
     if (showArea) {
       g.selectAll('.area')
         .data(data)
@@ -148,7 +187,6 @@ export const LineChart: React.FC<LineChartProps> = ({
         .attr('d', (d) => area(d.values));
     }
 
-    // Append the line paths (one for each series)
     g.selectAll('.line')
       .data(data)
       .enter()
@@ -159,7 +197,6 @@ export const LineChart: React.FC<LineChartProps> = ({
       .attr('stroke-width', 2)
       .attr('d', (d) => line(d.values));
 
-    // Add axes if enabled
     if (showYAxis) {
       g.append('g')
         .attr('class', 'y-axis')
@@ -179,11 +216,9 @@ export const LineChart: React.FC<LineChartProps> = ({
         .style('fill', '#cccccc');
     }
 
-    // Style axis lines (domain and ticks)
     g.selectAll('.domain, .tick line')
       .attr('stroke', '#cccccc');
 
-    // Hide grid domain line
     g.selectAll('.grid .domain').remove();
 
     const tooltip = d3.select('body').append('div')
@@ -197,7 +232,6 @@ export const LineChart: React.FC<LineChartProps> = ({
       .style('pointer-events', 'none')
       .style('font-size', tooltipFontSize);
 
-    // Add circles for data points and interaction
     data.forEach(series => {
       g.selectAll(`.data-point-${series.name.replace(/\s+/g, '-')}`)
         .data(series.values)
@@ -223,11 +257,64 @@ export const LineChart: React.FC<LineChartProps> = ({
         });
     });
 
+    if (brushable && showXAxis) {
+      const brush = d3.brushX()
+        .extent([[0, 0], [innerWidth, innerHeight]]);
+
+      const brushGroup = g.append('g')
+        .attr('class', 'brush')
+        .call(brush);
+        
+      brushGroup.select('.overlay')
+        .style('cursor', 'crosshair');
+
+      brushGroup.call(brush.on('end', brushed));
+      brushRef.current = brushGroup.node();
+
+      function brushed({ selection }: D3BrushEvent<SVGGElement, any>) {
+        if (selection === null) {
+          if (onBrushEnd) {
+            onBrushEnd([]);
+          }
+        } else {
+          const [x0, x1] = selection;
+          const selectedLabels = allLabels.filter(label => {
+            const bandCenter = x(label)! + x.bandwidth() / 2;
+            return bandCenter >= x0 && bandCenter <= x1;
+          });
+
+          if (onBrushEnd) {
+            const originalLabels = selectedLabels.map(label => {
+                const originalPoint = data.reduce((acc, series) => acc.concat(series.values), [] as { label: string | number; value: number }[]).find(d => String(d.label) === label);
+                return originalPoint ? originalPoint.label : label;
+            });
+            onBrushEnd(originalLabels);
+          }
+        }
+      }
+    }
+
     return () => {
+      svg.selectAll('*').remove();
       tooltip.remove();
     };
 
-  }, [data, width, height, lineColors, areaColor, pointColor, margin, yAxisTicks, showXAxis, showYAxis, showGridLines, tooltipBackgroundColor, tooltipTextColor, tooltipPadding, tooltipBorderRadius, tooltipFontSize, areaGradientColors, lineGradientColors, showArea]);
+  }, [data, lineColors, areaColor, pointColor, margin, yAxisTicks, showXAxis, showYAxis, showGridLines, tooltipBackgroundColor, tooltipTextColor, tooltipPadding, tooltipBorderRadius, tooltipFontSize, areaGradientColors, lineGradientColors, showArea, brushable, onBrushEnd, dimensions]);
 
-  return <svg ref={ref} width={width} height={height} />;
+  const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;
+
+  return (
+    <div ref={containerRef} style={{
+      position: responsive ? 'relative' : undefined,
+      width: responsive ? '100%' : width,
+      height: responsive ? '0' : height, 
+      paddingBottom: paddingBottom,
+    }}>
+      <svg ref={svgRef} style={{
+        position: responsive ? 'absolute' : undefined,
+        top: responsive ? 0 : undefined,
+        left: responsive ? 0 : undefined,
+      }} width={responsive ? '100%' : width} height={responsive ? '100%' : height}></svg>
+    </div>
+  );
 }; 
