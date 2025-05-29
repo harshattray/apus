@@ -1,54 +1,286 @@
-# React + TypeScript + Vite
+# Apus - React Chart Library
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
+  <img src="public/apus.svg" alt="Apus Logo" width="200"/>
+</div>
 
-Currently, two official plugins are available:
+A powerful and customizable chart library for React applications, built with D3.js and TypeScript.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- 🎯 Built with React 18 and TypeScript
+- 📊 Powered by D3.js for powerful data visualization
+- 🎨 Customizable and responsive charts
+- 📦 Lightweight and easy to integrate
+- 🔍 Type-safe with TypeScript support
+- 🎨 Modern UI components with Tailwind CSS
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Screenshots
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+![Interactive Line Chart with Multiple Datasets](screens/sc1.png)
+*Interactive Line Chart with Multiple Datasets*
+
+![Customizable Bar Chart with Tooltips](screens/sc2.png)
+*Customizable Bar Chart with Tooltips*
+
+![Advanced Scatter Plot with Regression Line](screens/sc3.png)
+*Advanced Scatter Plot with Regression Line*
+
+## Installation
+
+```bash
+npm install apus
+# or
+yarn add apus
+# or
+pnpm add apus
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Peer Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This library requires the following peer dependencies:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```json
+{
+  "d3": "^7.0.0",
+  "react": "^18.0.0",
+  "react-dom": "^18.0.0"
+}
 ```
+
+## Quick Start
+
+```tsx
+import { Chart } from 'apus';
+
+function App() {
+  const data = [
+    { x: 1, y: 10 },
+    { x: 2, y: 20 },
+    { x: 3, y: 15 },
+    // ... more data points
+  ];
+
+  return (
+    <Chart
+      data={data}
+      width={600}
+      height={400}
+      // Add more props as needed
+    />
+  );
+}
+```
+
+## Available Chart Types
+
+### 1. Line Chart
+```tsx
+import { LineChart } from 'apus';
+
+<LineChart
+  data={data}
+  width={600}
+  height={400}
+  xAxis={{ title: 'Time' }}
+  yAxis={{ title: 'Value' }}
+  curve="monotoneX"
+/>
+```
+
+### 2. Bar Chart
+```tsx
+import { BarChart } from 'apus';
+
+<BarChart
+  data={data}
+  width={600}
+  height={400}
+  orientation="vertical"
+  padding={0.2}
+/>
+```
+
+### 3. Scatter Plot
+```tsx
+import { ScatterPlot } from 'apus';
+
+<ScatterPlot
+  data={data}
+  width={600}
+  height={400}
+  pointSize={5}
+  pointColor="steelblue"
+/>
+```
+
+## Configuration Options
+
+### Common Props
+All chart components accept these common props:
+
+```typescript
+interface ChartProps {
+  data: Array<DataPoint>;
+  width: number;
+  height: number;
+  margin?: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  theme?: 'light' | 'dark';
+  responsive?: boolean;
+}
+```
+
+### Axis Configuration
+```typescript
+interface AxisConfig {
+  title?: string;
+  tickFormat?: (value: number) => string;
+  tickCount?: number;
+  showGrid?: boolean;
+  gridColor?: string;
+}
+```
+
+### Animation Options
+```typescript
+interface AnimationConfig {
+  duration?: number;
+  easing?: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+  delay?: number;
+}
+```
+
+## Advanced Usage Examples
+
+### 1. Custom Styling
+```tsx
+<LineChart
+  data={data}
+  width={600}
+  height={400}
+  style={{
+    lineColor: '#FF5733',
+    lineWidth: 2,
+    areaColor: 'rgba(255, 87, 51, 0.2)',
+  }}
+/>
+```
+
+### 2. Interactive Features
+```tsx
+<BarChart
+  data={data}
+  width={600}
+  height={400}
+  interactive={true}
+  onBarClick={(data) => console.log('Clicked:', data)}
+  tooltip={(data) => `Value: ${data.value}`}
+/>
+```
+
+### 3. Multiple Datasets
+```tsx
+<LineChart
+  datasets={[
+    { data: dataset1, color: '#FF5733', label: 'Series 1' },
+    { data: dataset2, color: '#33FF57', label: 'Series 2' },
+  ]}
+  width={600}
+  height={400}
+  legend={true}
+/>
+```
+
+## API Documentation
+
+### Chart Components
+
+#### LineChart
+```typescript
+interface LineChartProps extends ChartProps {
+  curve?: 'linear' | 'monotoneX' | 'monotoneY' | 'natural';
+  showArea?: boolean;
+  showPoints?: boolean;
+  pointSize?: number;
+}
+```
+
+#### BarChart
+```typescript
+interface BarChartProps extends ChartProps {
+  orientation?: 'vertical' | 'horizontal';
+  padding?: number;
+  cornerRadius?: number;
+}
+```
+
+#### ScatterPlot
+```typescript
+interface ScatterPlotProps extends ChartProps {
+  pointSize?: number;
+  pointColor?: string;
+  showRegression?: boolean;
+}
+```
+
+### Utility Functions
+
+```typescript
+// Format numbers with commas
+formatNumber(value: number): string
+
+// Generate color scales
+createColorScale(domain: number[], range: string[]): (value: number) => string
+
+// Calculate statistics
+calculateStats(data: number[]): {
+  mean: number;
+  median: number;
+  standardDeviation: number;
+}
+```
+
+## Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/harshattray/apus.git
+cd apus
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Build the library:
+```bash
+npm run build
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+MIT © Harsha Attray
+
+## Support
+
+If you encounter any issues or have questions, please [open an issue](https://github.com/harshattray/apus/issues) on GitHub.
+
+## Author
+
+- GitHub: [@harshattray](https://github.com/harshattray)
+- Medium: [@Harshattray](https://medium.com/@Harshattray)
