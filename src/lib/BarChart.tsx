@@ -3,20 +3,20 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export type BarChartProps = {
   data: { label: string; value: number }[];
-  width?: number; // Made optional
-  height?: number; // Made optional
-  color?: string | string[]; // Allow single color or array of colors
+  width?: number;
+  height?: number;
+  color?: string | string[]; 
   margin?: { top: number; right: number; bottom: number; left: number };
-  responsive?: boolean; // New prop for responsive behavior
+  responsive?: boolean; 
 };
 
 export const BarChart: React.FC<BarChartProps> = ({
   data,
-  width = 600, // Default width
-  height = 400, // Default height
+  width = 600, 
+  height = 400, 
   color = '#6a93d1',
   margin = { top: 20, right: 30, bottom: 30, left: 40 },
-  responsive = true, // Default to responsive
+  responsive = true, 
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -36,15 +36,14 @@ export const BarChart: React.FC<BarChartProps> = ({
     // Initial dimensions calculation
     setDimensions({
         width: currentContainer.clientWidth,
-        height: currentContainer.clientWidth * (height / width), // Calculate height based on aspect ratio
+        height: currentContainer.clientWidth * (height / width), 
     });
 
     const observer = new ResizeObserver((entries) => {
-      // We only expect one entry for our container
       const { clientWidth } = entries[0].target as HTMLElement;
       setDimensions({
         width: clientWidth,
-        height: clientWidth * (height / width), // Calculate height based on aspect ratio
+        height: clientWidth * (height / width),
       });
     });
 
@@ -54,7 +53,7 @@ export const BarChart: React.FC<BarChartProps> = ({
     return () => {
       observer.unobserve(currentContainer);
     };
-  }, [responsive, width, height]); // Re-run effect if responsive, width, or height props change
+  }, [responsive, width, height]);
 
   useEffect(() => {
     const { width: currentWidth, height: currentHeight } = dimensions;
@@ -109,12 +108,11 @@ export const BarChart: React.FC<BarChartProps> = ({
       .attr('width', x.bandwidth())
       .attr('height', (d) => innerHeight - y(d.value))
       .attr('fill', (d, i) => (Array.isArray(color) ? color[i % color.length] : color));
-  }, [data, color, margin, dimensions]); // Add dimensions as a dependency
+  }, [data, color, margin, dimensions]);
 
   // Calculate padding bottom for aspect ratio
   const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;
 
-  // Render a div with the ref that will be observed and an SVG inside
   return (
     <div ref={containerRef} style={{
       position: responsive ? 'relative' : undefined,
