@@ -2,13 +2,14 @@ import * as d3 from 'd3';
 import React, { useEffect, useRef, useState } from 'react';
 
 export type BarChartProps = {
+  ariaLabel?: string;
   data: { label: string; value: number }[];
   width?: number;
   height?: number;
-  color?: string | string[]; 
+  color?: string | string[];
   gradientColors?: string[];
   margin?: { top: number; right: number; bottom: number; left: number };
-  responsive?: boolean; 
+  responsive?: boolean;
   showXAxis?: boolean;
   showYAxis?: boolean;
   showGridLines?: boolean;
@@ -25,12 +26,12 @@ export type BarChartProps = {
 
 export const BarChart: React.FC<BarChartProps> = ({
   data,
-  width = 600, 
-  height = 400, 
+  width = 600,
+  height = 400,
   color = '#6a93d1',
   gradientColors,
   margin = { top: 20, right: 30, bottom: 30, left: 40 },
-  responsive = true, 
+  responsive = true,
   showXAxis = true,
   showYAxis = true,
   showGridLines = false,
@@ -43,13 +44,17 @@ export const BarChart: React.FC<BarChartProps> = ({
   tooltipPadding = '8px',
   tooltipBorderRadius = '4px',
   tooltipFontSize = '12px',
+  ariaLabel = 'Bar chart',
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [dimensions, setDimensions] = useState({
     width: responsive && containerRef.current ? containerRef.current.clientWidth : width,
-    height: responsive && containerRef.current ? (containerRef.current.clientWidth * (height / width)) : height, // Calculate initial height based on aspect ratio if responsive
+    height:
+      responsive && containerRef.current
+        ? containerRef.current.clientWidth * (height / width)
+        : height, // Calculate initial height based on aspect ratio if responsive
   });
 
   useEffect(() => {
@@ -62,8 +67,8 @@ export const BarChart: React.FC<BarChartProps> = ({
 
     // Initial dimensions calculation
     setDimensions({
-        width: currentContainer.clientWidth,
-        height: currentContainer.clientWidth * (height / width), 
+      width: currentContainer.clientWidth,
+      height: currentContainer.clientWidth * (height / width),
     });
 
     const observer = new ResizeObserver((entries) => {
@@ -85,7 +90,8 @@ export const BarChart: React.FC<BarChartProps> = ({
   useEffect(() => {
     const { width: currentWidth, height: currentHeight } = dimensions;
 
-    if (!svgRef.current || !data || data.length === 0 || currentWidth <= 0 || currentHeight <= 0) return;
+    if (!svgRef.current || !data || data.length === 0 || currentWidth <= 0 || currentHeight <= 0)
+      return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -98,7 +104,8 @@ export const BarChart: React.FC<BarChartProps> = ({
 
     if (gradientColors && gradientColors.length >= 2) {
       const defs = svg.append('defs');
-      const gradient = defs.append('linearGradient')
+      const gradient = defs
+        .append('linearGradient')
         .attr('id', 'barGradient')
         .attr('x1', '0%')
         .attr('y1', '0%')
@@ -106,7 +113,8 @@ export const BarChart: React.FC<BarChartProps> = ({
         .attr('y2', '100%');
 
       gradientColors.forEach((color, i) => {
-        gradient.append('stop')
+        gradient
+          .append('stop')
           .attr('offset', `${(i / (gradientColors.length - 1)) * 100}%`)
           .attr('stop-color', color);
       });
@@ -138,10 +146,12 @@ export const BarChart: React.FC<BarChartProps> = ({
       if (showGridLines) {
         g.append('g')
           .attr('class', 'grid')
-          .call(d3.axisLeft(y)
-            .ticks(yAxisTicks)
-            .tickSize(-innerWidth)
-            .tickFormat(() => '')
+          .call(
+            d3
+              .axisLeft(y)
+              .ticks(yAxisTicks)
+              .tickSize(-innerWidth)
+              .tickFormat(() => ''),
           )
           .attr('stroke', axisLineColor)
           .attr('stroke-opacity', 0.2);
@@ -162,9 +172,11 @@ export const BarChart: React.FC<BarChartProps> = ({
         g.append('g')
           .attr('class', 'grid')
           .attr('transform', `translate(0,${innerHeight})`)
-          .call(d3.axisBottom(x)
-            .tickSize(-innerHeight)
-            .tickFormat(() => '')
+          .call(
+            d3
+              .axisBottom(x)
+              .tickSize(-innerHeight)
+              .tickFormat(() => ''),
           )
           .attr('stroke', axisLineColor)
           .attr('stroke-opacity', 0.2);
@@ -172,15 +184,14 @@ export const BarChart: React.FC<BarChartProps> = ({
     }
 
     // Style axis lines and ticks
-    g.selectAll('.domain, .tick line')
-      .attr('stroke', axisLineColor);
+    g.selectAll('.domain, .tick line').attr('stroke', axisLineColor);
 
     g.selectAll('rect')
       .data(data)
       .enter()
       .append('rect')
       .attr('x', (d) => x(d.label)!)
-      .attr('y', innerHeight) 
+      .attr('y', innerHeight)
       .attr('height', 0)
       .attr('width', x.bandwidth())
       .attr('fill', (d, i) => {
@@ -200,7 +211,7 @@ export const BarChart: React.FC<BarChartProps> = ({
         const dataPoint = d as { label: string; value: number };
         const [mouseX, mouseY] = d3.pointer(event);
         const containerRect = containerRef.current?.getBoundingClientRect();
-        
+
         if (containerRect) {
           tooltip
             .style('opacity', 1)
@@ -214,22 +225,45 @@ export const BarChart: React.FC<BarChartProps> = ({
         const tooltip = d3.select(tooltipRef.current);
         tooltip.style('opacity', 0);
       });
-  }, [data, color, margin, dimensions, showXAxis, showYAxis, xAxisTextColor, yAxisTextColor, axisLineColor, yAxisTicks, gradientColors, showGridLines]);
+  }, [
+    data,
+    color,
+    margin,
+    dimensions,
+    showXAxis,
+    showYAxis,
+    xAxisTextColor,
+    yAxisTextColor,
+    axisLineColor,
+    yAxisTicks,
+    gradientColors,
+    showGridLines,
+  ]);
 
   const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;
 
   return (
-    <div ref={containerRef} style={{
-      position: responsive ? 'relative' : undefined,
-      width: responsive ? '100%' : width,
-      height: responsive ? '0' : height,
-      paddingBottom: paddingBottom,
-    }}>
-      <svg ref={svgRef} style={{
-        position: responsive ? 'absolute' : undefined,
-        top: responsive ? 0 : undefined,
-        left: responsive ? 0 : undefined,
-      }} width={responsive ? '100%' : width} height={responsive ? '100%' : height}></svg>
+    <div
+      ref={containerRef}
+      style={{
+        position: responsive ? 'relative' : undefined,
+        width: responsive ? '100%' : width,
+        height: responsive ? '0' : height,
+        paddingBottom: paddingBottom,
+      }}
+    >
+      <svg
+        role="img"
+        aria-label={ariaLabel}
+        ref={svgRef}
+        style={{
+          position: responsive ? 'absolute' : undefined,
+          top: responsive ? 0 : undefined,
+          left: responsive ? 0 : undefined,
+        }}
+        width={responsive ? '100%' : width}
+        height={responsive ? '100%' : height}
+      ></svg>
       <div
         ref={tooltipRef}
         style={{
