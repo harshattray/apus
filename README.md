@@ -238,6 +238,12 @@ Make sure to update tests as appropriate.
 
 [MIT](LICENSE) 
 
+## Changelog
+
+### 0.1.9 (2025-05-30)
+- Fixed: LineChart component is now properly exported in TypeScript declaration files
+- Improved: Type declaration generation with enhanced build configuration
+
 ## Support
 
 If you encounter any issues or have questions, please [open an issue](https://github.com/harshattray/apus/issues) on GitHub.

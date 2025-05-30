@@ -44,7 +44,16 @@ export default defineConfig(() => {
   // Configuration for building the library
   const libraryConfig: UserConfig = {
     ...baseConfig,
-    plugins: [react(), dts()],
+    plugins: [
+      react(),
+      dts({
+        tsconfigPath: resolve(__dirname, './tsconfig.json'),
+        include: ['src/lib/**/*.ts', 'src/lib/**/*.tsx'],
+        rollupTypes: true,
+        staticImport: true,
+        logLevel: 'info',
+      }),
+    ],
     build: {
       lib: {
         entry: resolve(__dirname, 'src/lib/index.ts'),
