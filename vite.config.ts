@@ -2,6 +2,7 @@
 import { defineConfig, UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
@@ -43,12 +44,13 @@ export default defineConfig(() => {
   // Configuration for building the library
   const libraryConfig: UserConfig = {
     ...baseConfig,
+    plugins: [react(), dts()],
     build: {
       lib: {
         entry: resolve(__dirname, 'src/lib/index.ts'),
         name: 'ChartLib',
         fileName: 'index',
-        formats: ['es'],
+        formats: ['es', 'cjs'],
       },
       rollupOptions: {
         external: ['react', 'react-dom', 'd3'], // Externalize peer dependencies

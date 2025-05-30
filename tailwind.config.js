@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./src/demo/**/*.{js,jsx,ts,tsx}",
-    "./index.html",
-  ],
+  content: ['./src/demo/**/*.{js,jsx,ts,tsx}', './index.html'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        vietnam: ['"Be Vietnam Pro"', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
-}
-
+};
