@@ -1,6 +1,7 @@
 {
   "name": "apus",
-  "version": "0.1.9",
+  "version": "0.1.10",
+  "description": "A powerful and customizable chart library for React applications, built with D3.js and TypeScript",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -10,6 +11,22 @@
     "public",
     "screens"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/harshattray/apus.git"
+  },
+  "keywords": [
+    "react",
+    "charts",
+    "d3",
+    "data-visualization",
+    "typescript",
+    "linechart",
+    "barchart"
+  ],
+  "author": "Harsha Attray",
+  "license": "MIT",
+  "homepage": "https://github.com/harshattray/apus",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
