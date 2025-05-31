@@ -26,6 +26,15 @@ function App() {
     { label: 'Z', value: 8 },
   ];
 
+  const gradientBarData = [
+    { label: 'Jan', value: 30 },
+    { label: 'Feb', value: 70 },
+    { label: 'Mar', value: 45 },
+    { label: 'Apr', value: 90 },
+    { label: 'May', value: 60 },
+    { label: 'Jun', value: 80 },
+  ];
+
   const lineChartData1 = [
     {
       name: 'Single Series',
@@ -357,7 +366,7 @@ function App() {
                   <h3
                     className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
                   >
-                    Multi-series Line Chart
+                    Multi-series Line Chart with Legend
                   </h3>
                   <LineChart
                     data={multiLineData}
@@ -365,6 +374,9 @@ function App() {
                     height={300}
                     showGridLines={true}
                     lineColors={['#3b82f6', '#f59e0b']}
+                    showLegend={true}
+                    legendPosition="right"
+                    legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
                   />
                 </div>
 
@@ -383,6 +395,9 @@ function App() {
                     width={400}
                     height={300}
                     areaColor="rgba(59, 130, 246, 0.1)"
+                    showLegend={true}
+                    legendPosition="bottom"
+                    legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
                   />
                 </div>
 
@@ -501,9 +516,16 @@ function App() {
                   <h3
                     className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
                   >
-                    Default Bar Chart
+                    Bar Chart with Legend
                   </h3>
-                  <BarChart data={barChartData1} width={400} height={300} />
+                  <BarChart
+                    data={barChartData1}
+                    width={400}
+                    height={300}
+                    showLegend={true}
+                    legendPosition="bottom"
+                    legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
+                  />
                 </div>
 
                 <div
@@ -514,14 +536,17 @@ function App() {
                   <h3
                     className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
                   >
-                    Customized Bar Chart
+                    Customized Bar Chart with Right Legend
                   </h3>
                   <BarChart
                     data={barChartData2}
                     width={400}
                     height={300}
                     color={['#3b82f6', '#10b981', '#f59e0b']}
-                    margin={{ top: 30, right: 30, bottom: 50, left: 50 }}
+                    margin={{ top: 30, right: 80, bottom: 50, left: 50 }}
+                    showLegend={true}
+                    legendPosition="right"
+                    legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
                   />
                 </div>
 
@@ -576,15 +601,15 @@ function App() {
                   <h3
                     className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
                   >
-                    Bar Chart (Gradient)
+                    Vibrant Gradient Bar Chart
                   </h3>
                   <BarChart
-                    data={barChartData1}
+                    data={gradientBarData}
                     width={400}
                     height={300}
-                    gradientColors={['#3b82f6', '#60a5fa', '#1d4ed8']}
+                    gradientColors={['#06b6d4', '#8b5cf6', '#ec4899']}
                     showGridLines={true}
-                    yAxisTicks={4}
+                    yAxisTicks={5}
                     axisLineColor={isDarkMode ? '#475569' : '#e2e8f0'}
                   />
                 </div>
