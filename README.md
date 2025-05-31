@@ -87,6 +87,9 @@ const lineChartData = [
   showGridLines={true}
   responsive={true}
   ariaLabel="Sales trend over months"
+  xAxisTextColor="#333333" // Color for X-axis labels
+  yAxisTextColor="#333333" // Color for Y-axis labels
+  axisLineColor="#666666" // Color for axis lines
 />
 ```
 
@@ -148,6 +151,9 @@ Below are the props available for each chart component.
 | `legendPosition`       | `'top' \| 'right' \| 'bottom' \| 'left'`                             | `'bottom'`                            | Position of the legend relative to the chart.                                                              |
 | `legendFontSize`       | `string`                                                             | `'12px'`                              | Font size for the legend text.                                                                             |
 | `legendFontColor`      | `string`                                                             | `'#cccccc'`                           | Font color for the legend text.                                                                            |
+| `xAxisTextColor`       | `string`                                                             | `'#cccccc'`                           | Color for X-axis tick labels.                                                                              |
+| `yAxisTextColor`       | `string`                                                             | `'#cccccc'`                           | Color for Y-axis tick labels.                                                                              |
+| `axisLineColor`        | `string`                                                             | `'#cccccc'`                           | Color for axis lines.                                                                                      |
 
 ### `BarChartProps`
 
@@ -195,6 +201,12 @@ Below are the props available for each chart component.
   tooltipBackgroundColor="#2C3E50"
   tooltipTextColor="#ECF0F1"
   yAxisTicks={10} // More ticks on Y-axis
+  xAxisTextColor="#34495E" // Dark blue-gray for X-axis labels
+  yAxisTextColor="#34495E" // Dark blue-gray for Y-axis labels
+  axisLineColor="#7F8C8D" // Medium gray for axis lines
+  showLegend={true}
+  legendPosition="right"
+  legendFontColor="#34495E"
 />
 ```
 
