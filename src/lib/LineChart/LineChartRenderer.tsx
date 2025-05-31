@@ -186,10 +186,12 @@ export const LineChartRenderer: React.FC<LineChartRendererProps> = ({
         .attr('stroke-width', 2)
         .attr('d', line)
         .attr('stroke-dasharray', function () {
-          return this.getTotalLength();
+          // Check if getTotalLength is available (might not be in test environment)
+          return typeof this.getTotalLength === 'function' ? this.getTotalLength() : 0;
         })
         .attr('stroke-dashoffset', function () {
-          return this.getTotalLength();
+          // Check if getTotalLength is available (might not be in test environment)
+          return typeof this.getTotalLength === 'function' ? this.getTotalLength() : 0;
         })
         .transition()
         .duration(750)
