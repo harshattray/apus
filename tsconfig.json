@@ -16,6 +16,7 @@
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
+    "allowImportingTsExtensions": false,
     "types": ["vitest/globals"]
   },
   "include": ["src"]
