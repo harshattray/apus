@@ -27,6 +27,11 @@ export type BarChartProps = {
   tooltipPadding?: string;
   tooltipBorderRadius?: string;
   tooltipFontSize?: string;
+  showLegend?: boolean;
+  legendPosition?: 'top' | 'right' | 'bottom' | 'left';
+  legendFontSize?: string;
+  legendFontColor?: string;
+  legendLabels?: string[];
 };
 
 export const BarChart: React.FC<BarChartProps> = ({
@@ -50,6 +55,11 @@ export const BarChart: React.FC<BarChartProps> = ({
   tooltipBorderRadius = '4px',
   tooltipFontSize = '12px',
   ariaLabel = 'Bar chart',
+  showLegend = false,
+  legendPosition = 'bottom',
+  legendFontSize = '12px',
+  legendFontColor = '#cccccc',
+  legendLabels,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -101,8 +111,14 @@ export const BarChart: React.FC<BarChartProps> = ({
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const innerWidth = currentWidth - margin.left - margin.right;
-    const innerHeight = currentHeight - margin.top - margin.bottom;
+    // Adjust bottom margin if legend is at the bottom
+    const adjustedMargin = { ...margin };
+    if (showLegend && legendPosition === 'bottom') {
+      adjustedMargin.bottom += 30; // Add extra space for legend
+    }
+
+    const innerWidth = currentWidth - adjustedMargin.left - adjustedMargin.right;
+    const innerHeight = currentHeight - adjustedMargin.top - adjustedMargin.bottom;
 
     // Ensure inner dimensions are non-negative
     if (innerWidth <= 0 || innerHeight <= 0) return;
@@ -137,7 +153,9 @@ export const BarChart: React.FC<BarChartProps> = ({
       .nice()
       .range([innerHeight, 0]);
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append('g')
+      .attr('transform', `translate(${adjustedMargin.left},${adjustedMargin.top})`);
 
     // Add Y axis
     if (showYAxis) {
@@ -230,6 +248,78 @@ export const BarChart: React.FC<BarChartProps> = ({
         const tooltip = d3.select(tooltipRef.current);
         tooltip.style('opacity', 0);
       });
+    // Add legend if enabled
+    if (showLegend && data.length > 0) {
+      // Determine legend labels - use provided labels or data labels
+      const labels = legendLabels || data.map((d) => d.label);
+
+      // Calculate legend dimensions and position
+      const legendItemHeight = 20;
+      const legendItemWidth = 80;
+      const legendPadding = 10;
+      const legendHeight = labels.length * legendItemHeight;
+
+      let legendX = 0;
+      let legendY = 0;
+
+      // Position the legend based on the legendPosition prop
+      switch (legendPosition) {
+        case 'top':
+          legendX = innerWidth / 2 - (legendItemWidth * labels.length) / 2;
+          legendY = -margin.top / 2;
+          break;
+        case 'right':
+          legendX = innerWidth + legendPadding;
+          legendY = innerHeight / 2 - legendHeight / 2;
+          break;
+        case 'bottom':
+          legendX = innerWidth / 2 - (legendItemWidth * labels.length) / 2;
+          legendY = innerHeight + legendPadding + 15; // Added extra padding to avoid x-axis overlap
+          break;
+        case 'left':
+          legendX = -margin.left + legendPadding;
+          legendY = innerHeight / 2 - legendHeight / 2;
+          break;
+      }
+
+      // Create legend group
+      const legend = g
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(${legendX}, ${legendY})`);
+
+      // For horizontal legends (top/bottom), arrange items side by side
+      const isHorizontal = legendPosition === 'top' || legendPosition === 'bottom';
+
+      // Create legend items
+      labels.forEach((label, i) => {
+        const itemX = isHorizontal ? i * legendItemWidth : 0;
+        const itemY = isHorizontal ? 0 : i * legendItemHeight;
+
+        const legendItem = legend.append('g').attr('transform', `translate(${itemX}, ${itemY})`);
+
+        // Add colored rectangle
+        legendItem
+          .append('rect')
+          .attr('width', 15)
+          .attr('height', 15)
+          .attr('fill', () => {
+            if (gradientColors && gradientColors.length >= 2) {
+              return 'url(#barGradient)';
+            }
+            return Array.isArray(color) ? color[i % color.length] : color;
+          });
+
+        // Add text label
+        legendItem
+          .append('text')
+          .attr('x', 20)
+          .attr('y', 12)
+          .style('font-size', legendFontSize)
+          .style('fill', legendFontColor)
+          .text(label);
+      });
+    }
   }, [
     data,
     color,
@@ -243,6 +333,11 @@ export const BarChart: React.FC<BarChartProps> = ({
     yAxisTicks,
     gradientColors,
     showGridLines,
+    showLegend,
+    legendPosition,
+    legendFontSize,
+    legendFontColor,
+    legendLabels,
   ]);
 
   const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;

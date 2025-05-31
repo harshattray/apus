@@ -29,6 +29,10 @@ export type LineChartProps = {
   lineGradientColors?: string[];
   showArea?: boolean;
   responsive?: boolean;
+  showLegend?: boolean;
+  legendPosition?: 'top' | 'right' | 'bottom' | 'left';
+  legendFontSize?: string;
+  legendFontColor?: string;
 };
 
 export const LineChart: React.FC<LineChartProps> = ({
@@ -53,6 +57,10 @@ export const LineChart: React.FC<LineChartProps> = ({
   showArea = true,
   responsive = true,
   ariaLabel = 'Line chart',
+  showLegend = false,
+  legendPosition = 'bottom',
+  legendFontSize = '12px',
+  legendFontColor = '#cccccc',
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -101,8 +109,14 @@ export const LineChart: React.FC<LineChartProps> = ({
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const innerWidth = currentWidth - margin.left - margin.right;
-    const innerHeight = currentHeight - margin.top - margin.bottom;
+    // Adjust bottom margin if legend is at the bottom
+    const adjustedMargin = { ...margin };
+    if (showLegend && legendPosition === 'bottom') {
+      adjustedMargin.bottom += 30; // Add extra space for legend
+    }
+
+    const innerWidth = currentWidth - adjustedMargin.left - adjustedMargin.right;
+    const innerHeight = currentHeight - adjustedMargin.top - adjustedMargin.bottom;
 
     if (innerWidth <= 0 || innerHeight <= 0) return;
 
@@ -147,7 +161,9 @@ export const LineChart: React.FC<LineChartProps> = ({
       .y1((d) => y(d.value))
       .curve(d3.curveMonotoneX);
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append('g')
+      .attr('transform', `translate(${adjustedMargin.left},${adjustedMargin.top})`);
 
     if (areaGradientColors && areaGradientColors.length > 1 && data.length > 0) {
       const areaGradient = svg
@@ -287,6 +303,89 @@ export const LineChart: React.FC<LineChartProps> = ({
         });
     });
 
+    // Add legend if enabled
+    if (showLegend && data.length > 0) {
+      // Calculate legend dimensions and position
+      const legendItemHeight = 20;
+      const legendItemWidth = 120;
+      const legendPadding = 10;
+      const legendHeight = data.length * legendItemHeight;
+
+      let legendX = 0;
+      let legendY = 0;
+
+      // Position the legend based on the legendPosition prop
+      switch (legendPosition) {
+        case 'top':
+          legendX = innerWidth / 2 - (legendItemWidth * Math.min(data.length, 3)) / 2;
+          legendY = -margin.top / 2;
+          break;
+        case 'right':
+          legendX = innerWidth + legendPadding;
+          legendY = innerHeight / 2 - legendHeight / 2;
+          break;
+        case 'bottom':
+          legendX = innerWidth / 2 - (legendItemWidth * Math.min(data.length, 3)) / 2;
+          legendY = innerHeight + legendPadding + 15; // Added extra padding to avoid x-axis overlap
+          break;
+        case 'left':
+          legendX = -margin.left + legendPadding;
+          legendY = innerHeight / 2 - legendHeight / 2;
+          break;
+      }
+
+      // Create legend group
+      const legend = g
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(${legendX}, ${legendY})`);
+
+      // For horizontal legends (top/bottom), arrange items side by side
+      const isHorizontal = legendPosition === 'top' || legendPosition === 'bottom';
+
+      // Create legend items
+      data.forEach((series, i) => {
+        const itemX = isHorizontal ? i * legendItemWidth : 0;
+        const itemY = isHorizontal ? 0 : i * legendItemHeight;
+
+        const legendItem = legend.append('g').attr('transform', `translate(${itemX}, ${itemY})`);
+
+        // Add colored line
+        legendItem
+          .append('line')
+          .attr('x1', 0)
+          .attr('y1', 7)
+          .attr('x2', 15)
+          .attr('y2', 7)
+          .attr('stroke-width', 2)
+          .attr(
+            'stroke',
+            lineGradientColors && lineGradientColors.length > 1
+              ? 'url(#lineGradient)'
+              : colorScale(series.name),
+          );
+
+        // Add colored point
+        legendItem
+          .append('circle')
+          .attr('cx', 7)
+          .attr('cy', 7)
+          .attr('r', 3)
+          .attr('fill', colorScale(series.name))
+          .attr('stroke', '#1e1e1e')
+          .attr('stroke-width', 1);
+
+        // Add text label
+        legendItem
+          .append('text')
+          .attr('x', 20)
+          .attr('y', 10)
+          .style('font-size', legendFontSize)
+          .style('fill', legendFontColor)
+          .text(series.name);
+      });
+    }
+
     return () => {
       svg.selectAll('*').remove();
       tooltip.remove();
@@ -313,6 +412,10 @@ export const LineChart: React.FC<LineChartProps> = ({
     width,
     height,
     dimensions,
+    showLegend,
+    legendPosition,
+    legendFontSize,
+    legendFontColor,
   ]);
 
   const paddingBottom = responsive ? `${(height / width) * 100}%` : undefined;

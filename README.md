@@ -144,6 +144,10 @@ Below are the props available for each chart component.
 | `lineGradientColors`   | `string[]`                                                           | `undefined`                           | Array of colors for line gradient (e.g., `['#startColor', '#endColor']`). Overrides `lineColors` if provided. |
 | `showArea`             | `boolean`                                                            | `true`                                | Whether to display the area under the line.                                                                |
 | `responsive`           | `boolean`                                                            | `true`                                | Whether the chart should be responsive to its container's width.                                           |
+| `showLegend`           | `boolean`                                                            | `false`                               | Whether to display a legend for the chart.                                                                 |
+| `legendPosition`       | `'top' \| 'right' \| 'bottom' \| 'left'`                             | `'bottom'`                            | Position of the legend relative to the chart.                                                              |
+| `legendFontSize`       | `string`                                                             | `'12px'`                              | Font size for the legend text.                                                                             |
+| `legendFontColor`      | `string`                                                             | `'#cccccc'`                           | Font color for the legend text.                                                                            |
 
 ### `BarChartProps`
 
@@ -169,6 +173,11 @@ Below are the props available for each chart component.
 | `tooltipPadding`       | `string`                                                     | `'8px'`                            | Padding for the tooltip.                                                                                |
 | `tooltipBorderRadius`  | `string`                                                     | `'4px'`                            | Border radius for the tooltip.                                                                          |
 | `tooltipFontSize`      | `string`                                                     | `'12px'`                           | Font size for the tooltip.                                                                              |
+| `showLegend`           | `boolean`                                                    | `false`                            | Whether to display a legend for the chart.                                                              |
+| `legendPosition`       | `'top' \| 'right' \| 'bottom' \| 'left'`                    | `'bottom'`                         | Position of the legend relative to the chart.                                                           |
+| `legendFontSize`       | `string`                                                     | `'12px'`                           | Font size for the legend text.                                                                          |
+| `legendFontColor`      | `string`                                                     | `'#cccccc'`                        | Font color for the legend text.                                                                         |
+| `legendLabels`         | `string[]`                                                   | `undefined`                        | Optional custom labels for the legend. If not provided, data labels will be used.                       |
 
 ## Advanced Usage Examples
 
@@ -199,9 +208,74 @@ Below are the props available for each chart component.
   color={['#FFC300', '#FF5733', '#C70039', '#900C3F', '#581845']} // Colors will cycle for bars
   showGridLines={true}
   axisLineColor="#BDC3C7"
-  xAxisTextColor="#2C3E50"
-  yAxisTextColor="#2C3E50"
+  xAxisTextColor="#7F8C8D"
+  yAxisTextColor="#7F8C8D"
   margin={{ top: 30, right: 40, bottom: 50, left: 60 }} // Custom margins
+/>
+
+### 3. Charts with Legends
+
+#### Line Chart with Legend
+
+```tsx
+// Multi-series line chart with legend on the right
+const multiSeriesData = [
+  {
+    name: 'Series A',
+    values: [
+      { label: 'Jan', value: 30 },
+      { label: 'Feb', value: 45 },
+      { label: 'Mar', value: 40 },
+      { label: 'Apr', value: 55 },
+      { label: 'May', value: 50 },
+    ],
+  },
+  {
+    name: 'Series B',
+    values: [
+      { label: 'Jan', value: 60 },
+      { label: 'Feb', value: 50 },
+      { label: 'Mar', value: 65 },
+      { label: 'Apr', value: 70 },
+      { label: 'May', value: 68 },
+    ],
+  },
+];
+
+<LineChart
+  data={multiSeriesData}
+  width={700}
+  height={400}
+  lineColors={['#3b82f6', '#f59e0b']}
+  showLegend={true}
+  legendPosition="right" // Options: 'top', 'right', 'bottom', 'left'
+  legendFontColor="#666666"
+  legendFontSize="14px"
+/>
+```
+
+#### Bar Chart with Legend
+
+```tsx
+// Bar chart with custom legend labels at the bottom
+const barData = [
+  { label: 'A', value: 10 },
+  { label: 'B', value: 20 },
+  { label: 'C', value: 15 },
+  { label: 'D', value: 25 },
+  { label: 'E', value: 30 },
+];
+
+<BarChart
+  data={barData}
+  width={600}
+  height={400}
+  color={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']}
+  showLegend={true}
+  legendPosition="bottom" // Options: 'top', 'right', 'bottom', 'left'
+  legendFontColor="#666666"
+  // Optional custom legend labels
+  legendLabels={['Category A', 'Category B', 'Category C', 'Category D', 'Category E']}
 />
 ```
 
