@@ -38,6 +38,7 @@ module.exports = {
         'src/lib/BarChart/BarChart.tsx',
         'src/lib/LineChart/LineChart.tsx',
         'src/lib/StackedBarChart/StackedBarChart.tsx',
+        'src/lib/RadarChart/RadarChart.tsx',
       ],
       description: 'Reusable chart components for data visualization.',
     },

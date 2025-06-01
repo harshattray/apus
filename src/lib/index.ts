@@ -11,7 +11,8 @@ export { LineChart } from './LineChart/LineChart';
 export type { LineChartProps, LineChartSeries, LineChartDataPoint } from './LineChart/types';
 
 // Export StackedBarChart
-export { StackedBarChart } from './StackedBarChart/StackedBarChart';
+export { default as StackedBarChart } from './StackedBarChart/StackedBarChart';
+export { default as RadarChart } from './RadarChart/RadarChart';
 export type { StackedBarChartProps } from './StackedBarChart/types';
 
 // Export hooks for advanced usage
