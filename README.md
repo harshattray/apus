@@ -28,6 +28,9 @@ A powerful and customizable chart library for React applications, built with D3.
 ![Advanced Scatter Plot with Regression Line](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc3.png)
 *Advanced Scatter Plot with Regression Line*
 
+![Stacked Bar Chart](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc4.png)
+*Stacked Bar Chart*
+
 ## Installation
 
 ```bash
