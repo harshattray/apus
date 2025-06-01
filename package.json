@@ -16,7 +16,7 @@
     "build": "tsc -b && vite build",
     "styleguide": "styleguidist server",
     "styleguide:build": "styleguidist build --config styleguide.config.cjs",
-    "deploy": "gh-pages -d styleguide/build",
+    "deploy": "gh-pages -d styleguide",
     "build:demo": "VITE_APP_BUILD=demo vite build",
     "lint": "eslint .",
     "preview": "vite preview",

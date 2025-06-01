@@ -1,0 +1,36 @@
+name: Deploy Styleguidist to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master # Or 'main' if that's your default branch
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Allows the action to push to the gh-pages branch
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x' # You can adjust this to match your project's Node.js version
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci # 'npm ci' is generally recommended for CI for faster, more reliable installs
+
+      - name: Build Styleguidist
+        run: npm run styleguide:build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Using v3, ensure this is a current stable version
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./styleguide # This is the directory Styleguidist outputs to
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Automated deployment of Styleguidist documentation'
