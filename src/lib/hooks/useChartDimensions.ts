@@ -4,7 +4,7 @@
  */
 import { useState, useEffect, RefObject } from 'react';
 
-type Dimensions = {
+export type Dimensions = {
   width: number;
   height: number;
 };

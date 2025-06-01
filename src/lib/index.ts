@@ -10,6 +10,10 @@ export type { BarChartProps, BarChartData } from './BarChart/types';
 export { LineChart } from './LineChart/LineChart';
 export type { LineChartProps, LineChartSeries, LineChartDataPoint } from './LineChart/types';
 
+// Export StackedBarChart
+export { StackedBarChart } from './StackedBarChart/StackedBarChart';
+export type { StackedBarChartProps } from './StackedBarChart/types';
+
 // Export hooks for advanced usage
 export { useChartDimensions } from './hooks/useChartDimensions';
 export { useTooltip } from './hooks/useTooltip';

@@ -31,13 +31,33 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
   const showTooltip = useCallback(
     (content: string, x: number, y: number, offsetX = 0, offsetY = 0) => {
       const tooltip = d3.select(tooltipRef.current);
+      if (!content) return; // Don't show empty tooltips
 
-      tooltip
-        .style('opacity', 1)
-        .html(content)
-        .style('left', `${x + offsetX}px`)
-        .style('top', `${y + offsetY}px`)
-        .style('transform', 'translate(-50%, -100%)');
+      // Ensure tooltip is visible and positioned correctly
+      tooltip.style('display', 'block').style('opacity', 1).html(content);
+
+      // Get tooltip dimensions after content is rendered
+      const tooltipNode = tooltip.node();
+      if (tooltipNode) {
+        const tooltipRect = tooltipNode.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+
+        // Adjust x position to prevent tooltip from going off-screen
+        let adjustedX = x + offsetX;
+        if (adjustedX + tooltipRect.width / 2 > windowWidth - 10) {
+          adjustedX = windowWidth - tooltipRect.width / 2 - 10;
+        } else if (adjustedX - tooltipRect.width / 2 < 10) {
+          adjustedX = tooltipRect.width / 2 + 10;
+        }
+
+        tooltip
+          .style('left', `${adjustedX}px`)
+          .style('top', `${y + offsetY}px`)
+          .style('transform', 'translate(-50%, -100%)')
+          .style('pointer-events', 'none');
+      } else {
+        // console.log('[useTooltip] Tooltip node is null/undefined after setting content.'); // Optional: keep if issues persist
+      }
     },
     [tooltipRef],
   );
@@ -47,7 +67,7 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
    */
   const hideTooltip = useCallback(() => {
     const tooltip = d3.select(tooltipRef.current);
-    tooltip.style('opacity', 0);
+    tooltip.style('opacity', 0).style('display', 'none');
   }, [tooltipRef]);
 
   /**
@@ -66,7 +86,8 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
       .style('font-size', styles.fontSize)
       .style('opacity', 0)
       .style('transition', 'opacity 0.2s')
-      .style('z-index', 10);
+      .style('z-index', 9999)
+      .style('box-shadow', '0 2px 8px rgba(0, 0, 0, 0.15)');
   }, [tooltipRef, styles]);
 
   return {
