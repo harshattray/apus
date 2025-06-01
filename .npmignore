@@ -1,0 +1,26 @@
+# Source files
+src/demo
+src/setupTests.ts
+src/main.tsx
+src/index.css
+src/vite-env.d.ts
+
+# Development files
+.github
+.vscode
+.husky
+.eslintrc.cjs
+.gitignore
+.prettierrc
+postcss.config.js
+tailwind.config.js
+tsconfig.node.json
+vitest.config.ts
+
+# Build artifacts
+coverage
+node_modules
+
+# Misc
+*.log
+.DS_Store
