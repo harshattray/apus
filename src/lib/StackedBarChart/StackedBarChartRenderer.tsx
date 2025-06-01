@@ -117,8 +117,6 @@ export const StackedBarChartRenderer: React.FC<StackedBarChartRendererProps> = (
 
     if (showLegend) {
       if (legendPosition === 'top' || legendPosition === 'bottom') {
-        // Estimate legend height based on number of keys if they wrap (simplified)
-        // This is a rough estimate, a more robust solution would calculate actual rendered height
         legendHeight = legendItemHeight + legendPadding; // Minimum one line
         innerHeight -= legendHeight;
       } else if (legendPosition === 'left' || legendPosition === 'right') {
@@ -580,7 +578,7 @@ export const StackedBarChartRenderer: React.FC<StackedBarChartRendererProps> = (
           currentY += legendLineHeight;
         });
       }
-    } // End of if (showLegend ...)
+    }
   }, [
     data,
     keys,

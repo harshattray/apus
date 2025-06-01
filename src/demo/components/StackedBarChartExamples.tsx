@@ -106,7 +106,6 @@ const StackedBarChartExamples: React.FC<StackedBarChartExamplesProps> = ({ isDar
 
   return (
     <div className="flex flex-col gap-6 p-4">
-      {/* Example 1: Monthly Sales by Category */}
       <div
         className={`rounded-xl p-6 border w-full ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
       >
@@ -143,7 +142,6 @@ const StackedBarChartExamples: React.FC<StackedBarChartExamplesProps> = ({ isDar
         </div>
       </div>
 
-      {/* Example 2: Quarterly Revenue by Product */}
       <div
         className={`rounded-xl p-6 border w-full ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
       >
@@ -219,7 +217,6 @@ const StackedBarChartExamples: React.FC<StackedBarChartExamplesProps> = ({ isDar
         </div>
       </div>
 
-      {/* Example 4: Stacked Bar Chart with Negative Values */}
       <div
         className={`rounded-xl p-6 border w-full ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
       >
@@ -256,7 +253,6 @@ const StackedBarChartExamples: React.FC<StackedBarChartExamplesProps> = ({ isDar
         </div>
       </div>
 
-      {/* Example 5: Minimalist Stacked Bar Chart */}
       <div
         className={`rounded-xl p-6 border w-full ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
       >
@@ -288,7 +284,6 @@ const StackedBarChartExamples: React.FC<StackedBarChartExamplesProps> = ({ isDar
         </div>
       </div>
 
-      {/* Example 7: Stacked Bar Chart with Custom Tooltip */}
       <div
         className={`rounded-xl p-6 border w-full ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
       >
@@ -324,7 +319,6 @@ const StackedBarChartExamples: React.FC<StackedBarChartExamplesProps> = ({ isDar
         </div>
       </div>
 
-      {/* Example 8: Horizontal Stacked Bar Chart */}
       <div
         className={`rounded-xl p-6 border w-full ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
       >
