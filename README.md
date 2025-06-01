@@ -306,6 +306,21 @@ Make sure to update tests as appropriate.
 
 ## Changelog
 
+## [0.2.0] - 2025-06-01
+
+### Added
+- Individual `README.md` files for `LineChart`, `BarChart`, and `StackedBarChart` components with detailed props and usage examples.
+- Screenshot for `StackedBarChart` in the main `README.md`.
+- Global test setup in `test-setup.ts` to mock SVG DOM methods (`getBoundingClientRect`, `getComputedTextLength`) for robust Vitest/JSDOM testing.
+- Comprehensive test cases for `StackedBarChart`.
+
+### Changed
+- Refactored main `README.md` to link to individual component READMEs for props and examples, improving modularity.
+- Improved D3 rendering logic in `StackedBarChartRenderer.tsx` for legend layout, bar transitions, tooltip handling, and added class names for better test targeting.
+- Enhanced tooltip styling and typings in `StackedBarChartExamples.tsx` and `StackedBarChart.tsx`.
+- Updated test selectors and assertions in `StackedBarChart.test.tsx`.
+- Minor formatting and style adjustments in `StackedBarChart.tsx` and `StackedBarChartExamples.tsx`.
+
 ### 0.1.9 (2025-05-30)
 - Fixed: LineChart component is now properly exported in TypeScript declaration files
 - Improved: Type declaration generation with enhanced build configuration
