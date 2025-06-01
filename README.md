@@ -28,6 +28,9 @@ A powerful and customizable chart library for React applications, built with D3.
 ![Advanced Scatter Plot with Regression Line](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc3.png)
 *Advanced Scatter Plot with Regression Line*
 
+![Stacked Bar Chart](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc4.png)
+*Stacked Bar Chart*
+
 ## Installation
 
 ```bash
@@ -53,6 +56,10 @@ This library requires the following peer dependencies:
 ## Available Chart Types
 
 ### 1. Line Chart
+
+A versatile chart for displaying trends over time or continuous data. Supports multiple series, area fills, and customization options.
+
+[View LineChart Props and Details](./src/lib/LineChart/README.md)
 
 ```tsx
 import { LineChart } from 'apus'; 
@@ -95,6 +102,10 @@ const lineChartData = [
 
 ### 2. Bar Chart
 
+Ideal for comparing discrete categories. Supports single or multiple colors and responsiveness.
+
+[View BarChart Props and Details](./src/lib/BarChart/README.md)
+
 ```tsx
 import { BarChart } from 'apus'; 
 
@@ -118,72 +129,41 @@ const barChartData = [
 />
 ```
 
+### 3. Stacked Bar Chart
+
+Displays data as a series of stacked bars, suitable for showing parts of a whole or comparing cumulative totals across different categories.
+
+[View StackedBarChart Props and Details](./src/lib/StackedBarChart/README.md)
+
+```tsx
+import { StackedBarChart } from 'apus';
+
+const salesData = [
+  { month: 'Jan', apples: 10, oranges: 20, bananas: 15 },
+  { month: 'Feb', apples: 12, oranges: 18, bananas: 22 },
+  { month: 'Mar', apples: 8, oranges: 25, bananas: 10 },
+];
+
+const fruitKeys = ['apples', 'oranges', 'bananas'];
+
+<StackedBarChart
+  data={salesData}
+  keys={fruitKeys}
+  indexBy="month"
+  width={700}
+  height={450}
+  colors={['#4CAF50', '#FF9800', '#FFEB3B']}
+  showGridLines={true}
+  showLegend={true}
+  legendPosition="top"
+  ariaLabel="Monthly fruit sales"
+/>
+```
+
 ## Component Props
 
-Below are the props available for each chart component.
+For detailed props of each component, please refer to their individual README files linked above.
 
-### `LineChartProps`
-
-| Prop                   | Type                                                                 | Default Value                         | Description                                                                                                |
-|------------------------|----------------------------------------------------------------------|---------------------------------------|------------------------------------------------------------------------------------------------------------|
-| `ariaLabel`            | `string`                                                             | `'Line chart'`                        | Optional ARIA label for accessibility.                                                                     |
-| `data`                 | `{ name: string; values: { label: string \| number; value: number }[] }[]` | `[]`                                  | Array of data series. Each series has a name and an array of values (label-value pairs).                   |
-| `width`                | `number`                                                             | `600`                                 | Width of the chart.                                                                                        |
-| `height`               | `number`                                                             | `400`                                 | Height of the chart.                                                                                       |
-| `lineColors`           | `string \| string[]`                                               | (D3 default scheme)                   | Color(s) for the lines. Can be a single string or an array for multiple series.                            |
-| `areaColor`            | `string`                                                             | `'rgba(70, 130, 180, 0.3)'`           | Fill color for the area under the line. Used if `showArea` is true and `areaGradientColors` is not set.    |
-| `pointColor`           | `string`                                                             | `'#88b0de'`                           | Color for the data points.                                                                                 |
-| `margin`               | `{ top: number; right: number; bottom: number; left: number }`      | `{ top: 20, right: 30, bottom: 30, left: 40 }` | Margins around the chart plotting area.                                                                    |
-| `yAxisTicks`           | `number`                                                             | `5`                                   | Suggested number of ticks on the Y-axis.                                                                   |
-| `showXAxis`            | `boolean`                                                            | `true`                                | Whether to display the X-axis.                                                                             |
-| `showYAxis`            | `boolean`                                                            | `true`                                | Whether to display the Y-axis.                                                                             |
-| `showGridLines`        | `boolean`                                                            | `false`                               | Whether to display grid lines.                                                                             |
-| `tooltipBackgroundColor` | `string`                                                             | `'#333333'`                           | Background color for the tooltip.                                                                          |
-| `tooltipTextColor`     | `string`                                                             | `'#ffffff'`                           | Text color for the tooltip.                                                                                |
-| `tooltipPadding`       | `string`                                                             | `'8px'`                               | Padding for the tooltip.                                                                                   |
-| `tooltipBorderRadius`  | `string`                                                             | `'4px'`                               | Border radius for the tooltip.                                                                             |
-| `tooltipFontSize`      | `string`                                                             | `'12px'`                              | Font size for the tooltip.                                                                                 |
-| `areaGradientColors`   | `string[]`                                                           | `undefined`                           | Array of colors for area gradient (e.g., `['#startColor', '#endColor']`). Overrides `areaColor` if provided. |
-| `lineGradientColors`   | `string[]`                                                           | `undefined`                           | Array of colors for line gradient (e.g., `['#startColor', '#endColor']`). Overrides `lineColors` if provided. |
-| `showArea`             | `boolean`                                                            | `true`                                | Whether to display the area under the line.                                                                |
-| `responsive`           | `boolean`                                                            | `true`                                | Whether the chart should be responsive to its container's width.                                           |
-| `showLegend`           | `boolean`                                                            | `false`                               | Whether to display a legend for the chart.                                                                 |
-| `legendPosition`       | `'top' \| 'right' \| 'bottom' \| 'left'`                             | `'bottom'`                            | Position of the legend relative to the chart.                                                              |
-| `legendFontSize`       | `string`                                                             | `'12px'`                              | Font size for the legend text.                                                                             |
-| `legendFontColor`      | `string`                                                             | `'#cccccc'`                           | Font color for the legend text.                                                                            |
-| `xAxisTextColor`       | `string`                                                             | `'#cccccc'`                           | Color for X-axis tick labels.                                                                              |
-| `yAxisTextColor`       | `string`                                                             | `'#cccccc'`                           | Color for Y-axis tick labels.                                                                              |
-| `axisLineColor`        | `string`                                                             | `'#cccccc'`                           | Color for axis lines.                                                                                      |
-
-### `BarChartProps`
-
-| Prop                   | Type                                                         | Default Value                      | Description                                                                                             |
-|------------------------|--------------------------------------------------------------|------------------------------------|---------------------------------------------------------------------------------------------------------|
-| `ariaLabel`            | `string`                                                     | `'Bar chart'`                      | Optional ARIA label for accessibility.                                                                  |
-| `data`                 | `{ label: string; value: number }[]`                         | `[]`                               | Array of data points (label-value pairs).                                                               |
-| `width`                | `number`                                                     | `600`                              | Width of the chart.                                                                                     |
-| `height`               | `number`                                                     | `400`                              | Height of the chart.                                                                                    |
-| `color`                | `string \| string[]`                                       | `'#6a93d1'`                        | Color(s) for the bars. Can be a single string or an array for multiple bars (colors will cycle).        |
-| `gradientColors`       | `string[]`                                                   | `undefined`                        | Array of colors for bar gradient (e.g., `['#startColor', '#endColor']`). Overrides `color` if provided.    |
-| `margin`               | `{ top: number; right: number; bottom: number; left: number }` | `{ top: 20, right: 30, bottom: 30, left: 40 }` | Margins around the chart plotting area.                                                                 |
-| `responsive`           | `boolean`                                                    | `true`                             | Whether the chart should be responsive to its container's width.                                        |
-| `showXAxis`            | `boolean`                                                    | `true`                             | Whether to display the X-axis.                                                                          |
-| `showYAxis`            | `boolean`                                                    | `true`                             | Whether to display the Y-axis.                                                                          |
-| `showGridLines`        | `boolean`                                                    | `false`                            | Whether to display grid lines.                                                                          |
-| `xAxisTextColor`       | `string`                                                     | `'#cccccc'`                        | Color for X-axis tick labels.                                                                           |
-| `yAxisTextColor`       | `string`                                                     | `'#cccccc'`                        | Color for Y-axis tick labels.                                                                           |
-| `axisLineColor`        | `string`                                                     | `'#cccccc'`                        | Color for axis lines.                                                                                   |
-| `yAxisTicks`           | `number`                                                     | `5`                                | Suggested number of ticks on the Y-axis.                                                                |
-| `tooltipBackgroundColor` | `string`                                                     | `'rgba(0, 0, 0, 0.7)'`             | Background color for the tooltip.                                                                       |
-| `tooltipTextColor`     | `string`                                                     | `'white'`                          | Text color for the tooltip.                                                                             |
-| `tooltipPadding`       | `string`                                                     | `'8px'`                            | Padding for the tooltip.                                                                                |
-| `tooltipBorderRadius`  | `string`                                                     | `'4px'`                            | Border radius for the tooltip.                                                                          |
-| `tooltipFontSize`      | `string`                                                     | `'12px'`                           | Font size for the tooltip.                                                                              |
-| `showLegend`           | `boolean`                                                    | `false`                            | Whether to display a legend for the chart.                                                              |
-| `legendPosition`       | `'top' \| 'right' \| 'bottom' \| 'left'`                    | `'bottom'`                         | Position of the legend relative to the chart.                                                           |
-| `legendFontSize`       | `string`                                                     | `'12px'`                           | Font size for the legend text.                                                                          |
-| `legendFontColor`      | `string`                                                     | `'#cccccc'`                        | Font color for the legend text.                                                                         |
-| `legendLabels`         | `string[]`                                                   | `undefined`                        | Optional custom labels for the legend. If not provided, data labels will be used.                       |
 
 ## Advanced Usage Examples
 
