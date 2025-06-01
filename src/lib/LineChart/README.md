@@ -59,34 +59,49 @@ const lineChartData = [
   },
 ];
 
-const MyLineChart = () => (
-  <LineChart
-    data={lineChartData}
-    width={600}
-    height={400}
-    lineColors={['#1f77b4', '#ff7f0e']} // Different color for each line series
-    showArea={true}
-    areaColor="rgba(70, 130, 180, 0.1)" // A light blue area fill
-    pointColor="#88b0de" // Color for data points
-    showGridLines={true}
-    responsive={true}
-    ariaLabel="Sales trend over months"
-    xAxisTextColor="#333333"
-    yAxisTextColor="#333333"
-    axisLineColor="#666666"
-    showLegend={true}
-    legendPosition="top"
-  />
-);
-
-export default MyLineChart;
+<LineChart
+  data={lineChartData}
+  width={600}
+  height={400}
+  lineColors={['#1f77b4', '#ff7f0e']} // Different color for each line series
+  showArea={true}
+  areaColor="rgba(70, 130, 180, 0.1)" // A light blue area fill
+  pointColor="#88b0de" // Color for data points
+  showGridLines={true}
+  responsive={true}
+  ariaLabel="Sales trend over months"
+  xAxisTextColor="#333333"
+  yAxisTextColor="#333333"
+  axisLineColor="#666666"
+  showLegend={true}
+  legendPosition="top"
+/>
 ```
 
 ## Advanced Usage: Custom Styling with Gradients
 
 ```tsx
+const lineChartData = [
+  {
+    name: 'Series 1',
+    values: [
+      { label: 'Jan', value: 30 },
+      { label: 'Feb', value: 40 },
+      { label: 'Mar', value: 35 },
+    ],
+  },
+  {
+    name: 'Series 2',
+    values: [
+      { label: 'Jan', value: 50 },
+      { label: 'Feb', value: 60 },
+      { label: 'Mar', value: 55 },
+    ],
+  },
+];
+
 <LineChart
-  data={lineChartData} // Assuming lineChartData is defined as in the example above
+  data={lineChartData} // Now lineChartData is defined within this block
   width={800}
   height={500}
   lineGradientColors={['#FF5733', '#C70039']} // Apply a gradient to the line

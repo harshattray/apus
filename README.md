@@ -7,6 +7,7 @@ A powerful and customizable chart library for React applications, built with D3.
   <img src="https://raw.githubusercontent.com/harshattray/apus/master/public/apus.svg" alt="Apus Logo" width="200"/>
 </div>
 
+**[📚 View Documentation](https://harshattray.github.io/apus/) | [🚀 Live Demo](https://apus-alpha.vercel.app/)**
 
 ## Features
 

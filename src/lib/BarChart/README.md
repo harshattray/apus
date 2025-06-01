@@ -43,29 +43,31 @@ const barChartData = [
   { label: 'Category C', value: 15 },
 ];
 
-const MyBarChart = () => (
-  <BarChart
-    data={barChartData}
-    width={600}
-    height={400}
-    color="#6a93d1" // Single color for all bars
-    // or use an array for multiple colors: color={['#ff0000', '#00ff00', '#0000ff']}
-    showGridLines={true}
-    xAxisTextColor="#333333"
-    yAxisTextColor="#333333"
-    responsive={true}
-    ariaLabel="Comparison of categories"
-  />
-);
-
-export default MyBarChart;
+<BarChart
+  data={barChartData}
+  width={600}
+  height={400}
+  color="#6a93d1" // Single color for all bars
+  // or use an array for multiple colors: color={['#ff0000', '#00ff00', '#0000ff']}
+  showGridLines={true}
+  xAxisTextColor="#333333"
+  yAxisTextColor="#333333"
+  responsive={true}
+  ariaLabel="Comparison of categories"
+/>
 ```
 
 ## Advanced Usage: Custom Styling with Multiple Colors
 
 ```tsx
+const barChartData = [
+  { label: 'Category A', value: 10 },
+  { label: 'Category B', value: 20 },
+  { label: 'Category C', value: 15 },
+];
+
 <BarChart
-  data={barChartData} // Assuming barChartData is defined as in the example above
+  data={barChartData} // Now barChartData is defined within this block
   width={700}
   height={450}
   color={['#FFC300', '#FF5733', '#C70039', '#900C3F', '#581845']} // Colors will cycle for bars

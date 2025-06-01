@@ -56,20 +56,16 @@ const salesData = [
 
 const fruitKeys = ['apples', 'oranges', 'bananas'];
 
-const MyStackedChart = () => (
-  <StackedBarChart
-    data={salesData}
-    keys={fruitKeys}
-    indexBy="month"
-    width={700}
-    height={450}
-    colors={['#4CAF50', '#FF9800', '#FFEB3B']}
-    showGridLines={true}
-    showLegend={true}
-    legendPosition="top"
-    ariaLabel="Monthly fruit sales"
-  />
-);
-
-export default MyStackedChart;
+<StackedBarChart
+  data={salesData}
+  keys={fruitKeys}
+  indexBy="month"
+  width={700}
+  height={450}
+  colors={['#4CAF50', '#FF9800', '#FFEB3B']}
+  showGridLines={true}
+  showLegend={true}
+  legendPosition="top"
+  ariaLabel="Monthly fruit sales"
+/>
 ```
