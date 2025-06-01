@@ -90,7 +90,7 @@ module.exports = {
     }
   },
   styleguideComponents: {
-    LogoRenderer: path.join(__dirname, 'styleguide/components/LogoRenderer.tsx'),
+    LogoRenderer: path.join(__dirname, 'docs/styleguide-components/LogoRenderer.tsx'),
   },
   dangerouslyUpdateWebpackConfig: (webpackConfig, env) => {
     // Output configuration
