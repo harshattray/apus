@@ -51,9 +51,6 @@ const singleSeriesData = [
 
 export const RadarChartExamples: React.FC<RadarChartExamplesProps> = ({ isDarkMode }) => {
   const customTooltipFormat = (hoveredData: HoveredDataInfo) => {
-    // Basic example of custom HTML content for the tooltip
-    // You can use hoveredData.color, hoveredData.seriesName, hoveredData.axisLabel, hoveredData.value
-    // And isDarkMode for theme-specific styling within the HTML string
     const bgColor = isDarkMode ? 'rgba(20,20,30,0.95)' : 'rgba(250,250,255,0.95)';
     const textColor = isDarkMode ? '#E0E0E0' : '#1A1A1A';
     const borderColor = hoveredData.color || (isDarkMode ? '#555' : '#AAA');
@@ -107,15 +104,9 @@ export const RadarChartExamples: React.FC<RadarChartExamplesProps> = ({ isDarkMo
           hoverPointFill={isDarkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.1)'} // Semi-transparent white/black
           hoverPointStroke={isDarkMode ? 'rgba(220, 220, 220, 0.7)' : 'rgba(50, 50, 50, 0.7)'}
           hoverPointStrokeWidth={1.5}
-          // Custom tooltip
           tooltipFormat={customTooltipFormat}
-          // Optional: Override default tooltip styles for this specific instance if needed
-          // tooltipBackgroundColor={isDarkMode ? 'rgba(70,70,80,0.9)' : 'rgba(230,230,240,0.9)'}
-          // tooltipTextColor={isDarkMode ? '#F0F0F0' : '#0A0A0A'}
         />
       </div>
-      {/* Add more examples here as the component develops */}
-
       {/* Example with Glow, Dotted Grid, No Axis Lines */}
       <div
         className={`rounded-xl p-6 border transition-colors duration-200 mt-6 ${
@@ -290,21 +281,6 @@ export const RadarChartExamples: React.FC<RadarChartExamplesProps> = ({ isDarkMo
           }
         />
       </div>
-      {/* Example of a second card if needed, to match grid structure in App.tsx */}
-      {/* 
-      <div
-        className={`rounded-xl p-6 border transition-colors duration-200 ${
-          isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
-        }`}
-      >
-        <h3
-          className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
-        >
-          Another Radar Chart Example (Placeholder)
-        </h3>
-        <p>Content for another radar chart example...</p>
-      </div>
-      */}
     </>
   );
 };
