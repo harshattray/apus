@@ -68,7 +68,6 @@ const RadarChart: React.FC<RadarChartProps> = ({
   legendSwatchBorderWidth = 0,
   legendGap = 8, // Gap between legend items (in px)
   legendPadding = '10px',
-  // Interactive Legend & Highlighting Props
   clickableLegend = false,
   selectedSeriesFillOpacity = 0.7,
   selectedSeriesStrokeWidth = 3,
@@ -212,13 +211,13 @@ const RadarChart: React.FC<RadarChartProps> = ({
         ? `calc(100% + ${legendSwatchSize * 10}px)`
         : responsive
           ? '100%'
-          : `${size}px`, // Crude width adjustment for side legends
+          : `${size}px`,
     height:
       (legendPosition === 'top' || legendPosition === 'bottom') && showLegend
         ? `calc(100% + ${legendSwatchSize * 5}px)`
         : responsive
           ? '100%'
-          : `${size}px`, // Crude height adjustment
+          : `${size}px`,
     alignItems: 'center',
     justifyContent: 'center',
   };
@@ -326,7 +325,6 @@ const RadarChart: React.FC<RadarChartProps> = ({
             )}
             {enableSeriesGlow && (
               <filter id={glowFilterId} x="-50%" y="-50%" width="200%" height="200%">
-                {/* Create a blurred, colored shadow using feDropShadow, which will act as the glow base */}
                 <feDropShadow
                   dx={seriesGlowOffsetX}
                   dy={seriesGlowOffsetY}
@@ -335,17 +333,9 @@ const RadarChart: React.FC<RadarChartProps> = ({
                   floodOpacity={seriesGlowOpacity}
                   result="coloredGlowBase"
                 />
-                {/*
-                To make it a true 'glow' that emanates from the shape rather than just being a colored shadow,
-                we often merge this with the original source graphic. 
-                A simple approach is to draw the source graphic, then the glow, then the source graphic again on top.
-                However, for SVG filters, we can use feComposite or feMerge.
-                Let's try feMerge to combine the original SourceGraphic with our coloredGlowBase.
-              */}
                 <feMerge>
                   <feMergeNode in="coloredGlowBase" />
                   <feMergeNode in="SourceGraphic" />{' '}
-                  {/* This puts the source graphic on top of the glow */}
                 </feMerge>
               </filter>
             )}
@@ -399,7 +389,6 @@ const RadarChart: React.FC<RadarChartProps> = ({
             />
           </g>
         </svg>
-        {/* Tooltip div, content and visibility managed by useTooltip hook */}
         {showTooltips && (
           <div
             ref={tooltipRef}
@@ -414,10 +403,9 @@ const RadarChart: React.FC<RadarChartProps> = ({
           />
         )}
       </div>{' '}
-      {/* End of chartAreaContainerStyle div */}
       {(legendPosition === 'bottom' || legendPosition === 'right') && renderLegend()}
-    </div> /* End of mainContainerStyle div */
-  ); // End of return statement
-}; // End of RadarChart component
+    </div>
+  );
+};
 
 export default RadarChart;
