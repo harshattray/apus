@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { BarChart } from './BarChart';
+import { BarChart } from '.';
 import '@testing-library/jest-dom';
 
 describe('BarChart', () => {

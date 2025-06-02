@@ -11,8 +11,17 @@ export { LineChart } from './LineChart/LineChart';
 export type { LineChartProps, LineChartSeries, LineChartDataPoint } from './LineChart/types';
 
 // Export StackedBarChart
-export { StackedBarChart } from './StackedBarChart/StackedBarChart';
+export { default as StackedBarChart } from './StackedBarChart/StackedBarChart';
 export type { StackedBarChartProps } from './StackedBarChart/types';
+
+// Export RadarChart and its types
+export { default as RadarChart } from './RadarChart/RadarChart';
+export type {
+  RadarChartProps,
+  RadarChartSeries,
+  RadarChartDataPoint,
+  HoveredDataInfo,
+} from './RadarChart/types';
 
 // Export hooks for advanced usage
 export { useChartDimensions } from './hooks/useChartDimensions';

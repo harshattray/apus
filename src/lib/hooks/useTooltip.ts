@@ -30,8 +30,21 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
    */
   const showTooltip = useCallback(
     (content: string, x: number, y: number, offsetX = 0, offsetY = 0) => {
+      console.log(
+        '[useTooltip] showTooltip called. Content:',
+        content,
+        'Coords:',
+        x,
+        y,
+        'Ref:',
+        tooltipRef.current,
+      );
       const tooltip = d3.select(tooltipRef.current);
-      if (!content) return; // Don't show empty tooltips
+      console.log('[useTooltip] d3.select(tooltipRef.current) result:', tooltip);
+      if (!content) {
+        console.log('[useTooltip] No content, returning from showTooltip.');
+        return;
+      }
 
       // Ensure tooltip is visible and positioned correctly
       tooltip.style('display', 'block').style('opacity', 1).html(content);
@@ -39,6 +52,7 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
       // Get tooltip dimensions after content is rendered
       const tooltipNode = tooltip.node();
       if (tooltipNode) {
+        console.log('[useTooltip] Tooltip node exists:', tooltipNode);
         const tooltipRect = tooltipNode.getBoundingClientRect();
         const windowWidth = window.innerWidth;
 
@@ -56,6 +70,9 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
           .style('transform', 'translate(-50%, -100%)')
           .style('pointer-events', 'none');
       } else {
+        console.warn(
+          '[useTooltip] Tooltip node is null/undefined after setting content in showTooltip.',
+        );
         // console.log('[useTooltip] Tooltip node is null/undefined after setting content.'); // Optional: keep if issues persist
       }
     },
@@ -66,6 +83,7 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
    * Hide the tooltip
    */
   const hideTooltip = useCallback(() => {
+    console.log('[useTooltip] hideTooltip called. Ref:', tooltipRef.current);
     const tooltip = d3.select(tooltipRef.current);
     tooltip.style('opacity', 0).style('display', 'none');
   }, [tooltipRef]);
@@ -74,6 +92,12 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
    * Apply styles to the tooltip element
    */
   const applyTooltipStyles = useCallback(() => {
+    console.log(
+      '[useTooltip] applyTooltipStyles called. Ref:',
+      tooltipRef.current,
+      'Styles:',
+      styles,
+    );
     const tooltip = d3.select(tooltipRef.current);
 
     tooltip

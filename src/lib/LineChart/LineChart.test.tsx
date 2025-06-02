@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { LineChart } from './LineChart';
+import { LineChart } from '.';
 
 describe('LineChart', () => {
   it('renders without crashing', () => {
@@ -40,7 +40,6 @@ describe('LineChart', () => {
   it('renders the correct number of line paths for multiple series', async () => {
     const { container } = render(<LineChart data={multiSeriesData} responsive={false} />);
     await waitFor(() => {
-      // Default timeout for other tests
       const linePaths = container.querySelectorAll('path.line');
       expect(linePaths.length).toBe(multiSeriesData.length);
     });
