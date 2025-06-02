@@ -1,6 +1,7 @@
 import React from 'react';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import apusLogo from '/apus.svg';
+import GithubIcon from './icons/GithubIcon';
 
 type HeaderProps = {
   isDarkMode: boolean;
@@ -28,21 +29,34 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
             Interactive and customizable data visualization components built using D3.js
           </p>
         </div>
-        <button
-          onClick={toggleTheme}
-          className={`p-2 rounded-lg transition-colors duration-200 ${
-            isDarkMode
-              ? 'hover:bg-slate-800 text-slate-200'
-              : 'hover:bg-slate-100 text-slate-900 light-mode-icon-button bg-white'
-          }`}
-          aria-label="Toggle theme"
-        >
-          {isDarkMode ? (
-            <SunIcon className="w-6 h-6 text-slate-200" />
-          ) : (
-            <MoonIcon className="w-6 h-6" style={{ fill: 'none', stroke: '#475569' }} />
-          )}
-        </button>
+        <div className="flex items-center space-x-4">
+          <a
+            href="https://github.com/harshattray/apus"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`p-2 rounded-lg transition-colors duration-200 ${
+              isDarkMode ? 'hover:bg-slate-800 text-slate-200' : 'hover:bg-slate-100 text-slate-900'
+            }`}
+            aria-label="GitHub Repository"
+          >
+            <GithubIcon />
+          </a>
+          <button
+            onClick={toggleTheme}
+            className={`p-2 rounded-lg transition-colors duration-200 ${
+              isDarkMode
+                ? 'hover:bg-slate-800 text-slate-200'
+                : 'hover:bg-slate-100 text-slate-900 light-mode-icon-button bg-white'
+            }`}
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? (
+              <SunIcon className="w-6 h-6 text-slate-200" />
+            ) : (
+              <MoonIcon className="w-6 h-6" style={{ fill: 'none', stroke: '#475569' }} />
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
