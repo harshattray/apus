@@ -32,6 +32,9 @@ A powerful and customizable chart library for React applications, built with D3.
 ![Stacked Bar Chart](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc4.png)
 *Stacked Bar Chart*
 
+![Radar Chart](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc5.png)
+*Radar Chart*
+
 ## Installation
 
 ```bash

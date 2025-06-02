@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { LineChart } from './LineChart';
+import { LineChart } from '.';
 
 describe('LineChart', () => {
   it('renders without crashing', () => {
