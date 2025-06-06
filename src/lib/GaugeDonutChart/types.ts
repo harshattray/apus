@@ -46,6 +46,10 @@ export type GaugeDonutChartProps = {
   theme?: 'light' | 'dark';
   className?: string;
   style?: React.CSSProperties;
+  tooltipFormat?: (data: GaugeDonutData, total: number, percent: string) => string;
+  enableGlow?: boolean;
+  glowColor?: string;
+  glowBlur?: number;
 };
 
 // GaugeDonutChartRendererProps is the same as GaugeDonutChartProps

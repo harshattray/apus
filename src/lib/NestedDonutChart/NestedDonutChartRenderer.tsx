@@ -9,6 +9,9 @@ interface NestedDonutChartRendererProps extends NestedDonutChartProps {
   theme?: 'light' | 'dark';
   className?: string;
   style?: React.CSSProperties;
+  enableGlow?: boolean;
+  glowColor?: string;
+  glowBlur?: number;
 }
 
 export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> = ({
@@ -23,6 +26,9 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
   centerLabel,
   centerValue,
   onSliceClick,
+  enableGlow = false,
+  glowColor,
+  glowBlur = 5,
 }) => {
   const [activeSlices, setActiveSlices] = useState<Set<string>>(new Set());
   const svgRef = useRef<SVGSVGElement>(null);
@@ -76,8 +82,43 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
 
     // Clear previous rendering
     svg.select('g').remove();
+    svg.selectAll('defs').remove(); // Clear defs as well
 
     const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+    const defs = svg.append('defs');
+
+    // Add glow filter definition
+    if (enableGlow) {
+      defs
+        .append('filter')
+        .attr('id', 'nested-donut-glow')
+        .attr('x', '-50%')
+        .attr('y', '-50%')
+        .attr('width', '200%')
+        .attr('height', '200%')
+        .call((filter) => {
+          filter
+            .append('feGaussianBlur')
+            .attr('in', 'SourceGraphic')
+            .attr('stdDeviation', glowBlur)
+            .attr('result', 'coloredBlur');
+          // Use feFlood to set the color, defaulting to slice color if glowColor is not provided
+          filter
+            .append('feFlood')
+            .attr('flood-color', glowColor || 'currentColor') // Use currentColor or provided color
+            .attr('result', 'glowColor');
+          filter
+            .append('feComposite')
+            .attr('in', 'glowColor')
+            .attr('in2', 'coloredBlur')
+            .attr('operator', 'in')
+            .attr('result', 'coloredBlur');
+          filter.append('feMerge').call((merge) => {
+            merge.append('feMergeNode').attr('in', 'coloredBlur');
+            merge.append('feMergeNode').attr('in', 'SourceGraphic');
+          });
+        });
+    }
 
     pieData.forEach((levelData, levelIndex) => {
       const innerRadius = radius - (levelIndex + 1) * ringThickness * 3;
@@ -125,7 +166,9 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           setTooltip(null);
         })
         .on('click', (event, d) => handleSliceClick(levelIndex, d.data))
-        .style('cursor', onSliceClick ? 'pointer' : 'default');
+        .style('cursor', onSliceClick ? 'pointer' : 'default')
+        // Apply glow filter if enabled
+        .attr('filter', enableGlow ? 'url(#nested-donut-glow)' : null);
     });
 
     // Center label/value
@@ -155,7 +198,20 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           .text(centerLabel);
       }
     }
-  }, [levels, width, height, colors, centerLabel, centerValue, onSliceClick, activeSlices, theme]); // Redraw chart when these dependencies change
+  }, [
+    levels,
+    width,
+    height,
+    colors,
+    centerLabel,
+    centerValue,
+    onSliceClick,
+    activeSlices,
+    theme,
+    enableGlow,
+    glowColor,
+    glowBlur,
+  ]); // Added glow props to dependencies
 
   const containerStyle: React.CSSProperties = {
     display: 'flex',
@@ -248,9 +304,15 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                         borderRadius: '2px',
                       }}
                     />
-                    <span>{item.label}</span>
-                    <span style={{ color: theme === 'dark' ? '#aaa' : '#666' }}>
-                      ({item.value})
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: '14px',
+                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
+                        textDecoration: isActive ? 'none' : 'line-through',
+                      }}
+                    >
+                      {item.label}
                     </span>
                   </div>
                 );
@@ -259,12 +321,13 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
-
-      <div style={chartStyle}>
-        <svg ref={svgRef} width={width} height={height} style={{ display: 'block' }}></svg>
-        {tooltipDiv}
-      </div>
-
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        className="nested-donut-chart"
+        style={chartStyle}
+      ></svg>
       {legendPosition === 'bottom' && (
         <div style={legendStyle}>
           {/* Legend rendering logic */}
@@ -301,9 +364,15 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                         borderRadius: '2px',
                       }}
                     />
-                    <span>{item.label}</span>
-                    <span style={{ color: theme === 'dark' ? '#aaa' : '#666' }}>
-                      ({item.value})
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: '14px',
+                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
+                        textDecoration: isActive ? 'none' : 'line-through',
+                      }}
+                    >
+                      {item.label}
                     </span>
                   </div>
                 );
@@ -312,9 +381,8 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
-
-      {(legendPosition === 'left' || legendPosition === 'right') && (
-        <div style={{ ...legendStyle, width: '200px' }}>
+      {legendPosition === 'left' && (
+        <div style={legendStyle}>
           {/* Legend rendering logic */}
           {levels.map((level, levelIdx) => (
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
@@ -349,9 +417,15 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                         borderRadius: '2px',
                       }}
                     />
-                    <span>{item.label}</span>
-                    <span style={{ color: theme === 'dark' ? '#aaa' : '#666' }}>
-                      ({item.value})
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: '14px',
+                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
+                        textDecoration: isActive ? 'none' : 'line-through',
+                      }}
+                    >
+                      {item.label}
                     </span>
                   </div>
                 );
@@ -360,6 +434,60 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
+      {legendPosition === 'right' && (
+        <div style={legendStyle}>
+          {/* Legend rendering logic */}
+          {levels.map((level, levelIdx) => (
+            <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
+              <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
+              {level.map((item) => {
+                const sliceKey = `${levelIdx}-${item.label}`;
+                const isActive = activeSlices.size === 0 || activeSlices.has(sliceKey);
+                return (
+                  <div
+                    key={item.label}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.25rem',
+                      cursor: 'pointer',
+                      opacity: isActive ? 1 : 0.5,
+                      transition: 'opacity 0.2s',
+                    }}
+                    onClick={() => handleSliceClick(levelIdx, item)}
+                  >
+                    <div
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor:
+                          item.color ||
+                          d3.schemeCategory10[
+                            levelIdx * level.length + (level.indexOf(item) % 10)
+                          ] ||
+                          '#ccc', // Use color from data if available, otherwise default
+                        borderRadius: '2px',
+                      }}
+                    />
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: '14px',
+                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
+                        textDecoration: isActive ? 'none' : 'line-through',
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+      {tooltipDiv}
     </div>
   );
 };

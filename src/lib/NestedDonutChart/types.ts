@@ -1,35 +1,31 @@
-export type NestedDonutLevelData = { label: string; value: number; color?: string }[];
+export type NestedDonutDataPoint = {
+  label: string;
+  value: number;
+  color?: string;
+};
 
-interface BaseNestedDonutChartProps {
-  levels: NestedDonutLevelData[]; // Array of data arrays, one for each ring
+export type NestedDonutLevelData = NestedDonutDataPoint[];
+
+export type NestedDonutChartProps = {
+  levels: NestedDonutLevelData[];
   width?: number;
   height?: number;
-  colors?: string[][]; // Optional: array of color arrays, one per level
+  colors?: string[][];
   centerLabel?: string;
   centerValue?: string | number;
-  onSliceClick?: (level: number, data: { label: string; value: number; color?: string }) => void;
+  onSliceClick?: (levelIndex: number, data: NestedDonutDataPoint) => void;
   showLegend?: boolean;
-  innerRadius?: number;
-  outerRadius?: number;
-  cornerRadius?: number;
-  padAngle?: number;
-  tooltipBackgroundColor?: string;
-  tooltipTextColor?: string;
-  tooltipPadding?: string;
-  tooltipBorderRadius?: string;
-  tooltipFontSize?: string;
-  legendFontSize?: string;
-  legendFontColor?: string;
-}
-
-export interface NestedDonutChartRendererProps extends BaseNestedDonutChartProps {
   legendPosition?: 'top' | 'right' | 'bottom' | 'left';
   theme?: 'light' | 'dark';
   className?: string;
   style?: React.CSSProperties;
-}
+  // Added glow effect props
+  enableGlow?: boolean;
+  glowColor?: string; // defaults to slice color
+  glowBlur?: number; // Gaussian blur standard deviation
+};
 
-// NestedDonutChartProps should be the same as NestedDonutChartRendererProps since the main component now accepts all renderer props
-export type NestedDonutChartProps = NestedDonutChartRendererProps;
+// NestedDonutChartRendererProps is the same as NestedDonutChartProps
+export type NestedDonutChartRendererProps = NestedDonutChartProps;
 
 export {};

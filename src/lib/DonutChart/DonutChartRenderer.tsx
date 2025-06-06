@@ -38,6 +38,9 @@ const DonutChartRenderer: React.FC<DonutChartRendererProps> = ({
   extraCenterInfo,
   tooltipRef,
   visibleLabels, // NEW
+  enableGlow = false, // Default to false
+  glowColor,
+  glowBlur = 5, // Default glow blur value
 }) => {
   // Calculate total from arcData only (already filtered)
   const total = useMemo(() => arcData.reduce((sum, d) => sum + d.data.value, 0), [arcData]);
@@ -117,22 +120,42 @@ const DonutChartRenderer: React.FC<DonutChartRendererProps> = ({
   return (
     <g transform={`translate(${width / 2},${height / 2})`}>
       <defs>
+        {/* Shadow Filters */}
         <filter id="donut-shadow" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000" floodOpacity="0.18" />
         </filter>
         <filter id="donut-shadow-strong" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#000" floodOpacity="0.28" />
         </filter>
+        {/* Glow Filter */}
+        {enableGlow && (
+          <filter id="donut-glow" x="-50%" y="-50%" width="200%" height="200%">
+            {/* Use feGaussianBlur to create the blur */}
+            <feGaussianBlur in="SourceGraphic" stdDeviation={glowBlur} result="coloredBlur" />
+            {/* Use feFlood to set the color, defaulting to slice color if glowColor is not provided */}
+            <feFlood floodColor={glowColor || 'currentColor'} result="glowColor" />
+            {/* Composite the color and the blur */}
+            <feComposite in="glowColor" in2="coloredBlur" operator="in" result="coloredBlur" />
+            {/* Merge the original graphic with the glow */}
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        )}
       </defs>
       {/* Donut Arcs (Slices) */}
       {arcData.map((d) => {
         const percent = total > 0 ? ((d.data.value / total) * 100).toFixed(1) : '0.0';
         const isVisible = visibleLabels.includes(d.data.label);
+        // Determine the color for the glow filter if enableGlow is true
+        const sliceColor = d.data.color || colorScale(d.data.label);
+
         return (
           <path
             key={d.data.label}
             d={arc(d) || undefined}
-            fill={d.data.color || colorScale(d.data.label)}
+            fill={sliceColor}
             stroke="#fff"
             strokeWidth={3}
             cursor={onSliceClick || showHoverEffect || showTooltip ? 'pointer' : 'default'}
@@ -149,15 +172,16 @@ const DonutChartRenderer: React.FC<DonutChartRendererProps> = ({
                     if (showTooltip) {
                       if (!svgRef.current) return;
                       const [pointerX, pointerY] = d3.pointer(e, svgRef.current);
+                      // Construct tooltip content with HTML tags for formatting
                       const tooltipHtml = `
-                  <div style='min-width:120px'>
-                    <strong>${d.data.label}</strong>
-                    <div style='margin-top:4px'>
-                      Value: ${d.data.value}
-                      <br/>
-                      ${percent}%
-                    </div>
-                  </div>`;
+                      <div style='min-width:120px'>
+                        <strong>${d.data.label}</strong>
+                        <div style='margin-top:4px'>
+                          Value: ${d.data.value}
+                          <br/>
+                          ${percent}%
+                        </div>
+                      </div>`;
                       showT(tooltipHtml, pointerX, pointerY - 10);
                     }
                   }
@@ -180,7 +204,8 @@ const DonutChartRenderer: React.FC<DonutChartRendererProps> = ({
             }
             onClick={onSliceClick ? () => onSliceClick(d.data) : undefined}
             style={{ opacity: isVisible ? 1 : 0.4 }}
-            filter={isVisible ? 'url(#donut-shadow)' : undefined}
+            // Apply glow filter if enabled, otherwise apply shadow filter based on visibility
+            filter={enableGlow ? `url(#donut-glow)` : isVisible ? 'url(#donut-shadow)' : undefined}
           />
         );
       })}

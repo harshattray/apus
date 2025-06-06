@@ -55,25 +55,26 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
     '#22D3EE', // cyan-400
   ];
 
-  // Example data for Gauge Donut Chart Gradients
-  const gaugeGradientData: GaugeDonutData[] = [
-    {
-      label: 'Progress',
-      value: 75,
-      gradient: [
-        { offset: '0%', color: '#84E8E2' }, // lighter teal
-        { offset: '100%', color: '#1A535C' }, // darker teal
-      ],
-    },
-    {
-      label: 'Remaining',
-      value: 25,
-      gradient: [
-        { offset: '0%', color: '#FFC7C7' }, // lighter red
-        { offset: '100%', color: '#CC5555' }, // darker red
-      ],
-    },
+  // Example data for custom tooltip styling
+  const customTooltipData: GaugeDonutData[] = [
+    { label: 'Feature A', value: 40, color: '#A78BFA' },
+    { label: 'Feature B', value: 25, color: '#F472B6' },
+    { label: 'Feature C', value: 35, color: '#F87171' },
   ];
+
+  // Custom tooltip format function
+  const customGaugeTooltipFormat = (
+    data: GaugeDonutData,
+    total: number,
+    percent: string,
+  ): string => {
+    return `
+      <strong>${data.label}</strong><br/>
+      Value: ${data.value}<br/>
+      Percent: ${percent}%<br/>
+      <em>Extra Info!</em>
+    `;
+  };
 
   // State to hold data of the clicked slice
   const [clickedSliceData, setClickedSliceData] = useState<DonutChartData | null>(null);
@@ -283,7 +284,7 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
         <h3
           className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
         >
-          Donut Chart with Hover Effect
+          Donut Chart with Glow Effect
         </h3>
         <DonutChart
           data={salesData}
@@ -291,13 +292,14 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
           height={320}
           showLegend={true}
           legendPosition="bottom"
-          showHoverEffect={true}
+          enableGlow={true}
+          glowColor={isDarkMode ? '#ffffff33' : '#00000033'}
+          glowBlur={20}
           legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
           innerRadiusRatio={0.6}
         />
       </div>
 
-      {/* New Example: Gauge Donut Chart with Gradients */}
       <div
         className={`rounded-xl p-6 border transition-colors duration-200 mt-8 ${
           isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
@@ -306,19 +308,22 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
         <h3
           className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
         >
-          Gauge Donut Chart: Gradients (Half)
+          Nested Donut Chart with Glow Effect
         </h3>
         <div className="chart-container">
-          <GaugeDonutChart
-            data={gaugeGradientData}
+          <NestedDonutChart
+            levels={nestedDonutData}
             width={400}
             height={400}
-            variant="half-bottom"
-            centerLabel="Progress"
-            centerValue="75%"
+            colors={nestedDonutColors}
+            centerLabel="Total"
+            centerValue="100"
             legendPosition="right"
             theme={isDarkMode ? 'dark' : 'light'}
-            onSliceClick={(data) => console.log('Clicked:', data)}
+            enableGlow={true}
+            glowColor={isDarkMode ? '#ffffff33' : '#00000033'}
+            glowBlur={20}
+            onSliceClick={(level, data) => console.log('Clicked:', level, data)}
           />
         </div>
       </div>
@@ -331,18 +336,21 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
         <h3
           className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
         >
-          Gauge Donut Chart (Half)
+          Gauge Donut Chart with Glow Effect
         </h3>
         <div className="chart-container">
           <GaugeDonutChart
             data={gaugeDonutData}
             width={400}
             height={400}
-            variant="quarter-top-right"
+            variant="half-bottom"
             centerLabel="Progress"
             centerValue="75%"
             legendPosition="right"
             theme={isDarkMode ? 'dark' : 'light'}
+            enableGlow={true}
+            glowColor={isDarkMode ? '#ffffff33' : '#00000033'}
+            glowBlur={20}
             onSliceClick={(data) => console.log('Clicked:', data)}
           />
         </div>
@@ -356,22 +364,26 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
         <h3
           className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
         >
-          Gauge Donut Chart (Quarter)
+          Gauge Donut Chart: Custom Tooltip Styling
         </h3>
         <div className="chart-container">
           <GaugeDonutChart
-            data={[
-              { label: 'Progress', value: 40, color: isDarkMode ? '#fbbf24' : '#f59e42' },
-              { label: 'Remaining', value: 60, color: isDarkMode ? '#334155' : '#f3f4f6' },
-            ]}
+            data={customTooltipData}
             width={400}
             height={400}
             variant="half-bottom"
-            centerLabel="Quarter"
-            centerValue="40%"
-            legendPosition="right"
+            centerLabel="Features"
+            centerValue="100%"
+            showLegend={true}
+            legendPosition="bottom"
             theme={isDarkMode ? 'dark' : 'light'}
-            onSliceClick={(data) => console.log('Clicked:', data)}
+            showTooltip={true}
+            tooltipBackgroundColor={isDarkMode ? '#f0f0f0' : '#333'}
+            tooltipTextColor={isDarkMode ? '#333' : '#f0f0f0'}
+            tooltipPadding="10px"
+            tooltipBorderRadius="8px"
+            tooltipFontSize="13px"
+            tooltipFormat={customGaugeTooltipFormat}
           />
         </div>
       </div>

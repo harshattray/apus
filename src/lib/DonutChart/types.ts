@@ -50,4 +50,11 @@ export type DonutChartProps = {
   theme?: 'light' | 'dark';
   className?: string;
   style?: React.CSSProperties;
+  enableGlow?: boolean;
+  glowColor?: string;
+  glowBlur?: number;
 };
+
+export type DonutChartRendererProps = DonutChartProps;
+
+export {};
