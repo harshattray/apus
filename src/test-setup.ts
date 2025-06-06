@@ -71,7 +71,3 @@ if (typeof window !== 'undefined') {
     }
   }
 }
-
-console.log(
-  'Global test setup v2: Mocks for getBoundingClientRect and getComputedTextLength (direct/fallback) applied.',
-);

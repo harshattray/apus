@@ -10,6 +10,18 @@ export type { BarChartProps, BarChartData } from './BarChart/types';
 export { LineChart } from './LineChart/LineChart';
 export type { LineChartProps, LineChartSeries, LineChartDataPoint } from './LineChart/types';
 
+// Export DonutChart and its types
+export { DonutChart } from './DonutChart/DonutChart';
+export type { DonutChartProps, DonutChartData } from './DonutChart/types';
+
+// Export GaugeDonutChart and its types
+export { GaugeDonutChart } from './GaugeDonutChart/GaugeDonutChart';
+export type { GaugeDonutChartProps, GaugeDonutData } from './GaugeDonutChart/types';
+
+// Export NestedDonutChart and its types
+export { NestedDonutChart } from './NestedDonutChart/NestedDonutChart';
+export type { NestedDonutChartProps, NestedDonutLevelData } from './NestedDonutChart/types';
+
 // Export StackedBarChart
 export { default as StackedBarChart } from './StackedBarChart/StackedBarChart';
 export type { StackedBarChartProps } from './StackedBarChart/types';
