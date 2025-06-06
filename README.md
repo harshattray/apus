@@ -310,6 +310,12 @@ Make sure to update tests as appropriate.
 
 ## Changelog
 
+
+## [0.2.2] - 2024-03-19
+
+### Added
+-  support for New chart types (DonutChart, NestedDonutChart, GaugeDonutChart)
+
 ## [0.2.0] - 2025-06-01
 
 ### Added

@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
-// Remove the import of the main component
-// import { NestedDonutChart } from './NestedDonutChart';
 import { NestedDonutChartProps, NestedDonutLevelData } from './types';
 
 interface NestedDonutChartRendererProps extends NestedDonutChartProps {
@@ -211,6 +209,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     enableGlow,
     glowColor,
     glowBlur,
+    handleSliceClick,
   ]); // Added glow props to dependencies
 
   const containerStyle: React.CSSProperties = {
@@ -275,8 +274,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
-                const sliceKey = `${levelIdx}-${item.label}`;
-                const isActive = activeSlices.size === 0 || activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -286,7 +283,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
-                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -308,8 +304,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       style={{
                         flex: 1,
                         fontSize: '14px',
-                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
-                        textDecoration: isActive ? 'none' : 'line-through',
+                        color: theme === 'dark' ? '#fff' : '#000',
                       }}
                     >
                       {item.label}
@@ -335,8 +330,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
-                const sliceKey = `${levelIdx}-${item.label}`;
-                const isActive = activeSlices.size === 0 || activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -346,7 +339,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
-                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -368,8 +360,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       style={{
                         flex: 1,
                         fontSize: '14px',
-                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
-                        textDecoration: isActive ? 'none' : 'line-through',
+                        color: theme === 'dark' ? '#fff' : '#000',
                       }}
                     >
                       {item.label}
@@ -388,8 +379,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
-                const sliceKey = `${levelIdx}-${item.label}`;
-                const isActive = activeSlices.size === 0 || activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -399,7 +388,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
-                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -421,8 +409,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       style={{
                         flex: 1,
                         fontSize: '14px',
-                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
-                        textDecoration: isActive ? 'none' : 'line-through',
+                        color: theme === 'dark' ? '#fff' : '#000',
                       }}
                     >
                       {item.label}
@@ -441,8 +428,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
-                const sliceKey = `${levelIdx}-${item.label}`;
-                const isActive = activeSlices.size === 0 || activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -452,7 +437,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
-                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -474,8 +458,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       style={{
                         flex: 1,
                         fontSize: '14px',
-                        color: isActive ? (theme === 'dark' ? '#fff' : '#000') : '#888',
-                        textDecoration: isActive ? 'none' : 'line-through',
+                        color: theme === 'dark' ? '#fff' : '#000',
                       }}
                     >
                       {item.label}
