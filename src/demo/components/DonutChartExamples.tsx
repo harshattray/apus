@@ -3,6 +3,7 @@ import { DonutChart } from '../../lib';
 import { DonutChartData } from '../../lib/DonutChart/types';
 import { NestedDonutChart } from '../../lib/NestedDonutChart';
 import { GaugeDonutChart } from '../../lib/GaugeDonutChart';
+import { GaugeDonutData } from '../../lib/GaugeDonutChart/types';
 
 type DonutChartExamplesProps = {
   isDarkMode: boolean;
@@ -37,6 +38,41 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
     { label: 'Yes', value: 150 },
     { label: 'No', value: 80 },
     { label: 'Maybe', value: 30 },
+  ];
+
+  // Example data for Donut Chart Color Customization
+  const donutColorsData = [
+    { label: 'Red', value: 50, color: '#FF6B6B' },
+    { label: 'Teal', value: 30, color: '#4ECDC4' },
+    { label: 'Blue', value: 20, color: '#45B7D1' },
+  ];
+
+  const donutColorsProp = [
+    '#A78BFA', // violet-400
+    '#F472B6', // pink-500
+    '#F87171', // red-400
+    '#FACC15', // yellow-400
+    '#22D3EE', // cyan-400
+  ];
+
+  // Example data for Gauge Donut Chart Gradients
+  const gaugeGradientData: GaugeDonutData[] = [
+    {
+      label: 'Progress',
+      value: 75,
+      gradient: [
+        { offset: '0%', color: '#84E8E2' }, // lighter teal
+        { offset: '100%', color: '#1A535C' }, // darker teal
+      ],
+    },
+    {
+      label: 'Remaining',
+      value: 25,
+      gradient: [
+        { offset: '0%', color: '#FFC7C7' }, // lighter red
+        { offset: '100%', color: '#CC5555' }, // darker red
+      ],
+    },
   ];
 
   // State to hold data of the clicked slice
@@ -96,23 +132,49 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
         />
       </div>
 
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-4">Donut Chart: Sales Breakdown (Bottom Legend)</h3>
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
-          <DonutChart
-            data={salesData}
-            width={400}
-            height={400}
-            showLegend={true}
-            legendPosition="bottom"
-            onSliceClick={(data) => {
-              setClickedSliceData(data);
-            }}
-            legendFontColor={isDarkMode ? '#e2e8f0' : '#1e293b'}
-            centerLabel="Total Sales"
-            innerRadiusRatio={0.6}
-          />
-        </div>
+      {/* New Example: Donut Chart with Colors in Data */}
+      <div
+        className={`rounded-xl p-6 border transition-colors duration-200 mt-8 ${
+          isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
+        }`}
+      >
+        <h3
+          className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
+        >
+          Donut Chart: Colors in Data
+        </h3>
+        <DonutChart
+          data={donutColorsData}
+          width={320}
+          height={320}
+          showLegend={true}
+          legendPosition="bottom"
+          legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
+          innerRadiusRatio={0.6}
+        />
+      </div>
+
+      {/* New Example: Donut Chart with Colors Prop */}
+      <div
+        className={`rounded-xl p-6 border transition-colors duration-200 mt-8 ${
+          isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
+        }`}
+      >
+        <h3
+          className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
+        >
+          Donut Chart: Colors Prop
+        </h3>
+        <DonutChart
+          data={data1}
+          colors={donutColorsProp}
+          width={320}
+          height={320}
+          showLegend={true}
+          legendPosition="bottom"
+          legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
+          innerRadiusRatio={0.6}
+        />
       </div>
 
       <div
@@ -233,6 +295,32 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
           legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
           innerRadiusRatio={0.6}
         />
+      </div>
+
+      {/* New Example: Gauge Donut Chart with Gradients */}
+      <div
+        className={`rounded-xl p-6 border transition-colors duration-200 mt-8 ${
+          isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
+        }`}
+      >
+        <h3
+          className={`text-sm font-medium mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
+        >
+          Gauge Donut Chart: Gradients (Half)
+        </h3>
+        <div className="chart-container">
+          <GaugeDonutChart
+            data={gaugeGradientData}
+            width={400}
+            height={400}
+            variant="half-bottom"
+            centerLabel="Progress"
+            centerValue="75%"
+            legendPosition="right"
+            theme={isDarkMode ? 'dark' : 'light'}
+            onSliceClick={(data) => console.log('Clicked:', data)}
+          />
+        </div>
       </div>
 
       <div

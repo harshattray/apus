@@ -60,44 +60,37 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     const cy = height / 2;
     const radius = Math.min(width, height) / 2;
 
-    console.log('Rendering NestedDonutChartRenderer');
-    console.log('Dimensions:', { width, height, cx, cy, radius });
-    console.log('Levels data:', levels);
+    const ringThickness = radius / (levels.length * 3); // Divide radius by 3 times the number of levels
+
+    // Create pie generators for each level
+    const pieGenerators = Array.from({ length: levels.length }, () =>
+      d3
+        .pie<NestedDonutLevelData[number]>()
+        .value((d) => d.value)
+        .sort(null)
+        .padAngle(0.02),
+    );
+
+    // Generate pie data for each level
+    const pieData = levels.map((level, index) => pieGenerators[index](level));
 
     // Clear previous rendering
     svg.select('g').remove();
 
     const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
 
-    const pie = d3
-      .pie<NestedDonutLevelData[number]>()
-      .value((d) => d.value)
-      .sort(null);
-
-    const arcTotal = radius * 0.8; // Total available radius for all rings
-    const ringThickness = arcTotal / levels.length; // Equal thickness for each ring
-
-    console.log('Arc calculation:', { arcTotal, ringThickness, numberOfLevels: levels.length });
-
-    levels.forEach((levelData, levelIndex) => {
-      const innerRadius = radius * 0.6 + levelIndex * ringThickness;
-      const outerRadius = innerRadius + ringThickness - 2; // Small gap between rings
-
-      console.log(`Level ${levelIndex}:`, { innerRadius, outerRadius });
+    pieData.forEach((levelData, levelIndex) => {
+      const innerRadius = radius - (levelIndex + 1) * ringThickness * 3;
+      const outerRadius = radius - levelIndex * ringThickness * 3;
 
       const arcGen = d3
         .arc<d3.PieArcDatum<NestedDonutLevelData[number]>>()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius)
-        .cornerRadius(5)
-        .padAngle(0.01);
-
-      const pieData = pie(levelData);
-
-      console.log(`Level ${levelIndex} pie data:`, pieData);
+        .cornerRadius(4);
 
       g.selectAll(`.arc-${levelIndex}`)
-        .data(pieData)
+        .data(levelData)
         .join('path')
         .attr('class', `arc-${levelIndex}`)
         .attr('d', arcGen)
@@ -116,7 +109,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           return activeSlices.size === 0 || activeSlices.has(sliceKey) ? 1 : 0.3;
         })
         .on('mouseover', (event, d) => {
-          const totalForLevel = levelData.reduce((sum, item) => sum + item.value, 0);
+          const totalForLevel = levels[levelIndex].reduce((sum, item) => sum + item.value, 0);
           const percent =
             totalForLevel > 0 ? ((d.data.value / totalForLevel) * 100).toFixed(1) : '0.0';
           setTooltip({

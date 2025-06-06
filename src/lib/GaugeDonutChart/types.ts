@@ -1,7 +1,14 @@
+export type GradientStop = {
+  offset: string;
+  color: string;
+  opacity?: number;
+};
+
 export type GaugeDonutData = {
   label: string;
   value: number;
   color?: string;
+  gradient?: GradientStop[];
 };
 
 export type GaugeDonutChartProps = {
@@ -18,7 +25,6 @@ export type GaugeDonutChartProps = {
     | 'quarter-top-right'
     | 'quarter-bottom-left'
     | 'quarter-top-left';
-  arcType?: 'half' | 'quarter';
   centerLabel?: string;
   centerValue?: string | number;
   onSliceClick?: (data: GaugeDonutData) => void;
