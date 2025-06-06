@@ -106,9 +106,7 @@ module.exports = {
     webpackConfig.resolve.alias.apus = path.resolve(__dirname, 'src/lib/index.ts');
 
     // Module rules configuration
-    console.log('[dangerouslyUpdateWebpackConfig] Initial webpackConfig.module type:', typeof webpackConfig.module);
     webpackConfig.module = webpackConfig.module || {}; // Ensure module object exists
-    console.log('[dangerouslyUpdateWebpackConfig] After ensuring module object, webpackConfig.module type:', typeof webpackConfig.module);
     
     // Ensure rules array exists, preserving existing rules
     const existingRules = Array.isArray(webpackConfig.module.rules) ? webpackConfig.module.rules : [];

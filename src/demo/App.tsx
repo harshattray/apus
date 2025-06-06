@@ -7,11 +7,14 @@ import {
   BarChartExamples,
   StackedBarChartExamples,
   RadarChartExamples,
+  DonutChartExamples,
 } from './components';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [activeTab, setActiveTab] = useState<'line' | 'bar' | 'stacked' | 'radar'>('line');
+  const [activeTab, setActiveTab] = useState<'line' | 'bar' | 'donut' | 'stacked' | 'radar'>(
+    'line',
+  );
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -71,6 +74,20 @@ function App() {
                 Bar Charts
               </button>
               <button
+                onClick={() => setActiveTab('donut')}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                  activeTab === 'donut'
+                    ? isDarkMode
+                      ? 'bg-slate-700 text-white'
+                      : 'bg-white text-slate-900 shadow-sm'
+                    : isDarkMode
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Donut Charts
+              </button>
+              <button
                 onClick={() => setActiveTab('stacked')}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
                   activeTab === 'stacked'
@@ -103,6 +120,7 @@ function App() {
 
           {activeTab === 'stacked' && <StackedBarChartExamples isDarkMode={isDarkMode} />}
           {activeTab === 'radar' && <RadarChartExamples isDarkMode={isDarkMode} />}
+          {activeTab === 'donut' && <DonutChartExamples isDarkMode={isDarkMode} />}
           {(activeTab === 'line' || activeTab === 'bar') && (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {activeTab === 'line' && <LineChartExamples isDarkMode={isDarkMode} />}
