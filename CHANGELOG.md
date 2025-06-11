@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.4] - 2024-07-30
+
+### Added
+- Glow effect examples for Donut, NestedDonut, and GaugeDonut charts using existing demo file.
+
+### Changed
+- Updated styleguide configuration to use existing examples and prevent component duplication in sidebar.
+- Optimized package size by excluding unnecessary files (`public`, `screens`) from published package.
+
+### Fixed
+- Resolved React Hook useEffect dependency warning in `NestedDonutChartRenderer.tsx`.
+
 ## [0.2.2] - 2024-03-19
 
 ### Added

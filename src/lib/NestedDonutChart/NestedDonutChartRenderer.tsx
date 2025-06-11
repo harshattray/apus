@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import * as d3 from 'd3';
 import { NestedDonutChartProps, NestedDonutLevelData } from './types';
+import { useTooltip } from '../hooks/useTooltip';
 
 interface NestedDonutChartRendererProps extends NestedDonutChartProps {
   legendPosition?: 'top' | 'right' | 'bottom' | 'left';
@@ -30,31 +31,38 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
 }) => {
   const [activeSlices, setActiveSlices] = useState<Set<string>>(new Set());
   const svgRef = useRef<SVGSVGElement>(null);
-  const [tooltip, setTooltip] = useState<null | {
-    x: number;
-    y: number;
-    label: string;
-    value: number;
-    percent: string;
-    level: number;
-  }>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
-  const handleSliceClick = (
-    level: number,
-    data: { label: string; value: number; color?: string },
-  ) => {
-    const sliceKey = `${level}-${data.label}`;
-    const newActiveSlices = new Set(activeSlices);
+  const tooltip = useTooltip(tooltipRef, {
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    textColor: '#fff',
+    padding: '8px 12px',
+    borderRadius: '6px',
+    fontSize: '14px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    zIndex: 1000,
+  });
 
-    if (newActiveSlices.has(sliceKey)) {
-      newActiveSlices.delete(sliceKey);
-    } else {
-      newActiveSlices.add(sliceKey);
-    }
+  useEffect(() => {
+    tooltip.applyTooltipStyles();
+  }, [tooltip]);
 
-    setActiveSlices(newActiveSlices);
-    onSliceClick?.(level, data);
-  };
+  const handleSliceClick = useCallback(
+    (level: number, data: { label: string; value: number; color?: string }) => {
+      const sliceKey = `${level}-${data.label}`;
+      const newActiveSlices = new Set(activeSlices);
+
+      if (newActiveSlices.has(sliceKey)) {
+        newActiveSlices.delete(sliceKey);
+      } else {
+        newActiveSlices.add(sliceKey);
+      }
+
+      setActiveSlices(newActiveSlices);
+      onSliceClick?.(level, data);
+    },
+    [activeSlices, onSliceClick],
+  );
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -151,17 +159,20 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           const totalForLevel = levels[levelIndex].reduce((sum, item) => sum + item.value, 0);
           const percent =
             totalForLevel > 0 ? ((d.data.value / totalForLevel) * 100).toFixed(1) : '0.0';
-          setTooltip({
-            x: event.clientX,
-            y: event.clientY,
-            label: d.data.label,
-            value: d.data.value,
-            percent,
-            level: levelIndex + 1,
-          });
+          const content = `
+            <div style='min-width:120px'>
+              <strong>Level ${levelIndex + 1}: ${d.data.label}</strong>
+              <div style='margin-top:4px'>
+                Value: ${d.data.value}
+                <br/>
+                ${percent}%
+              </div>
+            </div>`;
+          const [x, y] = d3.pointer(event, svgRef.current);
+          tooltip.showTooltip(content, x, y, 0, -10);
         })
         .on('mouseout', () => {
-          setTooltip(null);
+          tooltip.hideTooltip();
         })
         .on('click', (event, d) => handleSliceClick(levelIndex, d.data))
         .style('cursor', onSliceClick ? 'pointer' : 'default')
@@ -196,6 +207,11 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           .text(centerLabel);
       }
     }
+
+    return () => {
+      svg.select('g').remove();
+      svg.selectAll('defs').remove();
+    };
   }, [
     levels,
     width,
@@ -210,7 +226,8 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     glowColor,
     glowBlur,
     handleSliceClick,
-  ]); // Added glow props to dependencies
+    tooltip,
+  ]);
 
   const containerStyle: React.CSSProperties = {
     display: 'flex',
@@ -228,6 +245,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     flex: '1 1 auto',
     minWidth: 0,
     minHeight: 0,
+    position: 'relative',
   };
 
   const legendStyle: React.CSSProperties = {
@@ -241,39 +259,16 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     overflowY: 'auto',
   };
 
-  const tooltipDiv = tooltip ? (
-    <div
-      style={{
-        position: 'fixed',
-        left: tooltip.x + 12,
-        top: tooltip.y + 12,
-        background: 'rgba(0,0,0,0.85)',
-        color: '#fff',
-        padding: '8px 12px',
-        borderRadius: 6,
-        fontSize: 14,
-        pointerEvents: 'none',
-        zIndex: 1000,
-        minWidth: 100,
-      }}
-    >
-      <div style={{ fontWeight: 600 }}>
-        Level {tooltip.level}: {tooltip.label}
-      </div>
-      <div>Value: {tooltip.value}</div>
-      <div>{tooltip.percent}%</div>
-    </div>
-  ) : null;
-
   return (
     <div className={`chart-container ${className}`} style={containerStyle}>
       {legendPosition === 'top' && (
         <div style={legendStyle}>
-          {/* Legend rendering logic */}
           {levels.map((level, levelIdx) => (
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
+                const sliceKey = `${levelIdx}-${item.label}`;
+                const isActive = activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -283,6 +278,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
+                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -296,7 +292,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                           d3.schemeCategory10[
                             levelIdx * level.length + (level.indexOf(item) % 10)
                           ] ||
-                          '#ccc', // Use color from data if available, otherwise default
+                          '#ccc',
                         borderRadius: '2px',
                       }}
                     />
@@ -316,20 +312,20 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
-      <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        className="nested-donut-chart"
-        style={chartStyle}
-      ></svg>
+
+      <div style={chartStyle}>
+        <svg ref={svgRef} width={width} height={height} style={{ display: 'block' }}></svg>
+        <div ref={tooltipRef} className="nested-donut-tooltip"></div>
+      </div>
+
       {legendPosition === 'bottom' && (
         <div style={legendStyle}>
-          {/* Legend rendering logic */}
           {levels.map((level, levelIdx) => (
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
+                const sliceKey = `${levelIdx}-${item.label}`;
+                const isActive = activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -339,6 +335,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
+                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -352,7 +349,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                           d3.schemeCategory10[
                             levelIdx * level.length + (level.indexOf(item) % 10)
                           ] ||
-                          '#ccc', // Use color from data if available, otherwise default
+                          '#ccc',
                         borderRadius: '2px',
                       }}
                     />
@@ -372,13 +369,15 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
+
       {legendPosition === 'left' && (
         <div style={legendStyle}>
-          {/* Legend rendering logic */}
           {levels.map((level, levelIdx) => (
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
+                const sliceKey = `${levelIdx}-${item.label}`;
+                const isActive = activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -388,6 +387,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
+                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -401,7 +401,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                           d3.schemeCategory10[
                             levelIdx * level.length + (level.indexOf(item) % 10)
                           ] ||
-                          '#ccc', // Use color from data if available, otherwise default
+                          '#ccc',
                         borderRadius: '2px',
                       }}
                     />
@@ -421,13 +421,15 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
+
       {legendPosition === 'right' && (
         <div style={legendStyle}>
-          {/* Legend rendering logic */}
           {levels.map((level, levelIdx) => (
             <div key={levelIdx} style={{ marginBottom: '0.5rem' }}>
               <h4 style={{ margin: '0 0 0.5rem 0' }}>Level {levelIdx + 1}</h4>
               {level.map((item) => {
+                const sliceKey = `${levelIdx}-${item.label}`;
+                const isActive = activeSlices.has(sliceKey);
                 return (
                   <div
                     key={item.label}
@@ -437,6 +439,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                       gap: '0.5rem',
                       padding: '0.25rem',
                       cursor: 'pointer',
+                      opacity: isActive ? 1 : 0.5,
                       transition: 'opacity 0.2s',
                     }}
                     onClick={() => handleSliceClick(levelIdx, item)}
@@ -450,7 +453,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
                           d3.schemeCategory10[
                             levelIdx * level.length + (level.indexOf(item) % 10)
                           ] ||
-                          '#ccc', // Use color from data if available, otherwise default
+                          '#ccc',
                         borderRadius: '2px',
                       }}
                     />
@@ -470,7 +473,6 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
           ))}
         </div>
       )}
-      {tooltipDiv}
     </div>
   );
 };
