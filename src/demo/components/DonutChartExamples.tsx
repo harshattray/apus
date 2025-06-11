@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { DonutChart } from '../../lib';
+import { DonutChart, NestedDonutChart } from '../../lib';
 import { DonutChartData } from '../../lib/DonutChart/types';
-import { NestedDonutChart } from '../../lib/NestedDonutChart';
 import { GaugeDonutChart } from '../../lib/GaugeDonutChart';
 import { GaugeDonutData } from '../../lib/GaugeDonutChart/types';
 
-type DonutChartExamplesProps = {
-  isDarkMode: boolean;
-};
-
-const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) => {
+const DonutChartExamples: React.FC<{ isDarkMode: boolean }> = ({ isDarkMode }) => {
   const data1 = [
     { label: 'Lighting', value: 77 },
     { label: 'Fans', value: 4 },
@@ -54,27 +49,6 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
     '#FACC15', // yellow-400
     '#22D3EE', // cyan-400
   ];
-
-  // Example data for custom tooltip styling
-  const customTooltipData: GaugeDonutData[] = [
-    { label: 'Feature A', value: 40, color: '#A78BFA' },
-    { label: 'Feature B', value: 25, color: '#F472B6' },
-    { label: 'Feature C', value: 35, color: '#F87171' },
-  ];
-
-  // Custom tooltip format function
-  const customGaugeTooltipFormat = (
-    data: GaugeDonutData,
-    total: number,
-    percent: string,
-  ): string => {
-    return `
-      <strong>${data.label}</strong><br/>
-      Value: ${data.value}<br/>
-      Percent: ${percent}%<br/>
-      <em>Extra Info!</em>
-    `;
-  };
 
   // State to hold data of the clicked slice
   const [clickedSliceData, setClickedSliceData] = useState<DonutChartData | null>(null);
@@ -195,7 +169,7 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
           height={500}
           showLegend={true}
           legendPosition="right"
-          onSliceClick={(data) => {
+          onSliceClick={(data: DonutChartData) => {
             setClickedSliceData(data);
           }}
           legendFontColor={isDarkMode ? '#cccccc' : '#666666'}
@@ -374,7 +348,11 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
         </h3>
         <div className="chart-container">
           <GaugeDonutChart
-            data={customTooltipData}
+            data={[
+              { label: 'Feature A', value: 40, color: '#A78BFA' },
+              { label: 'Feature B', value: 25, color: '#F472B6' },
+              { label: 'Feature C', value: 35, color: '#F87171' },
+            ]}
             width={400}
             height={400}
             variant="half-bottom"
@@ -389,7 +367,14 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
             tooltipPadding="10px"
             tooltipBorderRadius="8px"
             tooltipFontSize="13px"
-            tooltipFormat={customGaugeTooltipFormat}
+            tooltipFormat={(data: GaugeDonutData, total: number, percent: string): string => {
+              return `
+                <strong>${data.label}</strong><br/>
+                Value: ${data.value}<br/>
+                Percent: ${percent}%<br/>
+                <em>Extra Info!</em>
+              `;
+            }}
             onSliceClick={() => {
               /* console.log('Clicked:', data); */
             }}

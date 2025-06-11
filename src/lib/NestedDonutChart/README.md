@@ -87,7 +87,6 @@ const nestedData = [
   onSliceClick={(level, data) => { /* console.log('Clicked:', level, data); */ }}
   legendPosition="right"
   theme="light"
-  tooltipFormat={customTooltipFormat}
 />
 ```
 
@@ -151,7 +150,7 @@ const nestedData = [
     borderRadius: '8px',
     padding: '20px',
   }}
-  tooltipFormat={customTooltipFormat}
+  /* tooltipFormat prop removed */
 />
 ```
 

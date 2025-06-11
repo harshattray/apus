@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { NestedDonutChart } from './NestedDonutChart';
+import NestedDonutChart from './NestedDonutChart';
 import '@testing-library/jest-dom';
 
 describe('NestedDonutChart', () => {

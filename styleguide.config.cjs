@@ -1,8 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  title: 'Apus Charts Component Library',
-  components: 'src/lib/**/[A-Z]*.tsx',
+  title: 'Apus Chart Component Library',
   ignore: [
     '**/__tests__/**', 
     '**/*.test.{js,jsx,ts,tsx}',
@@ -13,6 +12,9 @@ module.exports = {
     'src/lib/hooks/**',
     'src/lib/utils/**',
     'src/lib/**/StackedBarChartRenderer.tsx',
+  ],
+  require: [
+    './src/lib/index.ts',
   ],
   propsParser: require('react-docgen-typescript').withCustomConfig(
     './tsconfig.json', 
@@ -55,6 +57,14 @@ module.exports = {
           usageMode: 'expand',
           exampleFiles: ['src/demo/components/DonutChartExamples.tsx'],
         },
+      ],
+    },
+    {
+      name: 'Funnel Charts',
+      components: [
+        'src/lib/FunnelChart/FunnelChart.tsx',
+        'src/lib/FunnelChart/TimeSeriesFunnelChart.tsx',
+        'src/lib/FunnelChart/SegmentedFunnelChart.tsx',
       ],
     },
   ],
@@ -108,37 +118,43 @@ module.exports = {
   styleguideComponents: {
     LogoRenderer: path.join(__dirname, 'docs/styleguide-components/LogoRenderer.tsx'),
   },
-  dangerouslyUpdateWebpackConfig: (webpackConfig, env) => {
-    // Output configuration
-    webpackConfig.output = webpackConfig.output || {};
-    if (env === 'production') {
-      webpackConfig.output.publicPath = '/apus/';
-    }
-
-    // Resolve alias configuration
-    webpackConfig.resolve = webpackConfig.resolve || {};
-    webpackConfig.resolve.alias = webpackConfig.resolve.alias || {};
-    webpackConfig.resolve.alias.apus = path.resolve(__dirname, 'src/lib/index.ts');
-
-    // Module rules configuration
-    webpackConfig.module = webpackConfig.module || {}; // Ensure module object exists
-    
-    // Ensure rules array exists, preserving existing rules
-    const existingRules = Array.isArray(webpackConfig.module.rules) ? webpackConfig.module.rules : [];
-    // IMPORTANT: We are directly mutating webpackConfig.module.rules here as per how dangerouslyUpdateWebpackConfig often works.
-    // If Styleguidist passes a frozen object, this might need adjustment, but typically it's mutable.
-    webpackConfig.module.rules = [...existingRules]; 
-    if (webpackConfig.module.rules.length > 0) {
-      webpackConfig.module.rules.unshift({
-        test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
-        loader: 'ts-loader',
-      });
-    }
-    
-    return webpackConfig;
-  },
   webpackConfig: {
-    // ... existing code ...
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  '@babel/preset-env',
+                  '@babel/preset-react',
+                  '@babel/preset-typescript',
+                ],
+              },
+            },
+          ],
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js', '.jsx', '.json'],
+      alias: {
+        apus: path.resolve(__dirname, './src/lib/index.ts'),
+      },
+    },
+  },
+  components: 'src/lib/**/*.{js,jsx,ts,tsx}',
+  exampleMode: 'expand',
+  usageMode: 'expand',
+  skipComponentsWithoutExample: false,
+  dangerouslyUpdateWebpackConfig(webpackConfig, env) {
+    return webpackConfig;
   },
 };

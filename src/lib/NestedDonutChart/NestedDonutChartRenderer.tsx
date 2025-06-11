@@ -28,17 +28,26 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
   enableGlow = false,
   glowColor,
   glowBlur = 5,
+  innerRadius: innerRadiusProp,
+  outerRadius: outerRadiusProp,
+  cornerRadius = 4,
+  padAngle = 0.02,
+  tooltipBackgroundColor,
+  tooltipTextColor,
+  tooltipPadding,
+  tooltipBorderRadius,
+  tooltipFontSize,
 }) => {
   const [activeSlices, setActiveSlices] = useState<Set<string>>(new Set());
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const tooltip = useTooltip(tooltipRef, {
-    backgroundColor: 'rgba(0,0,0,0.85)',
-    textColor: '#fff',
-    padding: '8px 12px',
-    borderRadius: '6px',
-    fontSize: '14px',
+    backgroundColor: tooltipBackgroundColor || 'rgba(0,0,0,0.85)',
+    textColor: tooltipTextColor || '#fff',
+    padding: tooltipPadding || '8px 12px',
+    borderRadius: tooltipBorderRadius || '6px',
+    fontSize: tooltipFontSize || '14px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
     zIndex: 1000,
   });
@@ -70,9 +79,10 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     const svg = d3.select(svgRef.current);
     const cx = width / 2;
     const cy = height / 2;
-    const radius = Math.min(width, height) / 2;
-
-    const ringThickness = radius / (levels.length * 3); // Divide radius by 3 times the number of levels
+    const maxRadius = outerRadiusProp !== undefined ? outerRadiusProp : Math.min(width, height) / 2;
+    const minRadius = innerRadiusProp !== undefined ? innerRadiusProp : maxRadius / 3;
+    const totalRingSpace = maxRadius - minRadius;
+    const ringThickness = totalRingSpace > 0 ? totalRingSpace / levels.length : 0;
 
     // Create pie generators for each level
     const pieGenerators = Array.from({ length: levels.length }, () =>
@@ -80,7 +90,7 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
         .pie<NestedDonutLevelData[number]>()
         .value((d) => d.value)
         .sort(null)
-        .padAngle(0.02),
+        .padAngle(padAngle),
     );
 
     // Generate pie data for each level
@@ -127,14 +137,14 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     }
 
     pieData.forEach((levelData, levelIndex) => {
-      const innerRadius = radius - (levelIndex + 1) * ringThickness * 3;
-      const outerRadius = radius - levelIndex * ringThickness * 3;
+      const outerRadius = maxRadius - levelIndex * ringThickness;
+      const innerRadius = maxRadius - (levelIndex + 1) * ringThickness;
 
       const arcGen = d3
         .arc<d3.PieArcDatum<NestedDonutLevelData[number]>>()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius)
-        .cornerRadius(4);
+        .cornerRadius(cornerRadius);
 
       g.selectAll(`.arc-${levelIndex}`)
         .data(levelData)
@@ -201,9 +211,9 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
       if (centerLabel) {
         textGroup
           .append('text')
-          .attr('y', 20)
+          .attr('y', 12)
           .style('font-size', 16)
-          .style('fill', theme === 'dark' ? '#aaa' : '#666')
+          .style('fill', theme === 'dark' ? '#ccc' : '#666')
           .text(centerLabel);
       }
     }
@@ -219,13 +229,17 @@ export const NestedDonutChartRenderer: React.FC<NestedDonutChartRendererProps> =
     colors,
     centerLabel,
     centerValue,
-    onSliceClick,
     activeSlices,
     theme,
     enableGlow,
     glowColor,
     glowBlur,
     handleSliceClick,
+    onSliceClick,
+    cornerRadius,
+    innerRadiusProp,
+    outerRadiusProp,
+    padAngle,
     tooltip,
   ]);
 

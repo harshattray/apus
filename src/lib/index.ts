@@ -19,7 +19,7 @@ export { GaugeDonutChart } from './GaugeDonutChart/GaugeDonutChart';
 export type { GaugeDonutChartProps, GaugeDonutData } from './GaugeDonutChart/types';
 
 // Export NestedDonutChart and its types
-export { NestedDonutChart } from './NestedDonutChart/NestedDonutChart';
+export * from './NestedDonutChart';
 export type { NestedDonutChartProps, NestedDonutLevelData } from './NestedDonutChart/types';
 
 // Export StackedBarChart

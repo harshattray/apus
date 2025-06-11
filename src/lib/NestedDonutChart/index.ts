@@ -6,6 +6,6 @@ import {
 import { NestedDonutChart } from './NestedDonutChart';
 import { NestedDonutChartRenderer } from './NestedDonutChartRenderer';
 
-export { NestedDonutChart };
+export { NestedDonutChart as NestedDonutChart };
 export { NestedDonutChartRenderer };
 export type { NestedDonutChartProps, NestedDonutChartRendererProps, NestedDonutLevelData };

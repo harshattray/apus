@@ -143,12 +143,10 @@ const NestedDonutChartInternal: React.FC<NestedDonutChartProps> = ({
 };
 
 // The main NestedDonutChart component that acts as a wrapper and passes props to the renderer
-const NestedDonutChart: React.FC<NestedDonutChartProps> = (props) => {
+export const NestedDonutChart: React.FC<NestedDonutChartProps> = (props) => {
   // All props are passed directly to the renderer
   return <NestedDonutChartRenderer {...props} />;
 };
 
 // Export the internal component for advanced use cases
 export { NestedDonutChartInternal };
-
-export { NestedDonutChart };
