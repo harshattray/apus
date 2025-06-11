@@ -3,16 +3,18 @@ import React from 'react';
 interface SidebarProps {
   isDarkMode: boolean;
   activeTab: string;
-  setActiveTab: (tab: 'line' | 'bar' | 'donut' | 'stacked' | 'radar') => void;
+  setActiveTab: (tab: 'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel') => void;
 }
 
-const chartTabs: { id: 'line' | 'bar' | 'donut' | 'stacked' | 'radar'; name: string }[] = [
-  { id: 'line', name: 'Line Charts' },
-  { id: 'bar', name: 'Bar Charts' },
-  { id: 'donut', name: 'Donut Charts' },
-  { id: 'stacked', name: 'Stacked Bar Charts' },
-  { id: 'radar', name: 'Radar Charts' },
-];
+const chartTabs: { id: 'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel'; name: string }[] =
+  [
+    { id: 'line', name: 'Line Charts' },
+    { id: 'bar', name: 'Bar Charts' },
+    { id: 'donut', name: 'Donut Charts' },
+    { id: 'stacked', name: 'Stacked Bar Charts' },
+    { id: 'radar', name: 'Radar Charts' },
+    { id: 'funnel', name: 'Funnel Charts' },
+  ];
 
 const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, activeTab, setActiveTab }) => {
   return (

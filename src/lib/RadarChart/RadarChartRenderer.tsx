@@ -183,7 +183,6 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
 
       {/* Data series paths and hover targets */}
       {data.map((series, seriesIndex) => {
-        console.log(`[Renderer] Processing series: ${series.name}`);
         const seriesPoints: Array<[number, number]> = series.dataPoints.map((dp) => {
           const axisIndex = axesLabels.indexOf(dp.axis);
           if (axisIndex === -1) return [0, 0]; // Should not happen with valid data
@@ -239,9 +238,6 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
               const r = pointCoords[1];
               const x = r * Math.cos(angle - Math.PI / 2);
               const y = r * Math.sin(angle - Math.PI / 2);
-              console.log(
-                `[Renderer] Hover target for ${series.name} - ${dp.axis}: cx=${x}, cy=${y}, r=${rHoverTargetRadius}`,
-              );
 
               return (
                 <circle
@@ -256,9 +252,6 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
                   onMouseEnter={(e) => {
                     if (chartRef.current) {
                       const [tooltipX, tooltipY] = d3.pointer(e, chartRef.current);
-                      console.log(
-                        `[Renderer] MouseEnter: ${series.name} - ${dp.axis}, Relative Coords: ${tooltipX}, ${tooltipY}`,
-                      );
                       if (setHoveredData) {
                         setHoveredData({
                           seriesName: series.name,
@@ -271,14 +264,9 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
                           color: series.color, // Pass series color
                         });
                       }
-                    } else {
-                      console.warn(
-                        '[Renderer] chartRef.current is null, cannot calculate d3.pointer',
-                      );
                     }
                   }}
                   onMouseLeave={() => {
-                    console.log(`[Renderer] MouseLeave: ${series.name} - ${dp.axis}`);
                     setHoveredData(null);
                   }}
                 />
@@ -292,9 +280,6 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
               const r = pointCoords[1];
               const x = r * Math.cos(angle - Math.PI / 2);
               const y = r * Math.sin(angle - Math.PI / 2);
-              console.log(
-                `[Renderer] Hover target for ${series.name} - ${dp.axis}: cx=${x}, cy=${y}, r=${rHoverTargetRadius}`,
-              );
 
               return (
                 <circle
@@ -314,9 +299,6 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
                   onMouseEnter={(e) => {
                     if (chartRef.current) {
                       const [tooltipX, tooltipY] = d3.pointer(e, chartRef.current);
-                      console.log(
-                        `[Renderer] MouseEnter: ${series.name} - ${dp.axis}, Relative Coords: ${tooltipX}, ${tooltipY}`,
-                      );
                       if (setHoveredData) {
                         setHoveredData({
                           seriesName: series.name,
@@ -329,14 +311,9 @@ export const RadarChartRenderer: React.FC<RadarChartRendererProps> = ({
                           color: series.color, // Pass series color
                         });
                       }
-                    } else {
-                      console.warn(
-                        '[Renderer] chartRef.current is null, cannot calculate d3.pointer',
-                      );
                     }
                   }}
                   onMouseLeave={() => {
-                    console.log(`[Renderer] MouseLeave: ${series.name} - ${dp.axis}`);
                     setHoveredData(null);
                   }}
                 />

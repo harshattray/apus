@@ -127,7 +127,7 @@ describe('RadarChart', () => {
 
   it('handles responsive prop correctly', () => {
     render(<RadarChart data={mockData} axesLabels={mockAxesLabels} responsive={true} />);
-    const container = screen.getByRole('graphics-document').parentElement;
+    const container = screen.getByTestId('radar-chart-container');
     expect(container).toHaveStyle({ width: '100%', height: '100%' });
   });
 

@@ -41,13 +41,13 @@ A powerful and customizable chart library for React applications, built with D3.
 
 ```bash
 # Using npm
-npm install apus
+npm install apus 
 
 # Using yarn
 yarn add apus
 
 # Using pnpm
-pnpm add apus
+pnpm add apus 
 ```
 
 ## Peer Dependencies

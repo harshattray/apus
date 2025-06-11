@@ -276,9 +276,9 @@ export const RadarChartExamples: React.FC<RadarChartExamplesProps> = ({ isDarkMo
           seriesFillOpacity={0.25} // Base opacity for non-selected/non-deselected state
           seriesStrokeWidth={2} // Base stroke for non-selected/non-deselected state
           tooltipFormat={customTooltipFormat}
-          onLegendItemClick={(seriesName: string | null) =>
-            console.log('Legend item clicked:', seriesName)
-          }
+          onLegendItemClick={() => {
+            /* console.log('Legend item clicked:', seriesName); */
+          }}
         />
       </div>
     </>

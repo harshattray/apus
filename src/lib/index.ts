@@ -19,7 +19,7 @@ export { GaugeDonutChart } from './GaugeDonutChart/GaugeDonutChart';
 export type { GaugeDonutChartProps, GaugeDonutData } from './GaugeDonutChart/types';
 
 // Export NestedDonutChart and its types
-export { NestedDonutChart } from './NestedDonutChart/NestedDonutChart';
+export * from './NestedDonutChart';
 export type { NestedDonutChartProps, NestedDonutLevelData } from './NestedDonutChart/types';
 
 // Export StackedBarChart
@@ -34,6 +34,22 @@ export type {
   RadarChartDataPoint,
   HoveredDataInfo,
 } from './RadarChart/types';
+
+// Export FunnelChart
+export { default as FunnelChart } from './FunnelChart';
+export type { FunnelData, FunnelChartProps } from './FunnelChart/types';
+
+// Export TimeSeriesFunnelChart
+export { default as TimeSeriesFunnelChart } from './FunnelChart/TimeSeriesFunnelChart';
+export type { TimeSeriesFunnelData, TimeSeriesFunnelChartProps } from './FunnelChart/types';
+
+// Export SegmentedFunnelChart
+export { default as SegmentedFunnelChart } from './FunnelChart/SegmentedFunnelChart';
+export type {
+  SegmentedFunnelSegment,
+  SegmentedFunnelStage,
+  SegmentedFunnelChartProps,
+} from './FunnelChart/types';
 
 // Export hooks for advanced usage
 export { useChartDimensions } from './hooks/useChartDimensions';

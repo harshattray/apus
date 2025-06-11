@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import {
   Header,
-  Installation,
-  ResponsiveExamples,
-  LineChartExamples,
   BarChartExamples,
+  LineChartExamples,
   StackedBarChartExamples,
-  RadarChartExamples,
   DonutChartExamples,
+  RadarChartExamples,
+  FunnelChartExamples,
+  ResponsiveExamples,
+  Installation,
   Sidebar,
 } from './components';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [activeTab, setActiveTab] = useState<'line' | 'bar' | 'donut' | 'stacked' | 'radar'>(
-    'line',
-  );
+  const [activeTab, setActiveTab] = useState<
+    'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel'
+  >('line');
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -33,8 +34,10 @@ function App() {
         return <StackedBarChartExamples isDarkMode={isDarkMode} />;
       case 'radar':
         return <RadarChartExamples isDarkMode={isDarkMode} />;
+      case 'funnel':
+        return <FunnelChartExamples isDarkMode={isDarkMode} />;
       default:
-        return null;
+        return <LineChartExamples isDarkMode={isDarkMode} />;
     }
   };
 

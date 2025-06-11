@@ -23,6 +23,15 @@ export type NestedDonutChartProps = {
   enableGlow?: boolean;
   glowColor?: string; // defaults to slice color
   glowBlur?: number; // Gaussian blur standard deviation
+  innerRadius?: number;
+  outerRadius?: number;
+  cornerRadius?: number;
+  padAngle?: number;
+  tooltipBackgroundColor?: string;
+  tooltipTextColor?: string;
+  tooltipPadding?: string;
+  tooltipBorderRadius?: string;
+  tooltipFontSize?: string;
 };
 
 // NestedDonutChartRendererProps is the same as NestedDonutChartProps

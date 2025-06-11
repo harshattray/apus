@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Styles for the wrapper can be adjusted as needed
-const logoStyles: React.CSSProperties = {
+const logoStyles = {
   fontSize: '20px',
   fontWeight: 'normal',
   margin: 0,
@@ -11,7 +11,7 @@ const logoStyles: React.CSSProperties = {
   padding: '10px 0', // Add some padding
 };
 
-const imgStyles: React.CSSProperties = {
+const imgStyles = {
   height: '30px',
   marginLeft: '10px',
   verticalAlign: 'middle',
