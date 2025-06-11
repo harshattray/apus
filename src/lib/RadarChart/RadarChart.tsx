@@ -101,7 +101,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
   }
 
   useEffect(() => {
-    if (legendRef.current && showLegend) {
+    if (showLegend && legendRef.current) {
       setLegendDimensions({
         width: legendRef.current.offsetWidth,
         height: legendRef.current.offsetHeight,
@@ -109,7 +109,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
     } else if (!showLegend) {
       setLegendDimensions({ width: 0, height: 0 });
     }
-  }, [showLegend, legendPosition, legendRef.current, legendTitle, data]);
+  }, [showLegend, legendPosition, data]);
 
   let adjustedChartWidth = effectiveSize;
   let adjustedChartHeight = effectiveSize;
@@ -294,6 +294,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
   return (
     <div
       ref={chartRef}
+      data-testid="radar-chart-container"
       className={`relative ${className}`}
       style={{
         width: responsive ? '100%' : size,

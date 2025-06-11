@@ -231,7 +231,10 @@ const SegmentedFunnelChartRenderer: React.FC<SegmentedFunnelChartRendererProps> 
     ) => {
       if (!analytics) return;
 
-      const analyticsGroup = g.append('g').attr('transform', `translate(${x},${y})`);
+      const analyticsGroup = g
+        .append('g')
+        .attr('transform', `translate(${x},${y})`)
+        .attr('data-testid', 'analytics-group');
 
       // Performance metrics
       analyticsGroup
@@ -305,7 +308,16 @@ const SegmentedFunnelChartRenderer: React.FC<SegmentedFunnelChartRendererProps> 
           .attr('stroke', '#fff')
           .attr('stroke-width', 1)
           .style('cursor', onSliceClick ? 'pointer' : 'default')
-          .style('filter', `url(#${filterIdRef.current})`);
+          .style('filter', `url(#${filterIdRef.current})`)
+          .on('click', () => {
+            if (onSliceClick) {
+              onSliceClick({
+                stageLabel: stage.label,
+                segment: segmentData,
+                totalStageValue: totalStageValue,
+              });
+            }
+          });
 
         // Add trend indicator if enabled and data available
         if (showTrendIndicators && segmentData.trend) {

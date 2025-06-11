@@ -468,17 +468,24 @@ const marketingFunnelData: SegmentedFunnelStage[] = [
 
 const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode }) => {
   const [selectedSegment, setSelectedSegment] = useState<FunnelData | null>(null);
+  const [selectedTimeSeriesLegend, setSelectedTimeSeriesLegend] = useState<FunnelData | null>(null);
+  const [selectedSegmentedLegend, setSelectedSegmentedLegend] = useState<FunnelData | null>(null);
 
   const handleSliceClick = (data: FunnelData) => {
     setSelectedSegment(data);
     console.log('Clicked segment:', data);
   };
 
-  const handleLegendItemClick = (data: FunnelData | null) => {
-    console.log('Legend item clicked:', data);
+  const handleTimeSeriesLegendClick = (data: FunnelData | null) => {
+    setSelectedTimeSeriesLegend(data);
+    console.log('Time Series Legend item clicked:', data);
   };
 
-  // Define a consistent value format function
+  const handleSegmentedLegendClick = (data: FunnelData | null) => {
+    setSelectedSegmentedLegend(data);
+    console.log('Segmented Legend item clicked:', data);
+  };
+
   const toLocaleStringValueFormat = (value: number) => value.toLocaleString();
 
   return (
@@ -586,7 +593,7 @@ const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode })
             legendPosition="bottom"
             legendTitle="Funnel Stages (Interactive)"
             clickableLegend={true}
-            onLegendItemClick={handleLegendItemClick}
+            onLegendItemClick={handleSegmentedLegendClick}
             legendItemColor={isDarkMode ? '#e2e8f0' : '#333'}
             legendTitleColor={isDarkMode ? '#94a3b8' : '#64748b'}
             margin={{ top: 20, right: 20, bottom: 30, left: 180 }}
@@ -642,10 +649,10 @@ const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode })
         </div>
       </div>
 
-      {/* New Time Series Funnel Chart Example */}
+      {/* Time Series Funnel Chart with Legend */}
       <div style={{ marginBottom: '40px' }}>
         <h3 style={{ color: isDarkMode ? '#cbd5e0' : '#4a5568', marginBottom: '15px' }}>
-          Time Series Funnel Chart (Small Multiples)
+          Time Series Funnel Chart with Legend
         </h3>
         <div
           style={{
@@ -671,18 +678,33 @@ const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode })
             segmentShadowColor="rgba(0, 0, 0, 0.2)"
             segmentShadowBlur={5}
             segmentShadowOffsetY={5}
-            // You can also pass other FunnelChartProps to apply to all small charts
-            // For example, to show legend on each small chart:
-            // showLegend={true}
-            // legendPosition="bottom"
+            showLegend={true}
+            legendPosition="bottom"
+            clickableLegend={true}
+            onLegendItemClick={handleTimeSeriesLegendClick}
           />
+          {selectedTimeSeriesLegend && (
+            <div
+              style={{
+                marginTop: '10px',
+                padding: '10px',
+                background: isDarkMode ? '#2d3748' : '#f7fafc',
+                borderRadius: '4px',
+                fontSize: '14px',
+                color: isDarkMode ? '#e2e8f0' : '#4a5568',
+              }}
+            >
+              Selected Time Series Legend: {selectedTimeSeriesLegend.label} -{' '}
+              {toLocaleStringValueFormat(selectedTimeSeriesLegend.value)}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* New Segmented Funnel Chart Example */}
+      {/* Segmented Funnel Chart with Legend */}
       <div style={{ marginBottom: '40px' }}>
         <h3 style={{ color: isDarkMode ? '#cbd5e0' : '#4a5568', marginBottom: '15px' }}>
-          Enhanced Segmented Funnel Chart
+          Segmented Funnel Chart with Legend
         </h3>
         <div
           style={{
@@ -714,13 +736,26 @@ const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode })
             miniChartHeight={40}
             trendIndicatorSize={10}
             analyticsDisplayMode="both"
-            onSliceClick={() => {
-              // console.log('Clicked segment:', data);
-            }}
-            onLegendItemClick={() => {
-              // console.log('Legend item clicked:', data);
-            }}
+            showLegend={true}
+            legendPosition="bottom"
+            clickableLegend={true}
+            onLegendItemClick={handleSegmentedLegendClick}
           />
+          {selectedSegmentedLegend && (
+            <div
+              style={{
+                marginTop: '10px',
+                padding: '10px',
+                background: isDarkMode ? '#2d3748' : '#f7fafc',
+                borderRadius: '4px',
+                fontSize: '14px',
+                color: isDarkMode ? '#e2e8f0' : '#4a5568',
+              }}
+            >
+              Selected Segmented Legend: {selectedSegmentedLegend.label} -{' '}
+              {toLocaleStringValueFormat(selectedSegmentedLegend.value)}
+            </div>
+          )}
         </div>
       </div>
 
@@ -836,6 +871,14 @@ const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode })
             miniChartHeight={30}
             trendIndicatorSize={12}
             analyticsDisplayMode="tooltip"
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onSliceClick={(data) => {
+              // console.log('Clicked segment:', data);
+            }}
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onLegendItemClick={(data) => {
+              // console.log('Legend item clicked:', data);
+            }}
           />
         </div>
       </div>
@@ -864,10 +907,12 @@ const FunnelChartExamples: React.FC<FunnelChartExamplesProps> = ({ isDarkMode })
             showMiniCharts={false}
             showAnalytics
             analyticsDisplayMode="inline"
-            onSliceClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onSliceClick={(data) => {
               // console.log('Clicked segment:', data);
             }}
-            onLegendItemClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onLegendItemClick={(data) => {
               // console.log('Legend item clicked:', data);
             }}
             isDarkMode={isDarkMode}

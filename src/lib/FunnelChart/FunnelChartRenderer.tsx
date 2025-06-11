@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { FunnelChartProps } from './types';
 import { useTooltip } from '../hooks/useTooltip';
@@ -19,19 +19,6 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
   tooltipOffsetX = 10,
   tooltipOffsetY = 10,
   tooltipFormat,
-  showLegend = false,
-  legendPosition = 'bottom',
-  legendTitle,
-  legendItemColor,
-  legendSwatchSize = 10,
-  legendGap = 10,
-  clickableLegend = false,
-  onLegendItemClick,
-  legendTitleColor,
-  legendTitleFontSize,
-  legendTitleFontFamily,
-  legendSwatchBorderWidth = 1,
-  legendSwatchBorderColor = '#FFF',
   isDarkMode = false,
   enableGradients = false,
   gradientDirection = 'vertical',
@@ -42,12 +29,8 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const legendRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const filterIdRef = useRef<string>(`funnel-shadow-${Math.random().toString(36).substring(7)}`);
-
-  const [selectedSegmentName, setSelectedSegmentName] = useState<string | null>(null);
-  const [legendDimensions, setLegendDimensions] = useState({ width: 0, height: 0 });
 
   const tooltip = useTooltip(tooltipRef, {
     backgroundColor: tooltipFormat ? 'transparent' : tooltipBackgroundColor,
@@ -61,27 +44,8 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
     tooltip.applyTooltipStyles();
   }, [tooltip]);
 
-  useEffect(() => {
-    if (legendRef.current && showLegend) {
-      setLegendDimensions({
-        width: legendRef.current.offsetWidth,
-        height: legendRef.current.offsetHeight,
-      });
-    } else if (!showLegend) {
-      setLegendDimensions({ width: 0, height: 0 });
-    }
-  }, [showLegend, legendPosition, legendTitle, data]);
-
-  let adjustedWidth = width;
-  let adjustedHeight = height;
-
-  if (showLegend) {
-    if (legendPosition === 'top' || legendPosition === 'bottom') {
-      adjustedHeight = Math.max(0, height - legendDimensions.height);
-    } else if (legendPosition === 'left' || legendPosition === 'right') {
-      adjustedWidth = Math.max(0, width - legendDimensions.width);
-    }
-  }
+  const adjustedWidth = width;
+  const adjustedHeight = height;
 
   useEffect(() => {
     if (!svgRef.current || !data.length) return;
@@ -136,11 +100,6 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
 
     let currentY = 0;
     data.forEach((d, i) => {
-      if (clickableLegend && selectedSegmentName && selectedSegmentName !== d.label) {
-        currentY += segmentHeight;
-        return;
-      }
-
       const segment = g.append('g').attr('class', 'funnel-segment');
 
       const topWidth = xScale(d.value);
@@ -205,6 +164,19 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
           tooltip.hideTooltip();
         });
 
+      if (showValues) {
+        segment
+          .append('text')
+          .attr('x', innerWidth / 2) // Centered horizontally
+          .attr('y', currentY + segmentHeight / 2) // Centered vertically within the segment
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .attr('fill', isDarkMode ? '#e2e8f0' : '#1a202c') // Adjust color for better contrast
+          .attr('font-size', '14px')
+          .attr('pointer-events', 'none') // Prevent text from interfering with mouse events on path
+          .text(`${d.label}: ${valueFormat ? valueFormat(d.value) : d.value}`);
+      }
+
       currentY += segmentHeight;
     });
 
@@ -234,8 +206,6 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
     tooltipOffsetX,
     tooltipOffsetY,
     tooltipFormat,
-    clickableLegend,
-    selectedSegmentName,
     isDarkMode,
     enableGradients,
     gradientDirection,
@@ -243,143 +213,29 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
     segmentShadowBlur,
     segmentShadowOffsetX,
     segmentShadowOffsetY,
+    tooltipBackgroundColor,
+    tooltipTextColor,
+    tooltipPadding,
+    tooltipBorderRadius,
+    tooltipFontSize,
   ]);
-
-  const renderLegend = () => (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: legendPosition === 'top' || legendPosition === 'bottom' ? 'row' : 'column',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: legendGap,
-        padding: '8px',
-      }}
-    >
-      {legendTitle && (
-        <h4
-          style={{
-            color: legendTitleColor || (isDarkMode ? '#94a3b8' : '#64748b'),
-            fontSize: legendTitleFontSize,
-            fontFamily: legendTitleFontFamily,
-            marginBottom: '8px',
-          }}
-        >
-          {legendTitle}
-        </h4>
-      )}
-      {data.map((d, index) => (
-        <div
-          key={d.label}
-          onClick={() => {
-            if (!clickableLegend) return;
-            const newSelectedName = selectedSegmentName === d.label ? null : d.label;
-            setSelectedSegmentName(newSelectedName);
-            onLegendItemClick?.(newSelectedName ? d : null);
-          }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: clickableLegend ? 'pointer' : 'default',
-            opacity:
-              clickableLegend && selectedSegmentName && selectedSegmentName !== d.label ? 0.5 : 1,
-            transition: 'opacity 0.2s ease-in-out',
-          }}
-        >
-          <span
-            style={{
-              display: 'inline-block',
-              width: `${legendSwatchSize}px`,
-              height: `${legendSwatchSize}px`,
-              borderRadius: '50%',
-              backgroundColor: d.color || `hsl(${(index * 360) / data.length}, 70%, 50%)`,
-              border: `${legendSwatchBorderWidth}px solid ${legendSwatchBorderColor}`,
-              marginRight: '8px',
-            }}
-          ></span>
-          <span style={{ color: legendItemColor || (isDarkMode ? '#e2e8f0' : '#333') }}>
-            {d.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-
-  const getFlexDirection = () => {
-    switch (legendPosition) {
-      case 'top':
-        return 'column';
-      case 'bottom':
-        return 'column-reverse';
-      case 'left':
-        return 'row';
-      case 'right':
-        return 'row-reverse';
-      default:
-        return 'column';
-    }
-  };
 
   return (
     <div
       ref={chartRef}
       style={{
-        width: adjustedWidth,
-        height: adjustedHeight,
+        width: '100%',
+        height: '100%',
+        minHeight: height,
         display: 'flex',
-        flexDirection: getFlexDirection(),
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
       }}
     >
-      {(legendPosition === 'top' || legendPosition === 'left') && showLegend && (
-        <div ref={legendRef}>{renderLegend()}</div>
-      )}
-      <svg ref={svgRef} width={adjustedWidth} height={adjustedHeight} style={{ display: 'block' }}>
-        <defs>
-          {data.map((d, i) => {
-            if (enableGradients && d.color) {
-              const gradientId = `gradient-${d.label.replace(/[^a-zA-Z0-9-_]/g, '')}-${i}`;
-              const darkerColor = d3.color(d.color)?.darker(0.5)?.toString() || d.color;
-              return (
-                <linearGradient
-                  key={gradientId}
-                  id={gradientId}
-                  x1={gradientDirection === 'horizontal' ? '0%' : '0%'}
-                  y1={gradientDirection === 'horizontal' ? '0%' : '0%'}
-                  x2={gradientDirection === 'horizontal' ? '100%' : '0%'}
-                  y2={gradientDirection === 'horizontal' ? '0%' : '100%'}
-                >
-                  <stop offset="0%" stopColor={darkerColor} />
-                  <stop offset="100%" stopColor={d.color} />
-                </linearGradient>
-              );
-            }
-            return null;
-          })}
-          <filter id={filterIdRef.current} x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow
-              dx={segmentShadowOffsetX}
-              dy={segmentShadowOffsetY}
-              stdDeviation={segmentShadowBlur}
-              floodColor={segmentShadowColor}
-            />
-          </filter>
-        </defs>
-      </svg>
-      {(legendPosition === 'bottom' || legendPosition === 'right') && showLegend && (
-        <div ref={legendRef}>{renderLegend()}</div>
-      )}
-      <div
-        ref={tooltipRef}
-        style={{
-          position: 'absolute',
-          pointerEvents: 'none',
-          zIndex: 1000,
-          display: 'none',
-        }}
-      />
+      <svg ref={svgRef} width={width} height={height} style={{ display: 'block' }} />
+      <div ref={tooltipRef} style={{ position: 'absolute', pointerEvents: 'none', zIndex: 9999 }} />
     </div>
   );
 };

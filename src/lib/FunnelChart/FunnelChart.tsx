@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FunnelChartProps } from './types';
 import FunnelChartRenderer from './FunnelChartRenderer';
+import ChartLegend from './common/ChartLegend';
+import { ChartLegendItem } from './common/types';
 
 const FunnelChart: React.FC<FunnelChartProps> = ({
   data,
@@ -21,13 +23,13 @@ const FunnelChart: React.FC<FunnelChartProps> = ({
   tooltipOffsetX,
   tooltipOffsetY,
   tooltipFormat,
-  showLegend,
-  legendPosition,
+  showLegend = false,
+  legendPosition = 'bottom',
   legendTitle,
   legendItemColor,
   legendSwatchSize,
   legendGap,
-  clickableLegend,
+  clickableLegend = false,
   onLegendItemClick,
   legendTitleColor,
   legendTitleFontSize,
@@ -35,6 +37,21 @@ const FunnelChart: React.FC<FunnelChartProps> = ({
   legendSwatchBorderWidth,
   legendSwatchBorderColor,
 }) => {
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+  const handleLegendItemClick = (item: ChartLegendItem | null) => {
+    setSelectedItem(item ? item.id : null);
+    onLegendItemClick?.(item ? data.find((d) => d.label === item.id) || null : null);
+  };
+
+  const filteredData = selectedItem ? data.filter((d) => d.label === selectedItem) : data;
+
+  const legendItems: ChartLegendItem[] = data.map((d) => ({
+    id: d.label,
+    name: d.label,
+    color: d.color || `hsl(${(data.indexOf(d) * 360) / data.length}, 70%, 50%)`,
+  }));
+
   return (
     <div
       className={className}
@@ -42,11 +59,35 @@ const FunnelChart: React.FC<FunnelChartProps> = ({
         width: '100%',
         height: '100%',
         minHeight: height,
+        display: 'flex',
+        flexDirection: legendPosition === 'top' || legendPosition === 'bottom' ? 'column' : 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
         ...style,
       }}
     >
+      {showLegend && (legendPosition === 'top' || legendPosition === 'left') && (
+        <ChartLegend
+          legendItems={legendItems}
+          showLegend={showLegend}
+          legendPosition={legendPosition}
+          legendTitle={legendTitle}
+          legendItemColor={legendItemColor}
+          legendSwatchSize={legendSwatchSize}
+          legendGap={legendGap}
+          clickableLegend={clickableLegend}
+          onLegendItemClick={handleLegendItemClick}
+          selectedItem={selectedItem}
+          legendTitleColor={legendTitleColor}
+          legendTitleFontSize={legendTitleFontSize}
+          legendTitleFontFamily={legendTitleFontFamily}
+          legendSwatchBorderWidth={legendSwatchBorderWidth}
+          legendSwatchBorderColor={legendSwatchBorderColor}
+          isDarkMode={isDarkMode}
+        />
+      )}
       <FunnelChartRenderer
-        data={data}
+        data={filteredData}
         width={width}
         height={height}
         margin={margin}
@@ -62,20 +103,27 @@ const FunnelChart: React.FC<FunnelChartProps> = ({
         tooltipOffsetX={tooltipOffsetX}
         tooltipOffsetY={tooltipOffsetY}
         tooltipFormat={tooltipFormat}
-        showLegend={showLegend}
-        legendPosition={legendPosition}
-        legendTitle={legendTitle}
-        legendItemColor={legendItemColor}
-        legendSwatchSize={legendSwatchSize}
-        legendGap={legendGap}
-        clickableLegend={clickableLegend}
-        onLegendItemClick={onLegendItemClick}
-        legendTitleColor={legendTitleColor}
-        legendTitleFontSize={legendTitleFontSize}
-        legendTitleFontFamily={legendTitleFontFamily}
-        legendSwatchBorderWidth={legendSwatchBorderWidth}
-        legendSwatchBorderColor={legendSwatchBorderColor}
       />
+      {showLegend && (legendPosition === 'bottom' || legendPosition === 'right') && (
+        <ChartLegend
+          legendItems={legendItems}
+          showLegend={showLegend}
+          legendPosition={legendPosition}
+          legendTitle={legendTitle}
+          legendItemColor={legendItemColor}
+          legendSwatchSize={legendSwatchSize}
+          legendGap={legendGap}
+          clickableLegend={clickableLegend}
+          onLegendItemClick={handleLegendItemClick}
+          selectedItem={selectedItem}
+          legendTitleColor={legendTitleColor}
+          legendTitleFontSize={legendTitleFontSize}
+          legendTitleFontFamily={legendTitleFontFamily}
+          legendSwatchBorderWidth={legendSwatchBorderWidth}
+          legendSwatchBorderColor={legendSwatchBorderColor}
+          isDarkMode={isDarkMode}
+        />
+      )}
     </div>
   );
 };
