@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.6] - 2024-03-21
+
+### Fixed
+- Fixed RadarChart legend overflowing by dynamically adjusting chart area and re-integrating clickable legend logic.
+
+### Changed
+- Improved demo sidebar styling for better scalability and visual appeal.
+
 ## [0.2.5] - 2024-03-21
 
 ### Fixed
