@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.5] - 2024-03-21
+
+### Fixed
+- Fixed React Hook useEffect dependency warning in `NestedDonutChartRenderer.tsx` by wrapping `handleSliceClick` in useCallback.
+
 ## [0.2.4] - 2024-07-30
 
 ### Added
