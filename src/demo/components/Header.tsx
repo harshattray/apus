@@ -3,12 +3,14 @@ import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import apusLogo from '/apus.svg';
 import GithubIcon from './icons/GithubIcon';
 
-type HeaderProps = {
+interface HeaderProps {
   isDarkMode: boolean;
   toggleTheme: () => void;
-};
+}
 
 const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
+  const iconClass = `h-6 w-6 ${isDarkMode ? 'invert' : ''}`;
+
   return (
     <header
       className={`border-b transition-colors duration-200 ${isDarkMode ? 'border-slate-800' : 'border-slate-200'}`}
@@ -30,6 +32,36 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
           </div>
         </div>
         <div className="flex items-center space-x-4">
+          <a
+            href="https://www.npmjs.com/package/apus"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`p-2.5 rounded-lg transition-colors duration-200 ${
+              isDarkMode ? 'hover:bg-slate-800 text-slate-200' : 'hover:bg-slate-100 text-slate-900'
+            }`}
+            aria-label="NPM Package"
+          >
+            <img
+              src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/npm.svg"
+              alt="NPM logo"
+              className={iconClass}
+            />
+          </a>
+          <a
+            href="https://yarnpkg.com/package?name=apus"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`p-2.5 rounded-lg transition-colors duration-200 ${
+              isDarkMode ? 'hover:bg-slate-800 text-slate-200' : 'hover:bg-slate-100 text-slate-900'
+            }`}
+            aria-label="Yarn Package"
+          >
+            <img
+              src="https://raw.githubusercontent.com/yarnpkg/assets/master/yarn-kitten-circle.svg"
+              alt="Yarn logo"
+              className={iconClass}
+            />
+          </a>
           <a
             href="https://github.com/harshattray/apus"
             target="_blank"

@@ -2,12 +2,14 @@
 
 A powerful and customizable chart library for React applications, built with D3.js and TypeScript.
 
+[![npm version](https://img.shields.io/npm/v/apus.svg)](https://www.npmjs.com/package/apus)
+[![yarn version](https://img.shields.io/npm/v/apus?label=yarn)](https://yarnpkg.com/package?name=apus)
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/harshattray/apus/master/public/apus.svg" alt="Apus Logo" width="200"/>
 </div>
 
-**[📚 View Documentation](https://harshattray.github.io/apus/) | [🚀 Live Demo](https://apus-alpha.vercel.app/)**
+**📚 [View Documentation](https://harshattray.github.io/apus/) | 🚀 [Live Demo](https://harshattray.github.io/apus/)**
 
 ## Features
 
@@ -38,11 +40,14 @@ A powerful and customizable chart library for React applications, built with D3.
 ## Installation
 
 ```bash
-npm install apus 
-# or
+# Using npm
+npm install apus
+
+# Using yarn
 yarn add apus
-# or
-pnpm add apus 
+
+# Using pnpm
+pnpm add apus
 ```
 
 ## Peer Dependencies

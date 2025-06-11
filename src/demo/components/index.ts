@@ -1,4 +1,5 @@
 export { default as Header } from './Header';
+export { default as Sidebar } from './Sidebar';
 export { default as Installation } from './Installation';
 export { default as ResponsiveExamples } from './ResponsiveExamples';
 export { default as LineChartExamples } from './LineChartExamples';

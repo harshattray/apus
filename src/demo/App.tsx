@@ -8,6 +8,7 @@ import {
   StackedBarChartExamples,
   RadarChartExamples,
   DonutChartExamples,
+  Sidebar,
 } from './components';
 
 function App() {
@@ -18,6 +19,23 @@ function App() {
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  const renderChartExample = () => {
+    switch (activeTab) {
+      case 'line':
+        return <LineChartExamples isDarkMode={isDarkMode} />;
+      case 'bar':
+        return <BarChartExamples isDarkMode={isDarkMode} />;
+      case 'donut':
+        return <DonutChartExamples isDarkMode={isDarkMode} />;
+      case 'stacked':
+        return <StackedBarChartExamples isDarkMode={isDarkMode} />;
+      case 'radar':
+        return <RadarChartExamples isDarkMode={isDarkMode} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -35,98 +53,9 @@ function App() {
         {/* Responsive Test Section */}
         <ResponsiveExamples isDarkMode={isDarkMode} />
 
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2
-              className={`text-lg font-medium ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}
-            >
-              Chart Examples
-            </h2>
-            <div
-              className={`inline-flex rounded-lg p-1 ${isDarkMode ? 'bg-slate-800' : 'bg-slate-100'}`}
-            >
-              <button
-                onClick={() => setActiveTab('line')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                  activeTab === 'line'
-                    ? isDarkMode
-                      ? 'bg-slate-700 text-white'
-                      : 'bg-white text-slate-900 shadow-sm'
-                    : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-200'
-                      : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Line Charts
-              </button>
-              <button
-                onClick={() => setActiveTab('bar')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                  activeTab === 'bar'
-                    ? isDarkMode
-                      ? 'bg-slate-700 text-white'
-                      : 'bg-white text-slate-900 shadow-sm'
-                    : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-200'
-                      : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Bar Charts
-              </button>
-              <button
-                onClick={() => setActiveTab('donut')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                  activeTab === 'donut'
-                    ? isDarkMode
-                      ? 'bg-slate-700 text-white'
-                      : 'bg-white text-slate-900 shadow-sm'
-                    : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-200'
-                      : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Donut Charts
-              </button>
-              <button
-                onClick={() => setActiveTab('stacked')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                  activeTab === 'stacked'
-                    ? isDarkMode
-                      ? 'bg-slate-700 text-white'
-                      : 'bg-white text-slate-900 shadow-sm'
-                    : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-200'
-                      : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Stacked Bar Charts
-              </button>
-              <button
-                onClick={() => setActiveTab('radar')}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                  activeTab === 'radar'
-                    ? isDarkMode
-                      ? 'bg-slate-700 text-white'
-                      : 'bg-white text-slate-900 shadow-sm'
-                    : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-200'
-                      : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                Radar Charts
-              </button>
-            </div>
-          </div>
-
-          {activeTab === 'stacked' && <StackedBarChartExamples isDarkMode={isDarkMode} />}
-          {activeTab === 'radar' && <RadarChartExamples isDarkMode={isDarkMode} />}
-          {activeTab === 'donut' && <DonutChartExamples isDarkMode={isDarkMode} />}
-          {(activeTab === 'line' || activeTab === 'bar') && (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {activeTab === 'line' && <LineChartExamples isDarkMode={isDarkMode} />}
-              {activeTab === 'bar' && <BarChartExamples isDarkMode={isDarkMode} />}
-            </div>
-          )}
+        <section className="flex gap-8">
+          <Sidebar isDarkMode={isDarkMode} activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="flex-1 flex flex-col gap-6">{renderChartExample()}</div>
         </section>
       </main>
     </div>
