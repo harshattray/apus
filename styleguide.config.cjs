@@ -128,36 +128,17 @@ module.exports = {
     // IMPORTANT: We are directly mutating webpackConfig.module.rules here as per how dangerouslyUpdateWebpackConfig often works.
     // If Styleguidist passes a frozen object, this might need adjustment, but typically it's mutable.
     webpackConfig.module.rules = [...existingRules]; 
-    console.log('[dangerouslyUpdateWebpackConfig] Before prepending, webpackConfig.module.rules length:', webpackConfig.module.rules.length);
     if (webpackConfig.module.rules.length > 0) {
-      console.log('[dangerouslyUpdateWebpackConfig] Existing rules:', JSON.stringify(webpackConfig.module.rules, null, 2));
+      webpackConfig.module.rules.unshift({
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        loader: 'ts-loader',
+      });
     }
-
-    const babelLoaderRule = {
-      test: /\.(js|jsx|ts|tsx)$/,
-      exclude: /node_modules/,
-      use: [{
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            '@babel/preset-env',
-            ['@babel/preset-react', { runtime: 'automatic' }],
-            '@babel/preset-typescript'
-          ]
-        }
-      }]
-    };
-    const cssLoaderRule = {
-      test: /\.css$/i,
-      use: ['style-loader', 'css-loader'],
-    };
-
-    // Prepend our rules
-    webpackConfig.module.rules.unshift(babelLoaderRule, cssLoaderRule);
-
-    console.log('[dangerouslyUpdateWebpackConfig] After prepending, webpackConfig.module.rules length:', webpackConfig.module.rules.length);
-    console.log('[dangerouslyUpdateWebpackConfig] Final webpackConfig.module.rules:', JSON.stringify(webpackConfig.module.rules, null, 2));
     
     return webpackConfig;
-  }
+  },
+  webpackConfig: {
+    // ... existing code ...
+  },
 };

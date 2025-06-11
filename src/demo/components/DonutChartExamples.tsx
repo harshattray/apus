@@ -271,7 +271,9 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
             centerValue="100"
             legendPosition="right"
             theme={isDarkMode ? 'dark' : 'light'}
-            onSliceClick={(level, data) => console.log('Clicked:', level, data)}
+            onSliceClick={() => {
+              /* console.log('Clicked:', level, data); */
+            }}
           />
         </div>
       </div>
@@ -323,7 +325,9 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
             enableGlow={true}
             glowColor={isDarkMode ? '#ffffff33' : '#00000033'}
             glowBlur={20}
-            onSliceClick={(level, data) => console.log('Clicked:', level, data)}
+            onSliceClick={() => {
+              /* console.log('Clicked:', level, data); */
+            }}
           />
         </div>
       </div>
@@ -351,7 +355,9 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
             enableGlow={true}
             glowColor={isDarkMode ? '#ffffff33' : '#00000033'}
             glowBlur={20}
-            onSliceClick={(data) => console.log('Clicked:', data)}
+            onSliceClick={() => {
+              /* console.log('Clicked:', data); */
+            }}
           />
         </div>
       </div>
@@ -384,6 +390,9 @@ const DonutChartExamples: React.FC<DonutChartExamplesProps> = ({ isDarkMode }) =
             tooltipBorderRadius="8px"
             tooltipFontSize="13px"
             tooltipFormat={customGaugeTooltipFormat}
+            onSliceClick={() => {
+              /* console.log('Clicked:', data); */
+            }}
           />
         </div>
       </div>

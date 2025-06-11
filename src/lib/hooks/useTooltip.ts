@@ -34,7 +34,6 @@ export const useTooltip = (tooltipRef: RefObject<HTMLDivElement>, styles: Toolti
     (content: string, x: number, y: number, offsetX = 0, offsetY = 0) => {
       const tooltip = d3.select(tooltipRef.current);
       if (!content) {
-        console.log('[useTooltip] No content, returning from showTooltip.');
         return;
       }
 

@@ -49,7 +49,7 @@ const donutData = [
   cornerRadius={5}
   centerLabel="Total"
   centerValue="100"
-  onSliceClick={(data) => console.log('Clicked:', data)}
+  onSliceClick={(data) => { /* console.log('Clicked:', data); */ }}
   legendPosition="right"
   theme="light"
 />
@@ -76,10 +76,7 @@ const donutData = [
   padAngle={0.03}
   centerLabel="Distribution"
   centerValue="100%"
-  onSliceClick={(data) => {
-    console.log('Clicked slice:', data);
-    // Add your custom click handling logic
-  }}
+  onSliceClick={(data) => { /* console.log('Clicked slice:', data); */ }}
   legendPosition="right"
   theme="dark"
   tooltipBackgroundColor="rgba(0, 0, 0, 0.9)"
@@ -93,4 +90,18 @@ const donutData = [
     padding: '20px',
   }}
 />
+```
+
+### Custom Tooltip Content
+
+```jsx
+// ... existing code ...
+    onSliceClick={handleSliceClick}
+  />
+);
+
+function handleSliceClick(data) {
+  // console.log('Clicked slice:', data);
+  alert(`You clicked on ${data.label} with value ${data.value}`);
+}
 ```

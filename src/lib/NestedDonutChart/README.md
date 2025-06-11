@@ -33,6 +33,7 @@ A multi-level donut chart for displaying hierarchical or nested data. Supports m
 | `tooltipPadding`       | `string`                                                     | `'8px 12px'`                       | Padding for the tooltip.                                                                                |
 | `tooltipBorderRadius`  | `string`                                                     | `'6px'`                            | Border radius for the tooltip.                                                                          |
 | `tooltipFontSize`      | `string`                                                     | `'14px'`                           | Font size for the tooltip.                                                                              |
+| `tooltipFormat`        | `(level: number, data: { label: string; value: number; color?: string }) => string` | `undefined` | Custom format function for the tooltip.                                                                 |
 
 ## Usage Example
 
@@ -83,9 +84,10 @@ const nestedData = [
   ]}
   centerLabel="Total"
   centerValue="100%"
-  onSliceClick={(level, data) => console.log('Clicked:', level, data)}
+  onSliceClick={(level, data) => { /* console.log('Clicked:', level, data); */ }}
   legendPosition="right"
   theme="light"
+  tooltipFormat={customTooltipFormat}
 />
 ```
 
@@ -136,11 +138,7 @@ const nestedData = [
   ]}
   centerLabel="Distribution"
   centerValue="100%"
-  onSliceClick={(level, data) => {
-    console.log('Clicked level:', level);
-    console.log('Clicked data:', data);
-    // Add your custom click handling logic
-  }}
+  onSliceClick={(level, data) => { /* console.log('Clicked level:', level); */ /* console.log('Clicked data:', data); */ }}
   legendPosition="right"
   theme="dark"
   tooltipBackgroundColor="rgba(0, 0, 0, 0.9)"
@@ -153,6 +151,7 @@ const nestedData = [
     borderRadius: '8px',
     padding: '20px',
   }}
+  tooltipFormat={customTooltipFormat}
 />
 ```
 

@@ -89,7 +89,7 @@ const gradientData = [
   cornerRadius={10}
   centerLabel="Progress"
   centerValue="75%"
-  onSliceClick={(data) => console.log('Clicked:', data)}
+  onSliceClick={(data) => { /* console.log('Clicked:', data); */ }}
   showLegend={true}
   legendPosition="bottom"
   legendFontSize="14px"
@@ -133,10 +133,7 @@ const gaugeData = [
   padAngle={0.03}
   centerLabel="Progress"
   centerValue="75%"
-  onSliceClick={(data) => {
-    console.log('Clicked slice:', data);
-    // Add your custom click handling logic
-  }}
+  onSliceClick={(data) => { /* console.log('Clicked slice:', data); */ }}
   showLegend={true}
   legendPosition="right"
   legendFontSize="16px"
@@ -149,4 +146,20 @@ const gaugeData = [
     padding: '20px',
   }}
 />
-``` 
+```
+
+### Usage with Custom Tooltip
+
+```jsx
+// ... existing code ...
+    onSliceClick={handleSliceClick}
+  />
+);
+
+function handleSliceClick(data) {
+  // console.log('Clicked slice:', data);
+  alert(`You clicked on ${data.label} with value ${data.value}`);
+}
+```
+
+// ... existing code ... 
