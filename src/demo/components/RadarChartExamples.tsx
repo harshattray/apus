@@ -236,7 +236,7 @@ export const RadarChartExamples: React.FC<RadarChartExamplesProps> = ({ isDarkMo
         <RadarChart
           data={radarChartDemoData}
           axesLabels={axes}
-          size={350}
+          size={400}
           maxValue={100}
           showLegend={true}
           legendTitle="Player Comparison"

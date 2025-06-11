@@ -76,24 +76,21 @@ const RadarChart: React.FC<RadarChartProps> = ({
   onLegendItemClick,
 }) => {
   const [hoveredData, _setHoveredData] = useState<HoveredDataInfo | null>(null);
-  console.log(
-    '[RadarChart] Component rendering/re-rendering. Current hoveredData state:',
-    hoveredData,
-  );
   const [selectedSeriesName, setSelectedSeriesName] = useState<string | null>(null);
+  const [legendDimensions, setLegendDimensions] = useState({ width: 0, height: 0 });
 
   const handleSetHoveredData = React.useCallback(
     (data: HoveredDataInfo | null) => {
-      console.log('[RadarChart] handleSetHoveredData called with:', data);
       _setHoveredData(data);
     },
     [_setHoveredData],
-  ); // _setHoveredData from useState is stable
+  );
   const filterId = `radar-shadow-${React.useId()}`;
   const glowFilterId = `radar-glow-${React.useId()}`;
   const chartRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const legendRef = useRef<HTMLDivElement>(null);
 
   const chartDimensions: Dimensions = useChartDimensions(chartRef, size, size, responsive);
   let effectiveSize: number;
@@ -101,6 +98,28 @@ const RadarChart: React.FC<RadarChartProps> = ({
     effectiveSize = Math.min(chartDimensions.width, chartDimensions.height);
   } else {
     effectiveSize = size;
+  }
+
+  useEffect(() => {
+    if (legendRef.current && showLegend) {
+      setLegendDimensions({
+        width: legendRef.current.offsetWidth,
+        height: legendRef.current.offsetHeight,
+      });
+    } else if (!showLegend) {
+      setLegendDimensions({ width: 0, height: 0 });
+    }
+  }, [showLegend, legendPosition, legendRef.current, legendTitle, data]);
+
+  let adjustedChartWidth = effectiveSize;
+  let adjustedChartHeight = effectiveSize;
+
+  if (showLegend) {
+    if (legendPosition === 'top' || legendPosition === 'bottom') {
+      adjustedChartHeight = Math.max(0, effectiveSize - legendDimensions.height);
+    } else if (legendPosition === 'left' || legendPosition === 'right') {
+      adjustedChartWidth = Math.max(0, effectiveSize - legendDimensions.width);
+    }
   }
 
   const tooltip = useTooltip(tooltipRef, {
@@ -116,19 +135,10 @@ const RadarChart: React.FC<RadarChartProps> = ({
   }, [tooltip]);
 
   useEffect(() => {
-    console.log(
-      '[RadarChart] Tooltip effect fired. Hovered data:',
-      hoveredData,
-      'Tooltip Ref Current:',
-      tooltipRef.current,
-    );
     if (hoveredData && tooltipRef.current && chartRef.current) {
       const content = tooltipFormat
         ? tooltipFormat(hoveredData)
         : `<strong>${hoveredData.seriesName}</strong><br/>${hoveredData.axisLabel}: ${hoveredData.value}`;
-      console.log(
-        `[RadarChart] Attempting to show tooltip. Content: ${content}. Relative Coords from d3.pointer: ${hoveredData.tooltipX}, ${hoveredData.tooltipY}.`,
-      );
       tooltip.showTooltip(
         content,
         hoveredData.tooltipX,
@@ -137,7 +147,6 @@ const RadarChart: React.FC<RadarChartProps> = ({
         tooltipOffsetY,
       );
     } else if (tooltipRef.current) {
-      console.log('[RadarChart] Attempting to hide tooltip.');
       tooltip.hideTooltip();
     }
   }, [hoveredData, tooltip, tooltipOffsetX, tooltipOffsetY, chartRef, tooltipFormat]);
@@ -147,7 +156,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
   }
 
   const numAxes = axesLabels.length;
-  const radius = (effectiveSize / 2) * 0.8;
+  const radius = (Math.min(adjustedChartWidth, adjustedChartHeight) / 2) * 0.8;
   const calculatedMaxValue =
     maxValue || Math.max(...data.flatMap((series) => series.dataPoints.map((dp) => dp.value)));
 
@@ -194,119 +203,115 @@ const RadarChart: React.FC<RadarChartProps> = ({
     legendAreaStyle.padding = `${typeof legendPadding === 'number' ? `${legendPadding}px` : legendPadding} 0`;
   }
 
-  const chartAreaContainerStyle: React.CSSProperties = {
-    position: 'relative',
-    width: responsive ? '100%' : `${size}px`,
-    height: responsive ? '100%' : `${size}px`,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
-  const mainContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: getFlexDirection(),
-    width:
-      (legendPosition === 'left' || legendPosition === 'right') && showLegend
-        ? `calc(100% + ${legendSwatchSize * 10}px)`
-        : responsive
-          ? '100%'
-          : `${size}px`,
-    height:
-      (legendPosition === 'top' || legendPosition === 'bottom') && showLegend
-        ? `calc(100% + ${legendSwatchSize * 5}px)`
-        : responsive
-          ? '100%'
-          : `${size}px`,
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const renderLegend = () => {
-    if (!showLegend || !data || data.length === 0) return null;
-
-    return (
-      <div style={legendStyle} className="radar-chart-legend">
-        {legendTitle && (
+  const renderLegend = () => (
+    <div
+      style={{
+        ...legendAreaStyle,
+        marginTop: legendPosition === 'top' ? 'auto' : 0,
+        marginBottom: legendPosition === 'bottom' ? 'auto' : 0,
+        marginLeft: legendPosition === 'left' ? 'auto' : 0,
+        marginRight: legendPosition === 'right' ? 'auto' : 0,
+      }}
+    >
+      {legendTitle && (
+        <h4
+          style={{
+            color: legendTitleColor || (tooltipTextColor === '#FFFFFF' ? '#333' : '#FFF'),
+            fontSize: legendTitleFontSize,
+            fontFamily: legendTitleFontFamily,
+            marginBottom: '8px',
+          }}
+        >
+          {legendTitle}
+        </h4>
+      )}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: legendPosition === 'top' || legendPosition === 'bottom' ? 'row' : 'column',
+          flexWrap: 'wrap', // Allow wrapping for horizontal legends
+          justifyContent: 'center',
+          gap: legendGap,
+        }}
+      >
+        {data.map((series, index) => (
           <div
+            key={series.name}
+            onClick={() => {
+              if (!clickableLegend) return;
+              const newSelectedName = selectedSeriesName === series.name ? null : series.name;
+              setSelectedSeriesName(newSelectedName);
+              if (onLegendItemClick) {
+                onLegendItemClick(newSelectedName);
+              }
+            }}
             style={{
-              fontSize: legendTitleFontSize,
-              fontFamily: legendTitleFontFamily,
-              color:
-                legendTitleColor ||
-                legendItemColor ||
-                (tooltipTextColor === '#FFFFFF' ? '#333' : '#FFF'),
-              fontWeight: 'bold',
-              marginBottom: `${legendGap * 1.5}px`,
-              textAlign:
-                legendPosition === 'top' || legendPosition === 'bottom'
-                  ? 'center'
-                  : legendPosition === 'left'
-                    ? 'right'
-                    : 'left',
+              display: 'flex',
+              alignItems: 'center',
+              marginRight:
+                legendPosition === 'top' || legendPosition === 'bottom' ? `${legendGap}px` : '0',
+              marginBottom:
+                legendPosition === 'left' || legendPosition === 'right' ? `${legendGap}px` : '0',
+              cursor: clickableLegend ? 'pointer' : 'default',
+              padding: '2px 4px', // Add some padding for better click target and visual feedback
+              borderRadius: '3px',
+              backgroundColor:
+                clickableLegend && selectedSeriesName === series.name
+                  ? tooltipTextColor === '#FFFFFF'
+                    ? 'rgba(255,255,255,0.2)'
+                    : 'rgba(0,0,0,0.07)'
+                  : 'transparent',
+              transition: 'background-color 0.15s ease-in-out',
             }}
           >
-            {legendTitle}
-          </div>
-        )}
-        <div style={legendAreaStyle}>
-          {data.map((series, index) => (
-            <div
-              key={`legend-${series.name}-${index}`}
-              onClick={() => {
-                if (!clickableLegend) return;
-                const newSelectedName = selectedSeriesName === series.name ? null : series.name;
-                setSelectedSeriesName(newSelectedName);
-                if (onLegendItemClick) {
-                  onLegendItemClick(newSelectedName);
-                }
-              }}
+            <span
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginRight:
-                  legendPosition === 'top' || legendPosition === 'bottom' ? `${legendGap}px` : '0',
-                marginBottom:
-                  legendPosition === 'left' || legendPosition === 'right' ? `${legendGap}px` : '0',
-                cursor: clickableLegend ? 'pointer' : 'default',
-                padding: '2px 4px', // Add some padding for better click target and visual feedback
-                borderRadius: '3px',
-                backgroundColor:
-                  clickableLegend && selectedSeriesName === series.name
-                    ? tooltipTextColor === '#FFFFFF'
-                      ? 'rgba(255,255,255,0.2)'
-                      : 'rgba(0,0,0,0.07)'
-                    : 'transparent',
-                transition: 'background-color 0.15s ease-in-out',
+                display: 'inline-block',
+                width: `${legendSwatchSize}px`,
+                height: `${legendSwatchSize}px`,
+                borderRadius: '50%',
+                backgroundColor: series.color || `hsl(${(index * 360) / data.length}, 70%, 50%)`,
+                border: `${legendSwatchBorderWidth}px solid ${legendSwatchBorderColor}`,
+                marginRight: '8px',
               }}
-            >
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: `${legendSwatchSize}px`,
-                  height: `${legendSwatchSize}px`,
-                  borderRadius: '50%',
-                  backgroundColor: series.color || `hsl(${(index * 360) / data.length}, 70%, 50%)`,
-                  border: `${legendSwatchBorderWidth}px solid ${legendSwatchBorderColor}`,
-                  marginRight: '8px',
-                }}
-              ></span>
-              <span>{series.name}</span>
-            </div>
-          ))}
-        </div>
+            ></span>
+            <span style={legendStyle}>{series.name}</span>
+          </div>
+        ))}
       </div>
-    );
+    </div>
+  );
+
+  const chartAreaContainerStyle: React.CSSProperties = {
+    position: 'relative',
+    width: adjustedChartWidth,
+    height: adjustedChartHeight,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   return (
-    <div style={mainContainerStyle}>
-      {(legendPosition === 'top' || legendPosition === 'left') && renderLegend()}
-      <div ref={chartRef} style={chartAreaContainerStyle}>
+    <div
+      ref={chartRef}
+      className={`relative ${className}`}
+      style={{
+        width: responsive ? '100%' : size,
+        height: responsive ? '100%' : size,
+        display: 'flex',
+        flexDirection: getFlexDirection(),
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {(legendPosition === 'top' || legendPosition === 'left') && showLegend && (
+        <div ref={legendRef}>{renderLegend()}</div>
+      )}
+      <div style={chartAreaContainerStyle}>
         <svg
           ref={svgRef}
-          width={effectiveSize}
-          height={effectiveSize}
+          width={adjustedChartWidth}
+          height={adjustedChartHeight}
           className={`radar-chart-svg ${className}`}
           role="graphics-document"
           aria-label="radar chart"
@@ -340,7 +345,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
               </filter>
             )}
           </defs>
-          <g transform={`translate(${effectiveSize / 2}, ${effectiveSize / 2})`}>
+          <g transform={`translate(${adjustedChartWidth / 2}, ${adjustedChartHeight / 2})`}>
             <RadarChartRenderer
               chartRef={chartRef}
               data={data}
@@ -402,8 +407,10 @@ const RadarChart: React.FC<RadarChartProps> = ({
             }}
           />
         )}
-      </div>{' '}
-      {(legendPosition === 'bottom' || legendPosition === 'right') && renderLegend()}
+      </div>
+      {(legendPosition === 'bottom' || legendPosition === 'right') && showLegend && (
+        <div ref={legendRef}>{renderLegend()}</div>
+      )}
     </div>
   );
 };
