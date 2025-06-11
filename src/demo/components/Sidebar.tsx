@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, activeTab, setActiveTab }
                       : 'bg-white text-slate-900 shadow-sm'
                     : isDarkMode
                       ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-white hover:text-slate-900 hover:bg-slate-100'
                 }`}
             >
               {tab.name}
