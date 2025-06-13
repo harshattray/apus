@@ -36,9 +36,10 @@
   "scripts": {
     "dev": "vite",
     "build:lib": "npm run build --workspace=packages/apus-charts",
+    "build:app-demo": "npm run build --workspace=apus-demo",
     "dev:demo": "npm run styleguide --workspace=packages/apus-demo",
     "build:demo": "npm run styleguide:build --workspace=packages/apus-demo",
-    "deploy:demo": "npm run build:demo && npm run deploy --workspace=packages/apus-demo",
+    "deploy:styleguide": "npm run build:demo && npm run deploy --workspace=packages/apus-demo",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
