@@ -55,7 +55,15 @@ export default defineConfig(() => {
       lib: {
         entry: resolve(__dirname, 'src/index.ts'),
         name: 'ApusCharts',
-        fileName: (format) => `index.${format}.js`,
+        fileName: (format) => {
+          if (format === 'cjs') {
+            return 'index.cjs';
+          }
+          if (format === 'es') {
+            return 'index.js';
+          }
+          return `index.${format}.js`;
+        },
         formats: ['es', 'umd', 'cjs'],
       },
       rollupOptions: {
