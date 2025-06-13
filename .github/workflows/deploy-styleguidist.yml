@@ -24,13 +24,13 @@ jobs:
         run: npm ci # 'npm ci' is generally recommended for CI for faster, more reliable installs
 
       - name: Build Styleguidist
-        run: npm run styleguide:build
+        run: npm run build:demo
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3 # Using v3, ensure this is a current stable version
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./styleguide # This is the directory Styleguidist outputs to
+          publish_dir: ./packages/apus-demo/styleguide # This is the directory Styleguidist outputs to
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'Automated deployment of Styleguidist documentation'
