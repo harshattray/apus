@@ -19,7 +19,7 @@ export default defineConfig(() => {
     test: {
       environment: 'jsdom',
       globals: true,
-      setupFiles: ['./src/setupTests.ts'],
+      setupFiles: ['./src/setupTests.ts', './src/test-setup.ts'],
     },
   };
 
@@ -54,6 +54,7 @@ export default defineConfig(() => {
     build: {
       lib: {
         entry: resolve(__dirname, 'src/index.ts'),
+        name: 'ApusCharts',
         fileName: (format) => `index.${format}.js`,
         formats: ['es', 'umd', 'cjs'],
       },
@@ -74,4 +75,5 @@ export default defineConfig(() => {
 
   // Return the appropriate configuration based on the environment variable
   return isDemoBuild ? demoConfig : libraryConfig;
+  // return libraryConfig; // FOR TESTING: Force library build
 });
