@@ -6,7 +6,7 @@ A powerful and customizable chart library for React applications, built with D3.
 [![yarn version](https://img.shields.io/npm/v/apus?label=yarn)](https://yarnpkg.com/package?name=apus)
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/harshattray/apus/master/public/apus.svg" alt="Apus Logo" width="200"/>
+  <img src="https://raw.githubusercontent.com/harshattray/apus/master/packages/apus-demo/public/apus.svg" alt="Apus Logo" width="200"/>
 </div>
 
 **📚 [View Documentation](https://harshattray.github.io/apus/) | 🚀 [Live Demo](https://harshattray.github.io/apus/)**
@@ -22,19 +22,19 @@ A powerful and customizable chart library for React applications, built with D3.
 
 ## Screenshots
 
-![Interactive Line Chart with Multiple Datasets](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc1.png)
+![Interactive Line Chart with Multiple Datasets](https://raw.githubusercontent.com/harshattray/apus/master/packages/apus-demo/screens/sc1.png)
 *Interactive Line Chart with Multiple Datasets*
 
-![Customizable Bar Chart with Tooltips](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc2.png)
+![Customizable Bar Chart with Tooltips](https://raw.githubusercontent.com/harshattray/apus/master/packages/apus-demo/screens/sc2.png)
 *Customizable Bar Chart with Tooltips*
 
-![Advanced Scatter Plot with Regression Line](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc3.png)
+![Advanced Scatter Plot with Regression Line](https://raw.githubusercontent.com/harshattray/apus/master/packages/apus-demo/screens/sc3.png)
 *Advanced Scatter Plot with Regression Line*
 
-![Stacked Bar Chart](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc4.png)
+![Stacked Bar Chart](https://raw.githubusercontent.com/harshattray/apus/master/packages/apus-demo/screens/sc4.png)
 *Stacked Bar Chart*
 
-![Radar Chart](https://raw.githubusercontent.com/harshattray/apus/master/screens/sc5.png)
+![Radar Chart](https://raw.githubusercontent.com/harshattray/apus/master/packages/apus-demo/screens/sc5.png)
 *Radar Chart*
 
 ## Installation
