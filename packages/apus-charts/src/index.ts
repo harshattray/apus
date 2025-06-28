@@ -23,8 +23,12 @@ export * from './NestedDonutChart';
 export type { NestedDonutChartProps, NestedDonutLevelData } from './NestedDonutChart/types';
 
 // Export StackedBarChart
-export { default as StackedBarChart } from './StackedBarChart/StackedBarChart';
+export { StackedBarChart } from './StackedBarChart/StackedBarChart';
 export type { StackedBarChartProps } from './StackedBarChart/types';
+
+// Export ScatterChart
+export { ScatterChart } from './ScatterChart';
+export type { ScatterChartProps, ScatterDataPoint, ScatterHoveredData } from './ScatterChart/types';
 
 // Export RadarChart and its types
 export { default as RadarChart } from './RadarChart/RadarChart';

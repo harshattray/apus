@@ -7,6 +7,7 @@ import {
   DonutChartExamples,
   RadarChartExamples,
   FunnelChartExamples,
+  ScatterChartExamples,
   ResponsiveExamples,
   Installation,
   Sidebar,
@@ -15,7 +16,7 @@ import {
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel'
+    'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel' | 'scatter'
   >('line');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -41,6 +42,8 @@ function App() {
         return <RadarChartExamples isDarkMode={isDarkMode} />;
       case 'funnel':
         return <FunnelChartExamples isDarkMode={isDarkMode} />;
+      case 'scatter':
+        return <ScatterChartExamples />;
       default:
         return <LineChartExamples isDarkMode={isDarkMode} />;
     }
@@ -53,6 +56,7 @@ function App() {
     { id: 'stacked', name: 'Stacked Bar Charts' },
     { id: 'radar', name: 'Radar Charts' },
     { id: 'funnel', name: 'Funnel Charts' },
+    { id: 'scatter', name: 'Scatter Charts' },
   ] as const;
 
   return (
