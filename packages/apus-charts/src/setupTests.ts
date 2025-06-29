@@ -78,4 +78,13 @@ if (typeof window !== 'undefined') {
   }
 
   console.log('Global test setup: Comprehensive mocks for SVG methods applied.');
+
+  // Mock d3.pointer which is used in ScatterChart for tooltip positioning
+  vi.mock('d3', async (importOriginal) => {
+    const actual = (await importOriginal()) as Record<string, unknown>;
+    return {
+      ...actual,
+      pointer: vi.fn().mockReturnValue([50, 50]), // Mock fixed position for testing
+    };
+  });
 }

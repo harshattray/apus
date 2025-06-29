@@ -3,6 +3,31 @@ import { ScatterChartProps, ScatterHoveredData, ScatterDataPoint } from './types
 import { ScatterChartRenderer } from './ScatterChartRenderer';
 import { useTooltip } from '../hooks/useTooltip';
 
+/**
+ * ScatterChart component for visualizing data points in a two-dimensional space.
+ *
+ * @component
+ * @example
+ * ```jsx
+ * import { BasicScatterChart } from './ScatterChart.examples';
+ *
+ * <BasicScatterChart />
+ * ```
+ *
+ * @example
+ * ```jsx
+ * import { ScatterChartWithFeatures } from './ScatterChart.examples';
+ *
+ * <ScatterChartWithFeatures />
+ * ```
+ *
+ * @example
+ * ```jsx
+ * import { ScatterChartWithTrendLine } from './ScatterChart.examples';
+ *
+ * <ScatterChartWithTrendLine />
+ * ```
+ */
 export const ScatterChart: FC<ScatterChartProps> = ({
   data,
   width,

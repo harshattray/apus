@@ -84,4 +84,5 @@ export interface RendererProps extends Omit<ScatterChartProps, 'style' | 'classN
     mouseY: number,
   ) => void;
   onPointLeave: () => void;
+  onPointClick?: (event: MouseEvent, dataPoint: ScatterDataPoint) => void;
 }

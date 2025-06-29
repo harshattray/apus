@@ -33,6 +33,7 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
   onPointHover,
   onPointLeave,
   onLegendItemClick,
+  onPointClick,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -45,10 +46,24 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
     const margin: Margin = { top: 40, right: 40, bottom: 50, left: 60 };
 
     const categories = [...new Set(data.map((d) => d.category))];
-    const colorScale = d3
-      .scaleOrdinal<string>()
-      .domain(categories)
-      .range(colors as string[]);
+
+    // Handle colors as either array or object
+    let colorScale: d3.ScaleOrdinal<string, string>;
+    if (Array.isArray(colors)) {
+      colorScale = d3.scaleOrdinal<string>().domain(categories).range(colors);
+    } else {
+      // If colors is an object mapping categories to colors
+      colorScale = d3
+        .scaleOrdinal<string>()
+        .domain(categories)
+        .range(
+          categories.map(
+            (category) =>
+              (colors as Record<string, string>)[category] ||
+              DEFAULT_COLORS[categories.indexOf(category) % DEFAULT_COLORS.length],
+          ),
+        );
+    }
 
     if (showLegend) {
       const legendPadding = 10;
@@ -177,6 +192,11 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
       .style('fill', (d) => colorScale(d.category))
       .style('opacity', (d) => (!selectedCategory || d.category === selectedCategory ? 0.8 : 0.2))
       .style('cursor', 'pointer')
+      .on('click', function (event: MouseEvent, d: ScatterDataPoint) {
+        if (onPointClick) {
+          onPointClick(event, d);
+        }
+      })
       .on('mouseover', function (event: MouseEvent, d: ScatterDataPoint) {
         // Highlight the point on hover
         d3.select(this)
@@ -216,6 +236,11 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
       .attr('r', pointSize * 3) // Larger area for easier hovering
       .style('fill', 'transparent')
       .style('pointer-events', 'all')
+      .on('click', function (event: MouseEvent, d: ScatterDataPoint) {
+        if (onPointClick) {
+          onPointClick(event, d);
+        }
+      })
       .on('mouseover', function (event: MouseEvent, d: ScatterDataPoint) {
         // Find and highlight the corresponding dot
         svg
