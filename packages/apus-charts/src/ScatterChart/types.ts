@@ -5,12 +5,16 @@ export interface ScatterDataPoint {
   y: number;
   category: string;
   label?: string;
-  size?: number;
+  size?: number; // Optional size value for bubble chart functionality
+  xError?: number | [number, number] | number[]; // Optional x-axis error (symmetric or [negative, positive])
+  yError?: number | [number, number] | number[]; // Optional y-axis error (symmetric or [negative, positive])
 }
 
 export interface ScatterHoveredData extends ScatterDataPoint {
   eventX: number;
   eventY: number;
+  seriesId?: string; // ID of the series this point belongs to
+  seriesName?: string; // Display name of the series
 }
 
 export type LegendPosition = 'top' | 'right' | 'bottom' | 'left';
@@ -57,11 +61,38 @@ export interface BubbleChartConfig {
   valueField?: 'size' | string; // Field in data to use for size (defaults to 'size')
 }
 
-export interface ScatterChartProps {
+export interface ErrorBarConfig {
+  enabled?: boolean; // Whether to show error bars
+  color?: string; // Color of error bars
+  strokeWidth?: number; // Width of error bar lines
+  capWidth?: number; // Width of the cap at the end of error bars
+  opacity?: number; // Opacity of error bars
+  xAxis?: boolean; // Show error bars on x-axis
+  yAxis?: boolean; // Show error bars on y-axis
+  showCaps?: boolean; // Whether to show caps at the end of error bars
+}
+
+export interface SeriesConfig {
+  id: string; // Unique identifier for the series
   data: ScatterDataPoint[];
+  name?: string; // Display name for the series (used in legend and tooltip)
+  colors?: string[] | Record<string, string>; // Colors specific to this series
+  pointSize?: number; // Point size specific to this series
+  bubbleChart?: Partial<BubbleChartConfig>; // Bubble chart config specific to this series
+  errorBars?: Partial<ErrorBarConfig>; // Error bars config specific to this series
+  trendLine?: Partial<TrendLineProps>; // Trend line config specific to this series
+  visible?: boolean; // Whether the series is visible (default: true)
+}
+
+export interface ScatterChartProps {
+  // Single dataset mode
+  data?: ScatterDataPoint[];
+  // Multiple series mode
+  series?: SeriesConfig[];
+  // Common props
   width: number;
   height: number;
-  colors?: string[] | Record<string, string>;
+  colors?: string[] | Record<string, string>; // Default colors
   style?: CSSProperties;
   className?: string;
   xAxis?: Partial<AxisProps>;
@@ -70,7 +101,7 @@ export interface ScatterChartProps {
   showLegend?: boolean;
   legendPosition?: LegendPosition;
   clickableLegend?: boolean;
-  onLegendItemClick?: (category: string | null) => void;
+  onLegendItemClick?: (category: string | null, seriesId?: string) => void;
   showTooltip?: boolean;
   tooltipFormat?: (data: ScatterHoveredData) => string;
   tooltipBackgroundColor?: string;
@@ -79,20 +110,29 @@ export interface ScatterChartProps {
   tooltipBorderRadius?: string;
   tooltipOffsetX?: number;
   tooltipOffsetY?: number;
-  trendLine?: Partial<TrendLineProps>;
-  pointSize?: number; // Fixed point size (used when bubbleChart.enabled is false)
-  bubbleChart?: Partial<BubbleChartConfig>; // Configuration for bubble chart mode
+  trendLine?: Partial<TrendLineProps>; // Default trend line config
+  pointSize?: number; // Default point size
+  bubbleChart?: Partial<BubbleChartConfig>; // Default bubble chart config
+  errorBars?: Partial<ErrorBarConfig>; // Default error bars config
+  visibleSeries?: Record<string, boolean>; // Track which series are visible
+  onSeriesToggle?: (seriesId: string, visible: boolean) => void;
 }
 
 export interface RendererProps extends Omit<ScatterChartProps, 'style' | 'className'> {
   selectedCategory: string | null;
+  selectedSeries?: string | null;
+  visibleSeries?: Record<string, boolean>; // Track which series are visible
   onPointHover: (
     event: MouseEvent,
     dataPoint: ScatterDataPoint,
     color: string,
     mouseX: number,
     mouseY: number,
+    seriesId?: string,
+    seriesName?: string,
   ) => void;
   onPointLeave: () => void;
-  onPointClick?: (event: MouseEvent, dataPoint: ScatterDataPoint) => void;
+  onLegendItemClick?: (category: string | null, seriesId?: string) => void;
+  onSeriesToggle?: (seriesId: string, visible: boolean) => void;
+  onPointClick?: (event: MouseEvent, dataPoint: ScatterDataPoint, seriesId?: string) => void;
 }

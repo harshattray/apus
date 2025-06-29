@@ -30,6 +30,7 @@ import { useTooltip } from '../hooks/useTooltip';
  */
 export const ScatterChart: FC<ScatterChartProps> = ({
   data,
+  series,
   width,
   height,
   colors,
@@ -52,8 +53,15 @@ export const ScatterChart: FC<ScatterChartProps> = ({
   tooltipOffsetY = 10,
   trendLine,
   pointSize,
+  bubbleChart,
+  errorBars,
+  visibleSeries,
+  onSeriesToggle,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
+  const [internalVisibleSeries, setInternalVisibleSeries] = useState<Record<string, boolean>>({});
+  const visibleSeriesState = visibleSeries || internalVisibleSeries;
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -74,10 +82,35 @@ export const ScatterChart: FC<ScatterChartProps> = ({
     applyTooltipStyles();
   }, [applyTooltipStyles]);
 
-  const handleLegendItemClick = (category: string | null) => {
+  // Initialize visible series when component mounts or series changes
+  React.useEffect(() => {
+    if (series && !visibleSeries) {
+      const initialVisibility: Record<string, boolean> = {};
+      series.forEach((s) => {
+        initialVisibility[s.id] = s.visible !== false; // Default to true if not specified
+      });
+      setInternalVisibleSeries(initialVisibility);
+    }
+  }, [series, visibleSeries]);
+
+  const handleLegendItemClick = (category: string | null, seriesId?: string) => {
     setSelectedCategory(category);
+    if (seriesId) {
+      setSelectedSeries(selectedSeries === seriesId ? null : seriesId);
+    }
     if (onLegendItemClick) {
-      onLegendItemClick(category);
+      onLegendItemClick(category, seriesId);
+    }
+  };
+
+  const handleSeriesToggle = (seriesId: string, visible: boolean) => {
+    if (onSeriesToggle) {
+      onSeriesToggle(seriesId, visible);
+    } else {
+      setInternalVisibleSeries((prev) => ({
+        ...prev,
+        [seriesId]: visible,
+      }));
     }
   };
 
@@ -87,6 +120,8 @@ export const ScatterChart: FC<ScatterChartProps> = ({
     color: string,
     mouseX: number,
     mouseY: number,
+    seriesId?: string,
+    seriesName?: string,
   ) => {
     if (showTooltip) {
       // Format tooltip content
@@ -96,6 +131,8 @@ export const ScatterChart: FC<ScatterChartProps> = ({
         ...dataPoint,
         eventX: event.pageX,
         eventY: event.pageY,
+        seriesId,
+        seriesName,
       };
 
       if (tooltipFormat) {
@@ -107,8 +144,10 @@ export const ScatterChart: FC<ScatterChartProps> = ({
             <span style="width: 10px; height: 10px; background-color: ${color}; border-radius: 50%; margin-right: 8px;"></span>
             <strong>${dataPoint.category}</strong>
           </div>
+          ${seriesName ? `<div><strong>Series:</strong> ${seriesName}</div>` : ''}
           <div>X: ${xValue}</div>
           <div>Y: ${dataPoint.y}</div>
+          ${dataPoint.size ? `<div>Size: ${dataPoint.size}</div>` : ''}
         `;
       }
 
@@ -128,6 +167,7 @@ export const ScatterChart: FC<ScatterChartProps> = ({
     <div style={{ ...style, position: 'relative' }} className={className}>
       <ScatterChartRenderer
         data={data}
+        series={series}
         width={width}
         height={height}
         colors={colors}
@@ -139,10 +179,15 @@ export const ScatterChart: FC<ScatterChartProps> = ({
         clickableLegend={clickableLegend}
         onLegendItemClick={handleLegendItemClick}
         selectedCategory={selectedCategory}
+        selectedSeries={selectedSeries}
         onPointHover={handlePointHover}
         onPointLeave={handlePointLeave}
+        onSeriesToggle={handleSeriesToggle}
         trendLine={trendLine}
         pointSize={pointSize}
+        bubbleChart={bubbleChart}
+        errorBars={errorBars}
+        visibleSeries={visibleSeriesState}
       />
       <div
         ref={tooltipRef}
