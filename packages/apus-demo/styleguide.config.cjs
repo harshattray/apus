@@ -16,6 +16,7 @@ module.exports = {
     '../apus-charts/src/hooks/**',
     '../apus-charts/src/utils/**',
     '../apus-charts/src/StackedBarChart/StackedBarChartRenderer.tsx',
+    '../apus-charts/src/ScatterChart/ScatterChartRenderer.tsx',
   ],
   require: [
     path.resolve(__dirname, '../apus-charts/src/index.ts'),
@@ -45,6 +46,7 @@ module.exports = {
         '../apus-charts/src/LineChart/LineChart.tsx',
         '../apus-charts/src/StackedBarChart/StackedBarChart.tsx',
         '../apus-charts/src/RadarChart/RadarChart.tsx',
+        '../apus-charts/src/ScatterChart/ScatterChart.tsx',
       ],
       description: 'Reusable chart components for data visualization.',
       exampleMode: 'expand',

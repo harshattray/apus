@@ -7,6 +7,15 @@
 export { BarChart } from './BarChart/BarChart';
 export type { BarChartProps, BarChartData } from './BarChart/types';
 
+// Export ScatterChart and its types
+export { ScatterChart } from './ScatterChart/ScatterChart';
+export type {
+  ScatterChartProps,
+  ScatterDataPoint,
+  ScatterHoveredData,
+  SeriesConfig,
+} from './ScatterChart/types';
+
 export { LineChart } from './LineChart/LineChart';
 export type { LineChartProps, LineChartSeries, LineChartDataPoint } from './LineChart/types';
 
@@ -23,7 +32,7 @@ export * from './NestedDonutChart';
 export type { NestedDonutChartProps, NestedDonutLevelData } from './NestedDonutChart/types';
 
 // Export StackedBarChart
-export { default as StackedBarChart } from './StackedBarChart/StackedBarChart';
+export { StackedBarChart } from './StackedBarChart/StackedBarChart';
 export type { StackedBarChartProps } from './StackedBarChart/types';
 
 // Export RadarChart and its types

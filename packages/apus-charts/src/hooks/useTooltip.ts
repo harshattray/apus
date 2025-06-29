@@ -5,7 +5,7 @@
 import { RefObject, useCallback } from 'react';
 import * as d3 from 'd3';
 
-type TooltipStyles = {
+export interface TooltipStyles {
   backgroundColor: string;
   textColor: string;
   padding: string;
@@ -13,7 +13,7 @@ type TooltipStyles = {
   fontSize: string;
   boxShadow?: string;
   zIndex?: number;
-};
+}
 
 /**
  * Custom hook to handle chart tooltips

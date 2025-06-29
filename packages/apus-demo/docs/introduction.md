@@ -14,7 +14,7 @@ A modern, lightweight charting library built with React and TypeScript. This lib
 ## Installation
 
 ```bash
-npm install apus-charts
+npm install apus
 ```
 
 ## Quick Start
