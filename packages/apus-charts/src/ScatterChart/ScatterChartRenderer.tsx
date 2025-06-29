@@ -29,6 +29,7 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
   clickableLegend = true,
   trendLine,
   pointSize = 6,
+  bubbleChart = {},
   selectedCategory,
   onPointHover,
   onPointLeave,
@@ -180,6 +181,36 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
       .style('fill', yAxis.tickColor || '#333')
       .style('font-size', yAxis.fontSize || '12px');
 
+    // Configure bubble chart settings
+    const bubbleEnabled = bubbleChart.enabled || false;
+    const valueField = bubbleChart.valueField || 'size';
+    const minSize = bubbleChart.minSize || pointSize;
+    const maxSize = bubbleChart.maxSize || pointSize * 3;
+    const sizeScale = bubbleChart.sizeScale || 'linear';
+
+    // Create size scale if bubble chart is enabled
+    let pointSizeScale: d3.ScaleLinear<number, number> | null = null;
+
+    if (bubbleEnabled) {
+      // Get min and max size values from data
+      const sizeExtent = d3.extent(data, (d) => {
+        const sizeValue = d[valueField as keyof ScatterDataPoint];
+        return typeof sizeValue === 'number' ? sizeValue : null;
+      }) as [number, number];
+
+      // Create appropriate scale based on configuration
+      if (sizeScale === 'sqrt') {
+        pointSizeScale = d3.scaleSqrt().domain(sizeExtent).range([minSize, maxSize]);
+      } else if (sizeScale === 'log') {
+        // Ensure domain doesn't include zero or negative values for log scale
+        const logDomain = [Math.max(0.1, sizeExtent[0]), sizeExtent[1]];
+        pointSizeScale = d3.scaleLog().domain(logDomain).range([minSize, maxSize]);
+      } else {
+        // Default to linear scale
+        pointSizeScale = d3.scaleLinear().domain(sizeExtent).range([minSize, maxSize]);
+      }
+    }
+
     // Data points
     g.selectAll('.dot')
       .data(data)
@@ -188,7 +219,13 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
       .attr('class', 'dot')
       .attr('cx', (d) => xScale(d.x as number))
       .attr('cy', (d) => yScale(d.y))
-      .attr('r', pointSize)
+      .attr('r', (d) => {
+        if (bubbleEnabled && pointSizeScale) {
+          const sizeValue = d[valueField as keyof ScatterDataPoint];
+          return typeof sizeValue === 'number' ? pointSizeScale(sizeValue) : pointSize;
+        }
+        return pointSize;
+      })
       .style('fill', (d) => colorScale(d.category))
       .style('opacity', (d) => (!selectedCategory || d.category === selectedCategory ? 0.8 : 0.2))
       .style('cursor', 'pointer')
@@ -200,7 +237,15 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
       .on('mouseover', function (event: MouseEvent, d: ScatterDataPoint) {
         // Highlight the point on hover
         d3.select(this)
-          .attr('r', pointSize * 1.5)
+          .attr('r', () => {
+            if (bubbleEnabled && pointSizeScale) {
+              const sizeValue = d[valueField as keyof ScatterDataPoint];
+              return typeof sizeValue === 'number'
+                ? pointSizeScale(sizeValue) * 1.5
+                : pointSize * 1.5;
+            }
+            return pointSize * 1.5;
+          })
           .style('stroke', '#fff')
           .style('stroke-width', 2);
 
@@ -216,15 +261,22 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
           onPointHover(event, d, colorScale(d.category), mouseX, mouseY);
         }
       })
-      .on('mouseout', function () {
+      .on('mouseout', function (event: MouseEvent, d: ScatterDataPoint) {
         // Reset point appearance
-        d3.select(this).attr('r', pointSize).style('stroke', 'none');
+        d3.select(this)
+          .attr('r', () => {
+            if (bubbleEnabled && pointSizeScale) {
+              const sizeValue = d[valueField as keyof ScatterDataPoint];
+              return typeof sizeValue === 'number' ? pointSizeScale(sizeValue) : pointSize;
+            }
+            return pointSize;
+          })
+          .style('stroke', 'none');
 
         if (onPointLeave) {
           onPointLeave();
         }
       });
-
     // Add larger transparent circles for easier hovering
     g.selectAll('.hover-area')
       .data(data)
@@ -233,7 +285,13 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
       .attr('class', 'hover-area')
       .attr('cx', (d) => xScale(d.x as number))
       .attr('cy', (d) => yScale(d.y))
-      .attr('r', pointSize * 3) // Larger area for easier hovering
+      .attr('r', (d) => {
+        if (bubbleEnabled && pointSizeScale) {
+          const sizeValue = d[valueField as keyof ScatterDataPoint];
+          return typeof sizeValue === 'number' ? pointSizeScale(sizeValue) * 2 : pointSize * 3;
+        }
+        return pointSize * 3; // Larger area for easier hovering
+      })
       .style('fill', 'transparent')
       .style('pointer-events', 'all')
       .on('click', function (event: MouseEvent, d: ScatterDataPoint) {
@@ -246,7 +304,15 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
         svg
           .selectAll('.dot')
           .filter((p: any) => p === d)
-          .attr('r', pointSize * 1.5)
+          .attr('r', () => {
+            if (bubbleEnabled && pointSizeScale) {
+              const sizeValue = d[valueField as keyof ScatterDataPoint];
+              return typeof sizeValue === 'number'
+                ? pointSizeScale(sizeValue) * 1.5
+                : pointSize * 1.5;
+            }
+            return pointSize * 1.5;
+          })
           .style('stroke', '#fff')
           .style('stroke-width', 2);
 
@@ -266,7 +332,13 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
         svg
           .selectAll('.dot')
           .filter((p: any) => p === d)
-          .attr('r', pointSize)
+          .attr('r', () => {
+            if (bubbleEnabled && pointSizeScale) {
+              const sizeValue = d[valueField as keyof ScatterDataPoint];
+              return typeof sizeValue === 'number' ? pointSizeScale(sizeValue) : pointSize;
+            }
+            return pointSize;
+          })
           .style('stroke', 'none');
 
         if (onPointLeave) {

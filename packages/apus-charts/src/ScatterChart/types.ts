@@ -5,6 +5,7 @@ export interface ScatterDataPoint {
   y: number;
   category: string;
   label?: string;
+  size?: number;
 }
 
 export interface ScatterHoveredData extends ScatterDataPoint {
@@ -48,6 +49,14 @@ export interface TrendLineProps {
   strokeDasharray?: string;
 }
 
+export interface BubbleChartConfig {
+  enabled?: boolean; // Whether to use variable point sizes (bubble chart mode)
+  minSize?: number; // Minimum point size in pixels
+  maxSize?: number; // Maximum point size in pixels
+  sizeScale?: 'linear' | 'sqrt' | 'log'; // Scaling method for size values
+  valueField?: 'size' | string; // Field in data to use for size (defaults to 'size')
+}
+
 export interface ScatterChartProps {
   data: ScatterDataPoint[];
   width: number;
@@ -71,7 +80,8 @@ export interface ScatterChartProps {
   tooltipOffsetX?: number;
   tooltipOffsetY?: number;
   trendLine?: Partial<TrendLineProps>;
-  pointSize?: number;
+  pointSize?: number; // Fixed point size (used when bubbleChart.enabled is false)
+  bubbleChart?: Partial<BubbleChartConfig>; // Configuration for bubble chart mode
 }
 
 export interface RendererProps extends Omit<ScatterChartProps, 'style' | 'className'> {
