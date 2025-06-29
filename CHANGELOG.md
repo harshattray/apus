@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.13]
+
+### Added
+
+- Enhanced ScatterChart with multiple series support
+- Added error bars functionality for ScatterChart
+- Added bubble chart functionality with variable point sizes
+- Added series visibility toggle feature
+- Updated ScatterChart documentation with new examples
+- Added comprehensive test cases for new ScatterChart features
+
+### Fixed
+
+- Fixed TypeScript type issues with ScatterChart props
+- Improved code formatting and consistency
+
 ## [0.2.7]
 
 ### Added
