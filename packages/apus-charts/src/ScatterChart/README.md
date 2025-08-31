@@ -63,6 +63,16 @@ const Example = () => {
 ```jsx
 import { ScatterChart } from 'apus';
 
+const data = [
+  { x: 10, y: 20, category: 'A' },
+  { x: 15, y: 35, category: 'B' },
+  { x: 20, y: 22, category: 'A' },
+  { x: 25, y: 40, category: 'B' },
+  { x: 30, y: 15, category: 'A' },
+  { x: 35, y: 28, category: 'B' },
+  { x: 40, y: 32, category: 'A' },
+];
+
 <ScatterChart
   data={data}
   width={600}
@@ -77,6 +87,16 @@ import { ScatterChart } from 'apus';
 
 ```jsx
 import { ScatterChart } from 'apus';
+
+const data = [
+  { x: 10, y: 20, category: 'A', label: 'Point 1' },
+  { x: 15, y: 35, category: 'B', label: 'Point 2' },
+  { x: 20, y: 22, category: 'A' },
+  { x: 25, y: 40, category: 'B', label: 'Point 4' },
+  { x: 30, y: 15, category: 'A' },
+  { x: 35, y: 28, category: 'B' },
+  { x: 40, y: 32, category: 'A', label: 'Point 7' },
+];
 
 <ScatterChart
   data={data}
@@ -257,96 +277,98 @@ const SeriesVisibilityExample = () => {
 
 ### ScatterDataPoint
 
-```typescript
-interface ScatterDataPoint {
-  x: number | Date;  // X-coordinate value (can be a number or Date)
-  y: number;         // Y-coordinate value
-  category: string;  // Category for grouping and coloring
-  label?: string;    // Optional label for the data point
-  size?: number;     // Optional size value for bubble chart functionality
-  xError?: number | [number, number] | number[];  // Optional x-axis error (symmetric or [negative, positive])
-  yError?: number | [number, number] | number[];  // Optional y-axis error (symmetric or [negative, positive])
-}
+```javascript
+// ScatterDataPoint structure:
+// {
+//   x: number | Date,  // X-coordinate value (can be a number or Date)
+//   y: number,         // Y-coordinate value
+//   category: string,  // Category for grouping and coloring
+//   size?: number,     // Optional size for bubble charts
+//   xError?: number,   // Optional error value for X-axis error bars
+//   yError?: number    // Optional error value for Y-axis error bars
+// }
 ```
 
 ### SeriesConfig
 
-```typescript
-interface SeriesConfig {
-  id: string;                // Unique identifier for the series
-  data: ScatterDataPoint[];  // Data points for this series
-  name?: string;             // Display name for the series (used in legend and tooltip)
-  colors?: string[] | Record<string, string>;  // Colors specific to this series
-  pointSize?: number;        // Point size specific to this series
-  bubbleChart?: Partial<BubbleChartConfig>;  // Bubble chart config specific to this series
-  errorBars?: Partial<ErrorBarConfig>;  // Error bars config specific to this series
-  trendLine?: Partial<TrendLineProps>;  // Trend line config specific to this series
-  visible?: boolean;         // Whether the series is visible (default: true)
-}
+```javascript
+// SeriesConfig structure:
+// {
+//   id: string,                // Unique identifier for the series
+//   data: ScatterDataPoint[],  // Data points for this series
+//   name?: string,             // Display name for the series (used in legend and tooltip)
+//   color?: string,            // Custom color for this series
+//   size?: number,             // Default point size for this series
+//   shape?: 'circle' | 'square' | 'triangle' | 'diamond',  // Point shape
+//   opacity?: number,          // Point opacity (0-1)
+//   strokeWidth?: number,      // Point border width
+//   strokeColor?: string       // Point border color
+// }
 ```
 
 ### AxisProps
 
-```typescript
-interface AxisProps {
-  show?: boolean;           // Whether to show the axis
-  label?: string;           // Axis label text
-  tickFormat?: (d: any) => string;  // Format function for tick labels
-  stroke?: string;          // Color of the axis line
-  tickColor?: string;       // Color of the tick marks
-  labelColor?: string;      // Color of the axis label
-  fontSize?: number;        // Font size for tick labels
-  labelFontSize?: number;   // Font size for the axis label
-  tickCount?: number;       // Number of ticks to display
-}
+```javascript
+// AxisProps structure:
+// {
+//   show?: boolean,           // Whether to show the axis
+//   label?: string,           // Axis label text
+//   tickFormat?: function,    // Format function for tick labels
+//   tickCount?: number,       // Suggested number of ticks
+//   domain?: [number, number] | [Date, Date],  // Custom domain for the axis
+//   type?: 'linear' | 'log' | 'time',  // Scale type
+//   color?: string,           // Axis line and text color
+//   fontSize?: number,        // Font size for axis labels
+//   fontFamily?: string       // Font family for axis labels
+// }
 ```
 
 ### GridProps
 
-```typescript
-interface GridProps {
-  horizontal?: boolean;     // Show horizontal grid lines
-  vertical?: boolean;       // Show vertical grid lines
-  stroke?: string;          // Color of grid lines
-  strokeWidth?: number;     // Width of grid lines
-  strokeDasharray?: string; // Dash pattern for grid lines
-}
+```javascript
+// GridProps structure:
+// {
+//   horizontal?: boolean,     // Show horizontal grid lines
+//   vertical?: boolean,       // Show vertical grid lines
+//   stroke?: string,          // Color of grid lines
+//   strokeWidth?: number,     // Width of grid lines
+//   strokeDasharray?: string  // Dash pattern for grid lines
+// }
 ```
 
 ### TrendLineProps
 
-```typescript
-interface TrendLineProps {
-  show?: boolean;           // Whether to show the trend line
-  color?: string;           // Color of the trend line
-  strokeWidth?: number;     // Width of the trend line
-  strokeDasharray?: string; // Dash pattern for the trend line
-}
+```javascript
+// TrendLineProps structure:
+// {
+//   show?: boolean,           // Whether to show the trend line
+//   color?: string,           // Color of the trend line
+//   strokeWidth?: number,     // Width of the trend line
+//   strokeDasharray?: string, // Dash pattern for the trend line
+//   type?: 'linear' | 'polynomial' | 'exponential'  // Type of trend line
+// }
 ```
 
 ### BubbleChartConfig
 
-```typescript
-interface BubbleChartConfig {
-  enabled?: boolean;        // Whether to use variable point sizes (bubble chart mode)
-  minSize?: number;         // Minimum point size in pixels
-  maxSize?: number;         // Maximum point size in pixels
-  sizeScale?: 'linear' | 'sqrt' | 'log';  // Scaling method for size values
-  valueField?: 'size' | string;  // Field in data to use for size (defaults to 'size')
-}
+```javascript
+// BubbleChartConfig structure:
+// {
+//   enabled?: boolean,        // Whether to use variable point sizes (bubble chart mode)
+//   minSize?: number,         // Minimum point size in pixels
+//   maxSize?: number,         // Maximum point size in pixels
+//   sizeScale?: 'linear' | 'sqrt' | 'log',  // Scale type for size mapping
+//   sizeField?: string        // Field name in data to use for size (defaults to 'size')
+// }
 ```
 
 ### ErrorBarConfig
 
-```typescript
-interface ErrorBarConfig {
-  enabled?: boolean;        // Whether to show error bars
-  color?: string;           // Color of error bars
-  strokeWidth?: number;     // Width of error bar lines
-  capWidth?: number;        // Width of the cap at the end of error bars
-  opacity?: number;         // Opacity of error bars
-  xAxis?: boolean;          // Show error bars on x-axis
-  yAxis?: boolean;          // Show error bars on y-axis
-  showCaps?: boolean;       // Whether to show caps at the end of error bars
-}
-```
+```javascript
+// ErrorBarConfig structure:
+// {
+//   enabled?: boolean,        // Whether to show error bars
+//   color?: string,           // Color of error bars
+//   strokeWidth?: number,     // Width of error bar lines
+//   capSize?: number          // Size of error bar caps in pixels
+// }

@@ -254,66 +254,70 @@ const segmentedData = [
 ## Data Types
 
 ### FunnelData
-```typescript
-interface FunnelData {
-  label: string;    // The label for this segment
-  value: number;    // The value for this segment
-  color?: string;   // Optional custom color for this segment
-}
+```javascript
+// FunnelData structure:
+// {
+//   label: string,    // The label for this segment
+//   value: number,    // The value for this segment
+//   color?: string    // Optional custom color for this segment
+// }
 ```
 
 ### TimeSeriesFunnelData
-```typescript
-interface TimeSeriesFunnelData {
-  periodLabel: string;  // Label for the time period
-  data: FunnelData[];   // Array of funnel data for this period
-}
+```javascript
+// TimeSeriesFunnelData structure:
+// {
+//   periodLabel: string,  // Label for the time period
+//   data: FunnelData[]    // Array of funnel data for this period
+// }
 ```
 
 ### SegmentedFunnelStage
-```typescript
-interface SegmentedFunnelStage {
-  label: string;           // Label for this stage
-  segments: SegmentedFunnelSegment[];  // Array of segments in this stage
-}
-
-interface SegmentedFunnelSegment {
-  channel: string;         // Channel identifier
-  value: number;           // Value for this segment
-  color?: string;          // Optional custom color
-  trend?: {
-    value: number;
-    previousValue: number;
-    change: number;
-    changePercentage: number;
-  };
-  historicalData?: {
-    timestamp: number;
-    value: number;
-  }[];
-  analytics?: {
-    performance: {
-      conversionRate: number;
-      averageValue: number;
-      peakValue: number;
-      trend: {
-        value: number;
-        previousValue: number;
-        change: number;
-        changePercentage: number;
-      };
-    };
-    contribution: {
-      percentageOfTotal: number;
-      relativeToPrevious: number;
-    };
-    correlation: {
-      correlationScore: number;
-      relatedSegments: {
-        segmentId: string;
-        correlationValue: number;
-      }[];
-    };
-  };
-}
+```javascript
+// SegmentedFunnelStage structure:
+// {
+//   label: string,           // Label for this stage
+//   segments: SegmentedFunnelSegment[]  // Array of segments in this stage
+// }
+//
+// SegmentedFunnelSegment structure:
+// {
+//   channel: string,         // Channel identifier
+//   value: number,           // Value for this segment
+//   color?: string,          // Optional custom color
+//   trend?: {
+//     value: number,
+//     previousValue: number,
+//     change: number,
+//     changePercentage: number
+//   },
+//   historicalData?: Array<{
+//     timestamp: number,
+//     value: number
+//   }>,
+//   analytics?: {
+//     performance: {
+//       conversionRate: number,
+//       averageValue: number,
+//       peakValue: number,
+//       trend: {
+//         value: number,
+//         previousValue: number,
+//         change: number,
+//         changePercentage: number
+//       }
+//     },
+//     contribution: {
+//       percentageOfTotal: number,
+//       relativeToPrevious: number
+//     },
+//     correlation: {
+//       correlationScore: number,
+//       relatedSegments: Array<{
+//         segmentId: string,
+//         correlationValue: number
+//       }>
+//     }
+//   }
+// }
 ``` 

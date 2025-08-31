@@ -47,6 +47,7 @@ module.exports = {
         '../apus-charts/src/StackedBarChart/StackedBarChart.tsx',
         '../apus-charts/src/RadarChart/RadarChart.tsx',
         '../apus-charts/src/ScatterChart/ScatterChart.tsx',
+        '../apus-charts/src/RangeChart/RangeChart.tsx',
       ],
       description: 'Reusable chart components for data visualization.',
       exampleMode: 'expand',

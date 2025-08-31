@@ -6,7 +6,7 @@ type RangeChartExamplesProps = {
 };
 
 const RangeChartExamples: React.FC<RangeChartExamplesProps> = ({ isDarkMode }) => {
-  const rangeChartData = [
+  const data = [
     { day: 'Wed', range1: { min: 120, max: 140 }, range2: { min: 70, max: 90 } },
     { day: 'Thu', range1: { min: 115, max: 135 }, range2: { min: 65, max: 85 } },
     { day: 'Fri', range1: { min: 125, max: 145 }, range2: { min: 75, max: 95 } },
@@ -29,7 +29,7 @@ const RangeChartExamples: React.FC<RangeChartExamplesProps> = ({ isDarkMode }) =
           Blood Pressure Range Chart
         </h3>
         <RangeChart
-          data={rangeChartData}
+          data={data}
           width={500}
           height={300}
           color1="#a78bfa"
@@ -51,7 +51,7 @@ const RangeChartExamples: React.FC<RangeChartExamplesProps> = ({ isDarkMode }) =
           Custom Colors
         </h3>
         <RangeChart
-          data={rangeChartData}
+          data={data}
           width={500}
           height={300}
           color1="#f472b6"
@@ -73,7 +73,7 @@ const RangeChartExamples: React.FC<RangeChartExamplesProps> = ({ isDarkMode }) =
           No Axis or Grid Lines
         </h3>
         <RangeChart
-          data={rangeChartData}
+          data={data}
           width={500}
           height={300}
           showXAxis={false}
@@ -93,7 +93,7 @@ const RangeChartExamples: React.FC<RangeChartExamplesProps> = ({ isDarkMode }) =
           Custom Margins
         </h3>
         <RangeChart
-          data={rangeChartData}
+          data={data}
           width={500}
           height={300}
           margin={{ top: 50, right: 50, bottom: 50, left: 50 }}

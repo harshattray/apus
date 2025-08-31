@@ -156,25 +156,18 @@ const nestedData = [
 
 ## Types
 
-```typescript
-type NestedDonutLevelData = { label: string; value: number; color?: string }[];
-
-interface NestedDonutChartProps {
-  levels: NestedDonutLevelData[];
-  width?: number;
-  height?: number;
-  colors?: string[][];
-  centerLabel?: string;
-  centerValue?: string | number;
-  onSliceClick?: (level: number, data: { label: string; value: number; color?: string }) => void;
-}
-
-interface NestedDonutChartRendererProps extends NestedDonutChartProps {
-  legendPosition?: 'top' | 'right' | 'bottom' | 'left';
-  theme?: 'light' | 'dark';
-  className?: string;
-  style?: React.CSSProperties;
-}
+```javascript
+// Type definitions (for reference only):
+// NestedDonutLevelData: Array of { label: string, value: number, color?: string }
+// 
+// Props:
+// - levels: NestedDonutLevelData[] - Array of data levels
+// - width?: number - Chart width
+// - height?: number - Chart height
+// - colors?: string[][] - Custom colors for each level
+// - centerLabel?: string - Label in center
+// - centerValue?: string | number - Value in center
+// - onSliceClick?: function - Click handler
 ```
 
 ## Styling
