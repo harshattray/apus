@@ -67,3 +67,7 @@ export { useTooltip } from './hooks/useTooltip';
 // Export utilities
 export { createGradient, addGridLines, addLegend } from './utils/chartUtils';
 export type { Margin } from './utils/chartUtils';
+
+// Export RangeChart and its types
+export { RangeChart } from './RangeChart/RangeChart';
+export type { RangeChartProps, RangeChartDataItem } from './RangeChart/types';

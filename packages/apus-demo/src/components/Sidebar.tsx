@@ -3,29 +3,22 @@ import React from 'react';
 interface SidebarProps {
   isDarkMode: boolean;
   activeTab: string;
-  setActiveTab: (
-    tab: 'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel' | 'scatter',
-  ) => void;
+  setActiveTab: (tab: any) => void;
   onSelect?: () => void;
+  chartTabs: {
+    id: string;
+    name: string;
+  }[];
 }
 
-const chartTabs: {
-  id: 'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel' | 'scatter';
-  name: string;
-}[] = [
-  { id: 'line', name: 'Line Charts' },
-  { id: 'bar', name: 'Bar Charts' },
-  { id: 'donut', name: 'Donut Charts' },
-  { id: 'stacked', name: 'Stacked Bar Charts' },
-  { id: 'radar', name: 'Radar Charts' },
-  { id: 'funnel', name: 'Funnel Charts' },
-  { id: 'scatter', name: 'Scatter Charts' },
-];
-
-const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, activeTab, setActiveTab, onSelect }) => {
-  const handleTabClick = (
-    tabId: 'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel' | 'scatter',
-  ) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  isDarkMode,
+  activeTab,
+  setActiveTab,
+  onSelect,
+  chartTabs,
+}) => {
+  const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
     onSelect?.();
   };

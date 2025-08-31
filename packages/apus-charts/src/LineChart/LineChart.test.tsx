@@ -154,7 +154,7 @@ describe('LineChart', () => {
     );
     await waitFor(
       () => {
-        const gridLines = container.querySelectorAll('.grid line');
+        const gridLines = container.querySelectorAll('.grid-line line');
         expect(gridLines.length > 0).toBe(true);
       },
       { timeout: 3000 },

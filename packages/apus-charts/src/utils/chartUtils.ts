@@ -67,8 +67,9 @@ export const addGridLines = (
   color: string,
 ): void => {
   if (showYGrid) {
-    g.append('g')
-      .attr('class', 'grid')
+    const yGrid = g
+      .append('g')
+      .attr('class', 'grid-line')
       .call(
         d3
           .axisLeft(y)
@@ -78,11 +79,13 @@ export const addGridLines = (
       )
       .attr('stroke', color)
       .attr('stroke-opacity', 0.2);
+    yGrid.select('.domain').remove();
   }
 
   if (showXGrid) {
-    g.append('g')
-      .attr('class', 'grid')
+    const xGrid = g
+      .append('g')
+      .attr('class', 'grid-line')
       .attr('transform', `translate(0,${height})`)
       .call(
         d3
@@ -92,6 +95,7 @@ export const addGridLines = (
       )
       .attr('stroke', color)
       .attr('stroke-opacity', 0.2);
+    xGrid.select('.domain').remove();
   }
 };
 

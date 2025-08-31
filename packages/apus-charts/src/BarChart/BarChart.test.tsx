@@ -104,7 +104,7 @@ describe('BarChart', () => {
     expect(svg).toBeInTheDocument();
     if (svg) {
       // Grid lines are typically lines within a 'g' element with class 'grid'
-      const gridLines = svg.querySelectorAll('.grid line');
+      const gridLines = svg.querySelectorAll('.grid-line line');
       expect(gridLines.length).toBeGreaterThan(0);
     }
   });

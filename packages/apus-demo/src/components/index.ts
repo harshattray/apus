@@ -1,6 +1,7 @@
 export { default as BarChartExamples } from './BarChartExamples';
 export { default as LineChartExamples } from './LineChartExamples';
 export { default as StackedBarChartExamples } from './StackedBarChartExamples';
+export { default as RangeChartExamples } from './RangeChartExamples';
 export { default as DonutChartExamples } from './DonutChartExamples';
 export { RadarChartExamples } from './RadarChartExamples';
 export { default as FunnelChartExamples } from './FunnelChartExamples';

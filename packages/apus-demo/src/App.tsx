@@ -11,12 +11,13 @@ import {
   ResponsiveExamples,
   Installation,
   Sidebar,
+  RangeChartExamples,
 } from './components';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel' | 'scatter'
+    'line' | 'bar' | 'donut' | 'stacked' | 'radar' | 'funnel' | 'scatter' | 'range'
   >('line');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -44,6 +45,8 @@ function App() {
         return <FunnelChartExamples isDarkMode={isDarkMode} />;
       case 'scatter':
         return <ScatterChartExamples />;
+      case 'range':
+        return <RangeChartExamples isDarkMode={isDarkMode} />;
       default:
         return <LineChartExamples isDarkMode={isDarkMode} />;
     }
@@ -57,6 +60,7 @@ function App() {
     { id: 'radar', name: 'Radar Charts' },
     { id: 'funnel', name: 'Funnel Charts' },
     { id: 'scatter', name: 'Scatter Charts' },
+    { id: 'range', name: 'Range Charts' },
   ] as const;
 
   return (
@@ -87,6 +91,7 @@ function App() {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               onSelect={() => setIsMobileMenuOpen(false)}
+              chartTabs={chartTabs}
             />
           </div>
 
@@ -97,6 +102,7 @@ function App() {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               onSelect={() => setIsMobileMenuOpen(false)}
+              chartTabs={chartTabs}
             />
           </div>
 
