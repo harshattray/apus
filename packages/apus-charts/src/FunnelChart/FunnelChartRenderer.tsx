@@ -51,7 +51,8 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
     if (!svgRef.current || !data.length) return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    svg.select('g.chart-root').remove();
+    svg.selectAll('defs').remove();
 
     const defs = svg.append('defs');
 
@@ -96,7 +97,10 @@ const FunnelChartRenderer: React.FC<FunnelChartProps> = ({
 
     const segmentHeight = innerHeight / data.length;
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append('g')
+      .attr('class', 'chart-root')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     let currentY = 0;
     data.forEach((d, i) => {

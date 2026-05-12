@@ -10,7 +10,7 @@ import { Margin, addGridLines } from '../utils/chartUtils';
 type RangeChartRendererProps = {
   svgRef: RefObject<SVGSVGElement>;
   data: RangeChartDataItem[];
-  dimensions: { width: number; height: number; margin: Margin };
+  dimensions: { width: number; height: number };
   color1: string;
   color2: string;
   margin: Margin;
@@ -49,7 +49,7 @@ export const RangeChartRenderer: React.FC<RangeChartRendererProps> = ({
       return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    svg.select('g.chart-root').remove();
 
     const innerWidth = currentWidth - margin.left - margin.right;
     const innerHeight = currentHeight - margin.top - margin.bottom;
@@ -72,7 +72,10 @@ export const RangeChartRenderer: React.FC<RangeChartRendererProps> = ({
       .nice()
       .range([innerHeight, 0]);
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append('g')
+      .attr('class', 'chart-root')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     if (showYAxis) {
       g.append('g')

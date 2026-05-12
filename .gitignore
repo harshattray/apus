@@ -25,6 +25,3 @@ dist-ssr
 
 # Styleguidist build output
 styleguide/
-
-# Gemini AI integration
-GEMINI.md

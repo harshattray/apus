@@ -66,7 +66,8 @@ export const BarChartRenderer: React.FC<BarChartRendererProps> = ({
       return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    svg.select('g.chart-root').remove();
+    svg.selectAll('defs').remove();
 
     // Adjust bottom margin if legend is at the bottom
     const adjustedMargin = { ...margin };
@@ -99,6 +100,7 @@ export const BarChartRenderer: React.FC<BarChartRendererProps> = ({
 
     const g = svg
       .append('g')
+      .attr('class', 'chart-root')
       .attr('transform', `translate(${adjustedMargin.left},${adjustedMargin.top})`);
 
     // Add Y axis
