@@ -100,7 +100,7 @@ export const StackedBarChartRenderer: React.FC<StackedBarChartRendererProps> = (
     }
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove(); // Clear previous drawing
+    svg.select('g.chart-root').remove();
 
     // Calculate inner dimensions
     let innerWidth = currentWidth - margin.left - margin.right;
@@ -134,15 +134,18 @@ export const StackedBarChartRenderer: React.FC<StackedBarChartRendererProps> = (
     if (innerWidth <= 0 || innerHeight <= 0) return;
 
     // Create main chart group
-    const g = svg.append('g').attr('transform', () => {
-      let xOffset = margin.left;
-      let yOffset = margin.top;
-      if (showLegend) {
-        if (legendPosition === 'top') yOffset += legendHeight;
-        else if (legendPosition === 'left') xOffset += legendWidth;
-      }
-      return `translate(${xOffset}, ${yOffset})`;
-    });
+    const g = svg
+      .append('g')
+      .attr('class', 'chart-root')
+      .attr('transform', () => {
+        let xOffset = margin.left;
+        let yOffset = margin.top;
+        if (showLegend) {
+          if (legendPosition === 'top') yOffset += legendHeight;
+          else if (legendPosition === 'left') xOffset += legendWidth;
+        }
+        return `translate(${xOffset}, ${yOffset})`;
+      });
 
     // Stack the data using only visible keys
     const stack = d3.stack<StackedBarChartData>().keys(visibleKeys);

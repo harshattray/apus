@@ -69,6 +69,16 @@ function App() {
         isDarkMode ? 'bg-slate-950 text-slate-200' : 'bg-white text-slate-800'
       }`}
     >
+      <a
+        href="https://harshattray.github.io/apus/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
+      >
+        <span>📖</span>
+        <span>Looking for the full API reference & component docs?</span>
+        <span className="underline underline-offset-2 font-semibold">View Documentation →</span>
+      </a>
       <Header
         isDarkMode={isDarkMode}
         toggleTheme={toggleTheme}

@@ -101,7 +101,8 @@ const SegmentedFunnelChartRenderer: React.FC<SegmentedFunnelChartRendererProps> 
     if (!svgRef.current || !data.length) return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    svg.select('g.chart-root').remove();
+    svg.selectAll('defs').remove();
 
     // Append <defs> for gradients and filters
     const defs = svg.append('defs');
@@ -160,7 +161,10 @@ const SegmentedFunnelChartRenderer: React.FC<SegmentedFunnelChartRendererProps> 
 
     const segmentHeight = innerHeight / data.length;
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append('g')
+      .attr('class', 'chart-root')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     let currentY = 0;
 

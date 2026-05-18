@@ -74,7 +74,7 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
     if (allData.length === 0 || width === 0 || height === 0) return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    svg.select('g.chart-root').remove();
 
     const margin: Margin = { top: 40, right: 40, bottom: 50, left: 60 };
 
@@ -137,7 +137,10 @@ export const ScatterChartRenderer: FC<RendererProps> = ({
 
     if (chartWidth <= 0 || chartHeight <= 0) return;
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append('g')
+      .attr('class', 'chart-root')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const xIsDate = allData.length > 0 && allData[0]?.x instanceof Date;
 

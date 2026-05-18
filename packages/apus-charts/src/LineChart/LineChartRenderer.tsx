@@ -66,7 +66,8 @@ export const LineChartRenderer: React.FC<LineChartRendererProps> = ({
       return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    svg.select('g.chart-root').remove();
+    svg.selectAll('defs').remove();
 
     // Adjust margin if legend is at the bottom or top
     const adjustedMargin = { ...margin };
@@ -108,6 +109,7 @@ export const LineChartRenderer: React.FC<LineChartRendererProps> = ({
 
     const g = svg
       .append('g')
+      .attr('class', 'chart-root')
       .attr('transform', `translate(${adjustedMargin.left},${adjustedMargin.top})`);
 
     // Add Y axis
