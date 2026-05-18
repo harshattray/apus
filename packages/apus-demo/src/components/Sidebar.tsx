@@ -5,7 +5,7 @@ interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: any) => void;
   onSelect?: () => void;
-  chartTabs: {
+  chartTabs: readonly {
     id: string;
     name: string;
   }[];
